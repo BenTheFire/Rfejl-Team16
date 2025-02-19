@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\legob\\source\\repos\\TicketMaster\\TicketMaster.csproj",
+      "projectUniqueName": "C:\\Users\\legob\\Documents\\GitHub\\Rfejl-Team16\\TicketMaster.csproj",
       "projectName": "TicketMaster",
-      "projectPath": "C:\\Users\\legob\\source\\repos\\TicketMaster\\TicketMaster.csproj",
+      "projectPath": "C:\\Users\\legob\\Documents\\GitHub\\Rfejl-Team16\\TicketMaster.csproj",
       "packagesPath": "C:\\Users\\legob\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\legob\\source\\repos\\TicketMaster\\obj\\",
+      "outputPath": "C:\\Users\\legob\\Documents\\GitHub\\Rfejl-Team16\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\legob\\AppData\\Roaming\\NuGet\\NuGet.Config",
