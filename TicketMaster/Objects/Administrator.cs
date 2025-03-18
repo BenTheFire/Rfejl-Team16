@@ -1,6 +1,6 @@
 ﻿namespace TicketMaster.Objects
 {
-    public class Administrators
+    public class Administrator
     {
         public int Id { get; set; }
         public string Name { get; set; }
