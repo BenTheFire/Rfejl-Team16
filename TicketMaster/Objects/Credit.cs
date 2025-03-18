@@ -1,5 +1,6 @@
 ﻿namespace TicketMaster.Objects
 {
+    [Microsoft.EntityFrameworkCore.Keyless]
     public class Credit
     {
         public Movie OfMovie { get; set; }
