@@ -1,0 +1,19 @@
+﻿@page "/API1"
+@using TicketMaster.Objects
+@inject TicketMasterService TMS
+
+<h3>ApiTestPage</h3>
+
+<p role="status">Api: @api</p>
+
+<ul ></ul>
+
+@code {
+    private string api = "unavailable";
+
+    protected override async Task OnInitializedAsync()
+    {
+        api = TMS.ServiceTest();
+    }
+
+}

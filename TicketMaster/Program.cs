@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using TicketMaster.Data;
+using TicketMaster.Objects;
 
 namespace TicketMaster;
 
@@ -14,6 +15,7 @@ public class Program
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddSingleton<TicketMasterService>();
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
