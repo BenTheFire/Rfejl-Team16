@@ -22,6 +22,8 @@ public class Program
                         .AllowAnyHeader());
         }); // Allowing cors - Ben
 
+        builder.Services.AddControllers(); // Allow controllers (API-s)
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -39,6 +41,7 @@ public class Program
         app.UseRouting();
 
         app.UseCors("AllowAll"); //Allowing cors - Ben
+        app.MapControllers(); // Map the API-s - Ben
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
