@@ -14,6 +14,13 @@ public class Program
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+        }); // Allowing cors - Ben
 
         var app = builder.Build();
 
@@ -30,6 +37,8 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseCors("AllowAll"); //Allowing cors - Ben
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
