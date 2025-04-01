@@ -4,16 +4,16 @@
 
 <h3>ApiTestPage</h3>
 
-<p role="status">Api: @api</p>
+<p role="status">Service: @api_av</p>
 
 <ul ></ul>
 
 @code {
-    private string api = "unavailable";
+    private string api_av = "Loading...";
 
     protected override async Task OnInitializedAsync()
     {
-        api = TMS.ServiceTest();
+        if (TMS.ServiceTest()) { api_av = "Available"; } else { api_av = "Unavailable"; }
     }
 
 }

@@ -2,6 +2,6 @@
 {
     public class TicketMasterService
     {
-        public string ServiceTest() { return "Service Ready"; }
+        public bool ServiceTest() { return true; }
     }
 }
