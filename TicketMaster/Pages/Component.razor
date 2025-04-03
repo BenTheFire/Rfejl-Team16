@@ -1,0 +1,15 @@
+﻿@page "/ApiTest2"
+<h3>Component</h3>
+<p>@api_result</p>
+
+@code {
+	private string api_result;
+
+	protected override async Task OnInitializedAsync()
+	{
+		using (var httpClient = new HttpClient())
+		{
+			api_result = await httpClient.GetStringAsync("api/Example");
+		}
+	}
+}

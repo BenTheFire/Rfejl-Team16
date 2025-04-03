@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TicketMaster.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Example")]
     [ApiController]
     public class APItest : ControllerBase
     {
