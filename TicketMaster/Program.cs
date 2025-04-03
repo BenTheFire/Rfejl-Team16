@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using TicketMaster.Data;
-using TicketMaster.Objects;
 
 namespace TicketMaster;
 

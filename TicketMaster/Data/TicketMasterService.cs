@@ -1,4 +1,4 @@
-﻿namespace TicketMaster.Objects
+﻿namespace TicketMaster.Data
 {
     public class TicketMasterService
     {

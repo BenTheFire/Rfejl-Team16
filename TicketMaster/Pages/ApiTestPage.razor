@@ -1,5 +1,5 @@
 ﻿@page "/API1"
-@using TicketMaster.Objects
+@using TicketMaster.Data
 @inject TicketMasterService TMS
 
 <h3>ApiTestPage</h3>
@@ -13,7 +13,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (TMS.ServiceTest()) { api_av = "Available"; } else { api_av = "Unavailable"; }
+        if (TMS.ServiceTest()) { api_av = "Injection Resource Available"; } else { api_av = "Injection Resource Unavailable"; }
     }
 
 }
