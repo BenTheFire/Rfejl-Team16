@@ -49,7 +49,7 @@
             return new(hour, minute, second);
         }
 
-        public string HrefMovieLink(Movie movie) => "/movie_" + movie.ImdbId;
+        public string HrefMovieLink(Movie movie) => $"/movie_{movie.ImdbId.ToString("D7")}";
     }
     @if (!isLoaded)
     {
