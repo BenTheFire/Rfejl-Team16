@@ -21,7 +21,7 @@ namespace TicketMaster.Data
 
         public static async IAsyncEnumerable<string> ImageSrcLinkAsync(Movie movie)
         {
-            while (true)
+            for (int i = 0; i < 10; i++)
             {
                 string apiResult;
                 using var httpClient = new HttpClient();
@@ -39,6 +39,8 @@ namespace TicketMaster.Data
                 }
                 await Task.Delay(500);
             }
+            yield return "";
+            yield break;
         }
     }
 }
