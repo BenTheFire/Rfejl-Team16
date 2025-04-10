@@ -38,6 +38,8 @@
             }
             isLoaded = true;
         }
+
+        //Másodperceket TimeOnly-ba konvertálni
         public TimeOnly GetMovieLength(int timeInSeconds)
         {
             int hour = timeInSeconds / 3600;
@@ -49,7 +51,8 @@
             return new(hour, minute, second);
         }
 
-        public string HrefMovieLink(Movie movie) => $"/movie_{movie.ImdbId.ToString("D7")}";
+        //Kis függvény az oldalak közötti váltásra
+        public string HrefMovieLink(Movie movie) => $"/movies/{(movie.ImdbId):D7}";
     }
     @if (!isLoaded)
     {
@@ -72,7 +75,7 @@
                             </div>
                         </NavLink>
                     </div>
-                 }
+                }
             </div>
         </div>
     }
