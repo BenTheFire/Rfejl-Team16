@@ -5,7 +5,7 @@ using TicketMaster.Objects;
 
 namespace TicketMaster.Data
 {
-    public class TicketMasterService
+    public class TicketMasterService : ITicketMasterService
     {
         private TicketmasterContext _context = new();
         public List<Movie> FetchMoviesBetween(int first, int last)

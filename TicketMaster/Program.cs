@@ -13,7 +13,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddScoped<TicketMasterService>();
+        builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
 
         var app = builder.Build();
 
