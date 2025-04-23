@@ -4,11 +4,11 @@ namespace TicketMaster.Data
 {
     public class MovieWithCast
     {
-        public MovieWithCast((Movie movie, List<(Person person, string role)>) thing)
+        public MovieWithCast((Movie movie, List<(Person person, string role)> cast) thing)
         {
             Movie = thing.movie;
             Cast = new();
-            foreach (var item in thing.Item2)
+            foreach (var item in thing.cast)
             {
                 Cast.Add(new(item));
             }
