@@ -11,7 +11,6 @@
         bool isLoaded = false;
         public List<Movie> fetchedMovies = new();
         public Dictionary<int, string> imgLinks = new();
-        private string apiResult;
         protected override async Task OnInitializedAsync()
         {
             await FetchMovies();
@@ -64,10 +63,10 @@
             <div class="row">
                 @foreach (var movie in fetchedMovies)
                 {
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-4">
                         <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
                             <div class="card" style="width: 18rem; height: 36rem;">
-                                <img src="@imgLinks[movie.ImdbId]" class="card-img-top" alt="Card Image">
+                                <img src="@imgLinks[movie.ImdbId]" class="card-img-top" alt="Movie Poster">
                                 <div class="card-body">
                                     <h5 class="card-title">@movie.Title</h5>
                                     <h5 class="card-title">@GetMovieLength(movie.LengthInSeconds).ToShortTimeString()</h5>

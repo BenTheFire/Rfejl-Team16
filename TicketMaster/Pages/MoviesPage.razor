@@ -1,0 +1,37 @@
+﻿@page "/movies/{id}"
+@using TicketMaster.Objects
+@using TicketMaster.Data
+@inject IMovieService MS
+
+@code {
+    [Parameter] public string Id { get; set; }
+
+    public Movie movieData;
+    public string imageLink;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movieData = await MS.FetchMovieDataAsync(Id);
+        imageLink = await ImgLink();
+        base.OnInitialized();
+    }
+
+    public async Task<string> ImgLink()
+    {
+        string imgString = "";
+        await foreach (var imgSrc in TicketMasterService.ImageSrcLinkAsync(movieData))
+        {
+            if (imgSrc != null)
+            {
+                imgString = imgSrc;
+                break;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        return imgString;
+    }
+}
+

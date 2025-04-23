@@ -14,6 +14,8 @@ public class Program
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
+        builder.Services.AddScoped<IMovieService, MovieService>();
+        builder.Services.AddControllers();
 
         var app = builder.Build();
 
@@ -30,6 +32,8 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.MapControllers();
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
