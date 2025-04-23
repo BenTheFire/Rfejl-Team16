@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using TicketMaster.Objects;
 
 namespace TicketMaster.Data
@@ -20,7 +21,7 @@ namespace TicketMaster.Data
         {
             try
             {
-                Movie result = await movieService.FetchMovieDataAsync(imdbId);
+                (Movie movie, List<(Person person, string role)>)? result = await movieService.FetchMovieDataAsync(imdbId);
 
                 if (result == null)
                 {
