@@ -7,14 +7,14 @@
     [Parameter] public string Id { get; set; }
 
     public Movie movieData;
-    public List<(Person casting, string role)> castData;
+    public List<Casting> castData;
     public string imageLink;
 
     protected override async Task OnInitializedAsync()
     {
         var result = await MS.FetchMovieDataAsync(Id);
-        movieData = result.movie;
-        castData = result.cast;
+        movieData = result.Movie;
+        castData = result.Cast;
         imageLink = await ImgLink();
         base.OnInitialized();
     }

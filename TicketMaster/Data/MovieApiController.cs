@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using TicketMaster.Objects;
@@ -21,7 +22,7 @@ namespace TicketMaster.Data
         {
             try
             {
-                (Movie movie, List<(Person person, string role)>)? result = await movieService.FetchMovieDataAsync(imdbId);
+                MovieWithCast result = new(await movieService.FetchMovieDataAsync(imdbId));
 
                 if (result == null)
                 {

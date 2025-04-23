@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
-using System.Text.Json;
 using TicketMaster.Objects;
 
 namespace TicketMaster.Data
@@ -9,7 +7,7 @@ namespace TicketMaster.Data
     {
         private TicketmasterContext _context = new();
 
-        public async Task<(Movie movie, List<(Person person, string role)> cast)> FetchMovieDataAsync(string imdbId)
+        public async Task<MovieWithCast> FetchMovieDataAsync(string imdbId)
         {
             int imdbIdInt = Convert.ToInt32(imdbId);
 
@@ -17,22 +15,23 @@ namespace TicketMaster.Data
                 from movie in _context.Movies
                 join credit in _context.Credits on movie equals credit.OfMovie
                 join person in _context.People on credit.WhoIs equals person
-                group new { person, credit.Role } by credit.OfMovie into gr
-                where gr.Key.ImdbId == imdbIdInt
+                where movie.ImdbId == imdbIdInt
                 select new
                 {
-                    Cast = gr.ToList(),
-                    Movie = gr.Key
-                }).FirstAsync();
+                    Movie = movie,
+                    Person = person,
+                    credit.Role
+                }).ToListAsync();
 
-            (Movie movie, List<(Person person, string role)> cast) resultConverted = (result.Movie, new());
+            var cast = result
+                .GroupBy(x => x.Movie)
+                .Select(g => (
+                    movie: g.Key,
+                    cast: g.Select(x => (x.Person, x.Role)).ToList()
+                ))
+                .First();
 
-            foreach (var casting in result.Cast)
-            {
-                resultConverted.cast.Add((casting.person, casting.Role));
-            }
-
-            return resultConverted;
+            return new(cast);
 
         }
     }
