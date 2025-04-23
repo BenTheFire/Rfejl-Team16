@@ -22,7 +22,7 @@ namespace TicketMaster.Data
         {
             try
             {
-                MovieWithCast result = new(await movieService.FetchMovieDataAsync(imdbId));
+                MovieWithCast result = await movieService.FetchMovieDataAsync(imdbId);
 
                 if (result == null)
                 {
