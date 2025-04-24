@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using TicketMaster.Data;
 using Microsoft.EntityFrameworkCore;
 using TicketMaster.Objects;
+using TicketMaster.Objects.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace TicketMaster;
 
@@ -22,8 +24,11 @@ public class Program
         //init mysql server context
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-       builder.Services.AddDbContext<TicketmasterContext>(
+        builder.Services.AddDbContext<TicketmasterContext>(
             o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+        /*builder.Services.AddDefaultIdentity<UnregisteredUser>(
+            o => o.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<TicketmasterContext>();*/
 
         var app = builder.Build();
 
