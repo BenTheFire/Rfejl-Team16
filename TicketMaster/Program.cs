@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using TicketMaster.Data;
+using Microsoft.EntityFrameworkCore;
+using TicketMaster.Objects;
 
 namespace TicketMaster;
 
@@ -16,6 +18,12 @@ public class Program
         builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
         builder.Services.AddScoped<IMovieService, MovieService>();
         builder.Services.AddControllers();
+
+        //init mysql server context
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+       builder.Services.AddDbContext<TicketmasterContext>(
+            o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
         var app = builder.Build();
 

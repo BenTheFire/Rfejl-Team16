@@ -16,11 +16,11 @@ namespace TicketMaster.Data
         }
 
         [HttpGet]
-        public IActionResult Get(int start, int end)
+        public async Task<IActionResult> GetAsync(int start, int end)
         {
             try
             {
-                List<Movie> result = tms.FetchMoviesBetween(start, end);
+                List<Movie> result = await tms.FetchMoviesBetweenAsync(start, end);
 
                 if (result == null)
                 {

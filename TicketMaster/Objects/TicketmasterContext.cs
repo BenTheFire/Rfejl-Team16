@@ -4,14 +4,14 @@ namespace TicketMaster.Objects
 {
     public class TicketmasterContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=localhost;" +
             "Database=TicketmasterDbTeam16;" +
             "Trusted_Connection=True;" +
             "TrustServerCertificate=True;");
-        }
-
+        }*/
+        public TicketmasterContext(DbContextOptions<TicketmasterContext> o) : base(o) { }
         public DbSet<Administrator> Administrators { get; set; }
         public DbSet<Credit> Credits { get; set; }
         public DbSet<Person> People { get; set; }
@@ -22,6 +22,11 @@ namespace TicketMaster.Objects
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<CustomerData> CustomerData { get; set; }
         public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+        }
     }
 
 }

@@ -5,7 +5,7 @@ namespace TicketMaster.Data
 {
     public class MovieService : IMovieService
     {
-        private TicketmasterContext _context = new();
+        private TicketmasterContext _context;
 
         public async Task<MovieWithCast> FetchMovieDataAsync(string imdbId)
         {

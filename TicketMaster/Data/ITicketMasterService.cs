@@ -4,6 +4,6 @@ namespace TicketMaster.Data
 {
     public interface ITicketMasterService
     {
-        public List<Movie> FetchMoviesBetween(int first, int last);
+        public Task<List<Movie>> FetchMoviesBetweenAsync(int first, int last);
     }
 }

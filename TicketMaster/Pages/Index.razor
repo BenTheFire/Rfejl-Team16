@@ -19,7 +19,7 @@
 
         public async Task FetchMovies()
         {
-            fetchedMovies = TMS.FetchMoviesBetween(1, 20);
+            fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
             foreach (var movie in fetchedMovies)
             {
                 await foreach (var imgSrc in TicketMasterService.ImageSrcLinkAsync(movie))
