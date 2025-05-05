@@ -1,7 +1,7 @@
 ﻿@page "/login"
 @using TicketMaster.Data.DTOs;
 @using TicketMaster.Data.Services.Interfaces;
-@inject ILoginService ILS  
+@inject ILoginService ILS
 
 <div class="login-container">
     <form @onsubmit="SubmitEvent" method="post" class="login-form">
@@ -13,27 +13,32 @@
 
     @if (valid)  
     {  
-        <p class="success-message">Sikeres bejelentkezés</p>  
+        <p class="success-message">Successful login</p>  
         @if (isAdmin)  
         {  
-            <p class="admin-message">Adminisztrátori bejelentkezés</p>  
+            <p class="admin-message">(admin login)</p>  
         }
         else if (isVendor)
         {
-            <p class=""></p>
+            <p class="admin-message">(vendor login)</p>
         }
     }  
-</div>  
+    @if (valid == false && tried == true) {
+            <p class="failed-message">Login failed</p>
+        }
+    </div>  
 
 @code {
 
     public bool valid = false;  
     public bool isAdmin = false;
     public bool isVendor = false;
+    public bool tried = false;
     private LoginUserDTO Model { get; set; }
 
     public void SubmitEvent()
     {
+        tried = true;
         valid = ILS.LoginUser(ref isAdmin, ref isVendor, Model);
     }
 
@@ -90,4 +95,7 @@
    .admin-message {  
        color: blue;  
    }  
+   .failed-message {
+       color: red;
+   }
 </style>
