@@ -19,7 +19,7 @@ namespace TicketMaster.Data.Controllers
             movieService = iMovieService;
         }
 
-        [HttpGet]
+        [HttpGet("{imdbId}")]
         public async Task<IActionResult> GetAsync(string imdbId)
         {
             try
