@@ -7,7 +7,7 @@
         public string Description { get; set; }
         public int LengthInSeconds { get; set; }
         public string? ImageSource { get; set; }
-        public string ReleaseDate { get; set; }
+        public string? ReleaseDate { get; set; }
         public int ImdbId { get; set; }
     }
 }

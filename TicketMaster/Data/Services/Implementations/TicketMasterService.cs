@@ -24,14 +24,15 @@ namespace TicketMaster.Data.Services.Implementations
                     .Where(movie => movie.Id < last && movie.Id >= first)
                     .ToListAsync();
         }
-        public async Task FetchMoviesDateAsync()
+        public async Task FetchMoviesDataAsync()
         {
+            var noDateMovies = await _context.Movies.Where(o => o.ReleaseDate == null).ToListAsync();
             var noImageMovies = await _context.Movies.Where(o => o.ImageSource == null).ToListAsync();
-            if (noImageMovies.Count != 0)
+            if (noDateMovies.Count != 0)
             {
-                foreach (var movie in noImageMovies)
+                foreach (var movie in noDateMovies)
                 {
-                    await foreach (var imgSrc in OmdbSource.ImageSrcLinkAsync(movie))
+                    await foreach (var imgSrc in OmdbSource.DateSrcLinkAsync(movie))
                     {
                         if (imgSrc != null)
                         {
@@ -46,11 +47,7 @@ namespace TicketMaster.Data.Services.Implementations
                 }
                 await _context.SaveChangesAsync();
             }
-            Console.WriteLine($"Updated dates for {noImageMovies.Count} entries.");
-        }
-        public async Task FetchMoviesImagesAsync()
-        {
-            var noImageMovies = await _context.Movies.Where(o => o.ImageSource == null).ToListAsync();
+            Console.WriteLine($"Updated dates for {noDateMovies.Count} entries.");
             if (noImageMovies.Count != 0)
             {
                 foreach (var movie in noImageMovies)
