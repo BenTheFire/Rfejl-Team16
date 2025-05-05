@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TicketMaster.Data.DTOs;
+using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Objects;
 
-namespace TicketMaster.Data
+namespace TicketMaster.Data.Services.Implementations
 {
     public class MovieService : IMovieService
     {

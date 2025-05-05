@@ -1,6 +1,7 @@
-﻿using TicketMaster.Objects;
+﻿using TicketMaster.Data.DTOs;
+using TicketMaster.Objects;
 
-namespace TicketMaster.Data
+namespace TicketMaster.Data.Services.Interfaces
 {
     public interface IMovieService
     {

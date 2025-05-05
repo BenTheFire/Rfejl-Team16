@@ -1,6 +1,6 @@
 ﻿using TicketMaster.Objects;
 
-namespace TicketMaster.Data
+namespace TicketMaster.Data.Services.Interfaces
 {
     public interface ITicketMasterService
     {

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Objects;
 
-namespace TicketMaster.Data
+namespace TicketMaster.Data.Controllers
 {
     [Route("api")]
     [ApiController]

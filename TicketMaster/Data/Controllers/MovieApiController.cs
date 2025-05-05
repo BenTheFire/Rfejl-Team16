@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using TicketMaster.Data.DTOs;
+using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Objects;
 
-namespace TicketMaster.Data
+namespace TicketMaster.Data.Controllers
 {
     [Route("api/movies")]
     [ApiController]

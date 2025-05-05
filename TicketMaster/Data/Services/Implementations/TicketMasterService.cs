@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Objects;
 
-namespace TicketMaster.Data
+namespace TicketMaster.Data.Services.Implementations
 {
     public class TicketMasterService : ITicketMasterService
     {
