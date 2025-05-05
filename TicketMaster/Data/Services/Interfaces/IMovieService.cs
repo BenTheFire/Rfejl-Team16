@@ -6,5 +6,6 @@ namespace TicketMaster.Data.Services.Interfaces
     public interface IMovieService
     {
         public Task<MovieWithCast> FetchMovieDataAsync(string imdbId);
+        public Task<List<Screening>> FetchScreenings(string imdbId);
     }
 }
