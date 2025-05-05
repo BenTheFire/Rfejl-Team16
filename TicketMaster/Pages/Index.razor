@@ -50,7 +50,7 @@
         fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
         foreach (var movie in fetchedMovies)
         {
-            imgLinks.Add(movie.ImdbId, movie.Imagesource);
+            imgLinks.Add(movie.ImdbId, movie.ImageSource);
         }
         isLoaded = true;
     }
