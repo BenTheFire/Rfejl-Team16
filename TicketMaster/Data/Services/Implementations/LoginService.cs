@@ -15,8 +15,11 @@ namespace TicketMaster.Data.Services.Implementations
         private readonly TicketmasterContext _context;
         public bool LoginUser(ref bool isAdmin, LoginUserDTO Model)
         {
-            if (!Model.Username.IsNullOrEmpty() || !Model.Password.IsNullOrEmpty())
+            if (Model.Username.IsNullOrEmpty() || Model.Password.IsNullOrEmpty())
+            {
+                isAdmin = false;
                 return false;
+            }
 
 
             var user = _context.Users.Where(o => o.Username == Model.Username).First();
