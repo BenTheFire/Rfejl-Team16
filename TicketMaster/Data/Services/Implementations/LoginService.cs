@@ -8,7 +8,11 @@ namespace TicketMaster.Data.Services.Implementations
 {
     public class LoginService : ILoginService
     {
-        private TicketmasterContext _context;
+        public LoginService(TicketmasterContext c)
+        {
+            _context = c;
+        }
+        private readonly TicketmasterContext _context;
         public bool LoginUser(ref bool isAdmin, LoginUserDTO Model)
         {
             string username;

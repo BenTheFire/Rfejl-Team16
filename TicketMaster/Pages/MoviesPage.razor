@@ -2,8 +2,9 @@
 @using TicketMaster.Data
 @using TicketMaster.Data.DTOs
 @using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Data.Services.StaticServiceMethods
 @using TicketMaster.Objects
-@inject IMovieService MS
+@inject IMovieService IMS
 
 @code {
     [Parameter] public string Id { get; set; }
@@ -14,7 +15,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await MS.FetchMovieDataAsync(Id);
+        var result = await IMS.FetchMovieDataAsync(Id);
         movieData = result.Movie;
         castData = result.Cast;
         imageLink = await ImgLink();
@@ -24,7 +25,7 @@
     public async Task<string> ImgLink()
     {
         string imgString = "";
-        await foreach (var imgSrc in TicketMasterService.ImageSrcLinkAsync(movieData))
+        await foreach (var imgSrc in ImageSource.ImageSrcLinkAsync(movieData))
         {
             if (imgSrc != null)
             {

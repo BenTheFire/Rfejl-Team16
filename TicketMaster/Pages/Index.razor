@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using TicketMaster.Data
 @using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Data.Services.StaticServiceMethods
 @using TicketMaster.Objects
 @inject ITicketMasterService TMS
 
@@ -23,7 +24,7 @@
             fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
             foreach (var movie in fetchedMovies)
             {
-                await foreach (var imgSrc in TicketMasterService.ImageSrcLinkAsync(movie))
+                await foreach (var imgSrc in ImageSource.ImageSrcLinkAsync(movie))
                 {
                     if (imgSrc != null)
                     {
