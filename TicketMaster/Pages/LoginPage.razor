@@ -1,54 +1,105 @@
-﻿@page "/login"
-@inject TicketMaster.Objects.TicketmasterContext tms
+﻿@page "/login"  
+@inject TicketMaster.Objects.TicketmasterContext tms  
 
-<h3>LoginPage</h3>
+<div class="login-container">  
+   <form @onsubmit="GetUser" method="post" class="login-form">  
+       <h4>Login</h4>  
+       <input type="text" placeholder="Username" @bind-value="Model.Username" class="input-field" />  
+       <input type="password" placeholder="Password" @bind-value="Model.Password" class="input-field" />  
+       <button type="submit" class="submit-button">Login</button>  
+   </form>  
 
-<form @onsubmit="GetUser" method="post">
-    <input type="username" @bind-value="Model.Username"/>
-    <br />
-    <input type="password" @bind-value="Model.Password"/>
-    <button type="submit">Login</button>
-</form>
+   @if (valid)  
+   {  
+       <p class="success-message">Sikeres bejelentkezés</p>  
+       @if (isAdmin)  
+       {  
+           <p class="admin-message">adminisztrátori bejelentkezés</p>  
+       }  
+   }  
+</div>  
 
-@if (valid)
-{
-    <p>Sikeres bejelentkezés</p>
-    @if (isAdmin){
-        <p>adminisztrátori bejelentkezés</p>
-    }
-}
+@code {  
+   public bool valid = false;  
+   public bool isAdmin = false;  
+   private LUser Model { get; set; }  
 
-@code {
-    public bool valid = false;
-    public bool isAdmin = false;
-    private LUser Model { get; set; }
+   protected override void OnInitialized() {  
+       Model = new();  
+   }  
 
-    protected override void OnInitialized() {
-        Model = new();
-    }
+   private void GetUser() {  
+       string username;  
+       string password;  
+       isAdmin = false;  
+       if (tms.Users.Any(o => o.Username.CompareTo(Model.Username) == 0))  
+       {  
+           username = tms.Users.Where(o => o.Username == Model.Username).Select(o => o.Username).First();  
+           password = tms.Users.Where(o => o.Username == Model.Username).Select(o => o.PasswordHash).First();  
+       }  
+       else  
+       {  
+           username = tms.Administrators.Where(o => o.Name == Model.Username).Select(o => o.Name).First();  
+           password = tms.Administrators.Where(o => o.Name == Model.Username).Select(o => o.PasswordHash).First();  
+           isAdmin = true;  
+       }  
+       Console.WriteLine(Model.Username + " " + username);  
+       Console.WriteLine(Model.Password + " " + password);  
+       Console.WriteLine(valid = (username.Equals(Model.Username) && password.Equals(Model.Password)));  
+   }  
 
-    private void GetUser() {
-        string username;
-        string password;
-        isAdmin = false;
-        if (tms.Users.Any(o => o.Username.CompareTo(Model.Username) == 0))
-        {
-            username = tms.Users.Where(o => o.Username == Model.Username).Select(o => o.Username).First();
-            password = tms.Users.Where(o => o.Username == Model.Username).Select(o => o.PasswordHash).First();
-        }
-        else
-        {
-            username = tms.Administrators.Where(o => o.Name == Model.Username).Select(o => o.Name).First();
-            password = tms.Administrators.Where(o => o.Name == Model.Username).Select(o => o.PasswordHash).First();
-            isAdmin = true;
-        }
-        Console.WriteLine(Model.Username + " " + username);
-        Console.WriteLine(Model.Password + " " + password);
-        Console.WriteLine(valid = (username.Equals(Model.Username) && password.Equals(Model.Password)));
-    }
+   public class LUser {  
+       public string Username { get; set; }  
+       public string Password { get; set; }  
+   }  
+}  
 
-    public class LUser {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-}
+<style>  
+   .login-container {  
+       display: flex;  
+       justify-content: center;  
+       align-items: center;  
+       height: 100vh;  
+       background-color: #f5f5f5;  
+   }  
+
+   .login-form {  
+       background: white;  
+       padding: 20px;  
+       border-radius: 8px;  
+       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  
+       text-align: center;  
+       width: 300px;  
+   }  
+
+   .input-field {  
+       width: 100%;  
+       padding: 10px;  
+       margin: 10px 0;  
+       border: 1px solid #ccc;  
+       border-radius: 4px;  
+   }  
+
+   .submit-button {  
+       width: 100%;  
+       padding: 10px;  
+       background-color: #007bff;  
+       color: white;  
+       border: none;  
+       border-radius: 4px;  
+       cursor: pointer;  
+   }  
+
+   .submit-button:hover {  
+       background-color: #0056b3;  
+   }  
+
+   .success-message {  
+       color: green;  
+       margin-top: 10px;  
+   }  
+
+   .admin-message {  
+       color: blue;  
+   }  
+</style>
