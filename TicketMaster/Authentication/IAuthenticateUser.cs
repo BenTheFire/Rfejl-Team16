@@ -1,8 +1,6 @@
-﻿using TicketMaster.Authentication;
-
-namespace TicketMaster.Objects
+﻿namespace TicketMaster.Authentication
 {
-    public class User : IAuthenticateUser
+    public interface IAuthenticateUser
     {
         public int Id { get; set; }
         public string Username { get; set; }

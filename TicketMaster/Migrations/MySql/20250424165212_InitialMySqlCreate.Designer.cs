@@ -47,7 +47,7 @@ namespace TicketMaster.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -116,7 +116,7 @@ namespace TicketMaster.Migrations.MySql
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -159,7 +159,7 @@ namespace TicketMaster.Migrations.MySql
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -261,7 +261,7 @@ namespace TicketMaster.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
 

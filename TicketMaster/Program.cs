@@ -6,6 +6,8 @@ using TicketMaster.Objects;
 using Microsoft.AspNetCore.Identity;
 using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Data.Services.Implementations;
+using TicketMaster.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace TicketMaster;
 
@@ -22,6 +24,11 @@ public class Program
         builder.Services.AddScoped<IMovieService, MovieService>();
         builder.Services.AddScoped<ILoginService, LoginService>();
         builder.Services.AddControllers();
+
+        builder.Services.AddScoped<PasswordService>();
+        builder.Services.AddScoped<AuthenticationService>();
+        builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
+        builder.Services.AddAuthenticationCore();
 
         //init mysql server context
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
