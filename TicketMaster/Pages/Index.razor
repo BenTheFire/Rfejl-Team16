@@ -1,9 +1,81 @@
 ﻿@page "/"
+@using TicketMaster.Data
+@using TicketMaster.Objects
+@inject ITicketMasterService TMS
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<body>
+    @code 
+    {
+        bool isLoaded = false;
+        public List<Movie> fetchedMovies = new();
+        public Dictionary<int, string> imgLinks = new();
+        protected override async Task OnInitializedAsync()
+        {
+            await FetchMovies();
+            base.OnInitialized();
+        }
 
-Welcome to your new app.
+        public async Task FetchMovies()
+        {
+            fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
+            foreach (var movie in fetchedMovies)
+            {
+                await foreach (var imgSrc in TicketMasterService.ImageSrcLinkAsync(movie))
+                {
+                    if (imgSrc != null)
+                    {
+                        imgLinks.Add(movie.ImdbId, imgSrc);
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+            isLoaded = true;
+        }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+        //Másodperceket TimeOnly-ba konvertálni
+        public TimeOnly GetMovieLength(int timeInSeconds)
+        {
+            int hour = timeInSeconds / 3600;
+            timeInSeconds %= 3600;
+            int minute = timeInSeconds / 60;
+            timeInSeconds %= 60;
+            int second = timeInSeconds;
+
+            return new(hour, minute, second);
+        }
+
+        //Kis függvény az oldalak közötti váltásra
+        public string HrefMovieLink(Movie movie) => $"/movies/{(movie.ImdbId):D7}";
+    }
+    @if (!isLoaded)
+    {
+        <p>Loading Movies...</p>
+    }
+    else 
+    {
+        <div class="container">
+            <div class="row">
+                @foreach (var movie in fetchedMovies)
+                {
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-4">
+                        <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
+                            <div class="card" style="width: 18rem; height: 36rem;">
+                                <img src="@imgLinks[movie.ImdbId]" class="card-img-top" alt="Movie Poster">
+                                <div class="card-body">
+                                    <h5 class="card-title">@movie.Title</h5>
+                                    <h5 class="card-title">@GetMovieLength(movie.LengthInSeconds).ToShortTimeString()</h5>
+                                </div>
+                            </div>
+                        </NavLink>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</body>

@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using TicketMaster.Data;
+using Microsoft.EntityFrameworkCore;
+using TicketMaster.Objects;
+using TicketMaster.Objects.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace TicketMaster;
 
@@ -13,7 +17,18 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
+        builder.Services.AddScoped<IMovieService, MovieService>();
+        builder.Services.AddControllers();
+
+        //init mysql server context
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        builder.Services.AddDbContext<TicketmasterContext>(
+            o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+        /*builder.Services.AddDefaultIdentity<UnregisteredUser>(
+            o => o.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<TicketmasterContext>();*/
 
         var app = builder.Build();
 
@@ -30,6 +45,8 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.MapControllers();
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
