@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System.Text.Json;
 using TicketMaster.Data.Services.Interfaces;
+using TicketMaster.Data.Services.StaticServiceMethods;
+using TicketMaster.Extra;
 using TicketMaster.Objects;
 
 namespace TicketMaster.Data.Services.Implementations
@@ -20,6 +23,30 @@ namespace TicketMaster.Data.Services.Implementations
             return await _context.Movies
                     .Where(movie => movie.Id < last && movie.Id >= first)
                     .ToListAsync();
+        }
+        public async Task FetchMoviesImagesAsync()
+        {
+            var noImageMovies = await _context.Movies.Where(o => o.Imagesource == null).ToListAsync();
+            if (noImageMovies.Count != 0)
+            {
+                foreach (var movie in noImageMovies)
+                {
+                    await foreach (var imgSrc in ImageSource.ImageSrcLinkAsync(movie))
+                    {
+                        if (imgSrc != null)
+                        {
+                            movie.Imagesource = imgSrc;
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+            Console.WriteLine($"Updated {noImageMovies.Count} entries.");
         }
     }
 }
