@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.Web;
 using TicketMaster.Data;
 using Microsoft.EntityFrameworkCore;
 using TicketMaster.Objects;
-using TicketMaster.Objects.Users;
 using Microsoft.AspNetCore.Identity;
 using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Data.Services.Implementations;

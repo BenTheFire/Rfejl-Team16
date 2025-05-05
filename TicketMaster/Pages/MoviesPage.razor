@@ -25,7 +25,7 @@
     public async Task<string> ImgLink()
     {
         string imgString = "";
-        await foreach (var imgSrc in ImageSource.ImageSrcLinkAsync(movieData))
+        await foreach (var imgSrc in OmdbSource.ImageSrcLinkAsync(movieData))
         {
             if (imgSrc != null)
             {

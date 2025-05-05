@@ -24,18 +24,18 @@ namespace TicketMaster.Data.Services.Implementations
                     .Where(movie => movie.Id < last && movie.Id >= first)
                     .ToListAsync();
         }
-        public async Task FetchMoviesImagesAsync()
+        public async Task FetchMoviesDateAsync()
         {
-            var noImageMovies = await _context.Movies.Where(o => o.Imagesource == null).ToListAsync();
+            var noImageMovies = await _context.Movies.Where(o => o.ImageSource == null).ToListAsync();
             if (noImageMovies.Count != 0)
             {
                 foreach (var movie in noImageMovies)
                 {
-                    await foreach (var imgSrc in ImageSource.ImageSrcLinkAsync(movie))
+                    await foreach (var imgSrc in OmdbSource.ImageSrcLinkAsync(movie))
                     {
                         if (imgSrc != null)
                         {
-                            movie.Imagesource = imgSrc;
+                            movie.ImageSource = imgSrc;
                             break;
                         }
                         else
@@ -46,7 +46,31 @@ namespace TicketMaster.Data.Services.Implementations
                 }
                 await _context.SaveChangesAsync();
             }
-            Console.WriteLine($"Updated {noImageMovies.Count} entries.");
+            Console.WriteLine($"Updated dates for {noImageMovies.Count} entries.");
+        }
+        public async Task FetchMoviesImagesAsync()
+        {
+            var noImageMovies = await _context.Movies.Where(o => o.ImageSource == null).ToListAsync();
+            if (noImageMovies.Count != 0)
+            {
+                foreach (var movie in noImageMovies)
+                {
+                    await foreach (var imgSrc in OmdbSource.ImageSrcLinkAsync(movie))
+                    {
+                        if (imgSrc != null)
+                        {
+                            movie.ImageSource = imgSrc;
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+            Console.WriteLine($"Updated images for {noImageMovies.Count} entries.");
         }
     }
 }
