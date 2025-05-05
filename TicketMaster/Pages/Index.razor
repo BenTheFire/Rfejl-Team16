@@ -8,53 +8,6 @@
 <PageTitle>Index</PageTitle>
 
 <body>
-    @code 
-    {
-        bool isLoaded = false;
-        public List<Movie> fetchedMovies = new();
-        public Dictionary<int, string> imgLinks = new();
-        protected override async Task OnInitializedAsync()
-        {
-            await FetchMovies();
-            base.OnInitialized();
-        }
-
-        public async Task FetchMovies()
-        {
-            fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
-            foreach (var movie in fetchedMovies)
-            {
-                await foreach (var imgSrc in ImageSource.ImageSrcLinkAsync(movie))
-                {
-                    if (imgSrc != null)
-                    {
-                        imgLinks.Add(movie.ImdbId, imgSrc);
-                        break;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
-            isLoaded = true;
-        }
-
-        //Másodperceket TimeOnly-ba konvertálni
-        public TimeOnly GetMovieLength(int timeInSeconds)
-        {
-            int hour = timeInSeconds / 3600;
-            timeInSeconds %= 3600;
-            int minute = timeInSeconds / 60;
-            timeInSeconds %= 60;
-            int second = timeInSeconds;
-
-            return new(hour, minute, second);
-        }
-
-        //Kis függvény az oldalak közötti váltásra
-        public string HrefMovieLink(Movie movie) => $"/movies/{(movie.ImdbId):D7}";
-    }
     @if (!isLoaded)
     {
         <p>Loading Movies...</p>
@@ -81,3 +34,39 @@
         </div>
     }
 </body>
+@code
+{
+    bool isLoaded = false;
+    public List<Movie> fetchedMovies = new();
+    public Dictionary<int, string> imgLinks = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await TMS.FetchMoviesImagesAsync();
+        await FetchMovies();
+    }
+
+    public async Task FetchMovies()
+    {
+        fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
+        foreach (var movie in fetchedMovies)
+        {
+            imgLinks.Add(movie.ImdbId, movie.Imagesource);
+        }
+        isLoaded = true;
+    }
+
+    //Másodperceket TimeOnly-ba konvertálni
+    public TimeOnly GetMovieLength(int timeInSeconds)
+    {
+        int hour = timeInSeconds / 3600;
+        timeInSeconds %= 3600;
+        int minute = timeInSeconds / 60;
+        timeInSeconds %= 60;
+        int second = timeInSeconds;
+
+        return new(hour, minute, second);
+    }
+
+    //Kis függvény az oldalak közötti váltásra
+    public string HrefMovieLink(Movie movie) => $"/movies/{(movie.ImdbId):D7}";
+}

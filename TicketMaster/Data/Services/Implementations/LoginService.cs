@@ -26,12 +26,12 @@ namespace TicketMaster.Data.Services.Implementations
             try
             {
                 username = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.Username
-                    ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.Name
-                    ?? _context.Vendors.Where(o => o.Name == Model.Username).FirstOrDefault()?.Name
+                    ?? _context.Administrators.Where(o => o.Username == Model.Username).FirstOrDefault()?.Username
+                    ?? _context.Vendors.Where(o => o.Username == Model.Username).FirstOrDefault()?.Username
                     ?? throw new Exception("Shit went down");
                 passwordHash = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.PasswordHash
-                    ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.PasswordHash
-                    ?? _context.Vendors.Where(o => o.Name == Model.Username).FirstOrDefault()?.PasswordHash
+                    ?? _context.Administrators.Where(o => o.Username == Model.Username).FirstOrDefault()?.PasswordHash
+                    ?? _context.Vendors.Where(o => o.Username == Model.Username).FirstOrDefault()?.PasswordHash
                     ?? throw new Exception("Shit went down");
             }
             catch
@@ -39,8 +39,8 @@ namespace TicketMaster.Data.Services.Implementations
                 return false;
             }
 
-            if (isAdmin = _context.Administrators.Any(o => o.Name == username)) { isVendor = true; }
-            else isVendor = _context.Vendors.Any(o => o.Name == username);
+            if (isAdmin = _context.Administrators.Any(o => o.Username == username)) { isVendor = true; }
+            else isVendor = _context.Vendors.Any(o => o.Username == username);
 
 
                 return username.Equals(Model.Username) &&

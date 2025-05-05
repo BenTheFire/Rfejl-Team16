@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketMaster.Objects;
 
@@ -10,9 +11,11 @@ using TicketMaster.Objects;
 namespace TicketMaster.Migrations.MySql
 {
     [DbContext(typeof(TicketmasterContext))]
-    partial class TicketmasterContextModelSnapshot : ModelSnapshot
+    [Migration("20250505140909_AddImageLinks")]
+    partial class AddImageLinks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +47,7 @@ namespace TicketMaster.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -113,7 +116,7 @@ namespace TicketMaster.Migrations.MySql
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -159,7 +162,7 @@ namespace TicketMaster.Migrations.MySql
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -261,7 +264,7 @@ namespace TicketMaster.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
