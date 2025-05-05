@@ -21,14 +21,21 @@ namespace TicketMaster.Data.Services.Implementations
                 isAdmin = false;
                 return false;
             }
-
-
-            string username = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.Username
-                ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.Name
-                ?? throw new Exception("Shit went down");
-            string passwordHash = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.PasswordHash
-                ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.PasswordHash
-                ?? throw new Exception("Shit went down");
+            string username;
+            string passwordHash;
+            try
+            {
+                username = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.Username
+                    ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.Name
+                    ?? throw new Exception("Shit went down");
+                passwordHash = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.PasswordHash
+                    ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.PasswordHash
+                    ?? throw new Exception("Shit went down");
+            }
+            catch
+            {
+                return false;
+            }
 
             isAdmin = !_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0);
 
