@@ -1,6 +1,7 @@
 ﻿using Org.BouncyCastle.Pqc.Crypto.Lms;
 using TicketMaster.Data.DTOs;
 using TicketMaster.Data.Services.Interfaces;
+using TicketMaster.Extra;
 using TicketMaster.Objects;
 using TicketMaster.Objects.Users;
 
@@ -18,7 +19,7 @@ namespace TicketMaster.Data.Services.Implementations
             string username;
             string password;
             isAdmin = false;
-            if (String.IsNullOrEmpty(Model.Username) && String.IsNullOrEmpty(Model.Password))
+            if (Model.Username.IsNullOrEmpty() && Model.Password.IsNullOrEmpty())
             {
                 if (_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0))
                 {
