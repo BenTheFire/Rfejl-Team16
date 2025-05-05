@@ -17,19 +17,24 @@
         @if (isAdmin)  
         {  
             <p class="admin-message">Adminisztrátori bejelentkezés</p>  
-        }  
+        }
+        else if (isVendor)
+        {
+            <p class=""></p>
+        }
     }  
 </div>  
 
 @code {
 
     public bool valid = false;  
-    public bool isAdmin = false;  
+    public bool isAdmin = false;
+    public bool isVendor = false;
     private LoginUserDTO Model { get; set; }
 
     public void SubmitEvent()
     {
-        valid = ILS.LoginUser(ref isAdmin, Model);
+        valid = ILS.LoginUser(ref isAdmin, ref isVendor, Model);
     }
 
     protected override void OnInitialized() {  
