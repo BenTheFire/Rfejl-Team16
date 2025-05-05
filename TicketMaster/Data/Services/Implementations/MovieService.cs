@@ -40,5 +40,16 @@ namespace TicketMaster.Data.Services.Implementations
             return new(cast);
 
         }
+
+        public async Task<List<Screening>> FetchScreenings(string imdbId)
+        {
+            var guh = await FetchMovieDataAsync(imdbId);
+
+            return await
+                (from scr in _context.Screenings
+                 where scr.OfMovie == guh.Movie
+                 select scr)
+                .ToListAsync();
+        }
     }
 }
