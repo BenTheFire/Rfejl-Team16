@@ -11,6 +11,7 @@
 
     public Movie movieData;
     public List<Casting> castData;
+	public List<Screening> screeningData;
     public string imageLink;
 
     protected override async Task OnInitializedAsync()
@@ -18,6 +19,7 @@
         var result = await IMS.FetchMovieDataAsync(Id);
         movieData = result.Movie;
         castData = result.Cast;
+		// SCREENING HERE
         imageLink = await ImgLink();
         base.OnInitialized();
     }
@@ -39,9 +41,75 @@
         }
         return imgString;
     }
+
+    public string GetMovieDW()
+    {
+        List<Casting> Director = castData.Where(c => c.Role == "Director").ToList();
+        List<Casting> Writer = castData.FindAll(c => c.Role == "Writer").ToList();
+
+        string MovieDW = "";
+        if (Director.Count > 0)
+        {
+            if (Director.Count == 1 && Writer.Count == 1 && Writer[0]==Director[0])
+            {
+                MovieDW = $"Written and Directed by {Director[0].Person.Name}"; 
+            }
+            else
+            {
+                MovieDW += "Directed by: " + string.Join(", ", Director.Select(d => d.Person.Name));
+            }
+        }
+        if (Writer.Count > 0)
+        {
+            if (Director.Count == 1 && Writer.Count == 1 && Writer[0] == Director[0])
+            {
+                MovieDW = $"Written and Directed by {Director[0].Person.Name}";
+            }
+            else
+            {
+                MovieDW += "Written by:" + string.Join(", ", Writer.Select(w => w.Person.Name));
+            }
+        }
+        if (!Director.Any() && !Writer.Any())
+        {
+            MovieDW = "Unknown Director and Writer";
+        }
+        return MovieDW;
+    }
 }
 
 <body>
+    <div style="display: flex; flex-direction: column; gap: 20px; border: 1px solid black; padding: 20px; border-radius: 10px;">
+        <div style="display: flex; gap: 20px; border: 1px solid black; padding: 15px; border-radius: 8px;">
+            <div style="flex-grow: 1;">
+                <h3>@movieData.Title (MOVIE_RELEASE_YEAR)</h3>
+                <p style="font-size: 0.9em; color: #555;">@GetMovieDW()</p>
+                <p>@movieData.Description</p>
+            </div>
+            <div style="width: 150px; height: 200px; border: 1px solid red; display: flex; justify-content: center; align-items: center; color: red; border-radius: 5px;">
+                MOVIEDATA HERE
+            </div>
+        </div>
 
+        <div style="display: flex; gap: 20px;">
+            <div style="flex-grow: 2; border: 1px solid black; padding: 15px; border-radius: 8px;">
+                <ul>
+					LOAD SCREENING DATA HERE
+                </ul>
+            </div>
+            <div style="flex-grow: 1; border: 1px solid black; padding: 15px; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
+                <h4>Cast</h4>
+                <ul>
+					@foreach (var casting in castData)
+					{
+						<li>
+							<strong>@casting.Role</strong>
+                            <p>@casting.Person.Name</p>
+						</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
 </body>
 
