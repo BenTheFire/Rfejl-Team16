@@ -27,7 +27,7 @@ namespace TicketMaster.Data.Services.Implementations
             string username = user.Username;
             string passwordHash = user.PasswordHash;
 
-            isAdmin = !_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0) ? true : false;
+            isAdmin = !_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0);
 
             return username.Equals(Model.Username) &&
                 /*new PasswordHasher<string>().HashPassword(Model.Username, */Model.Password//)
