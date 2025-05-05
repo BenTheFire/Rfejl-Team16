@@ -1,57 +1,40 @@
-﻿@page "/login"  
-@inject TicketMaster.Objects.TicketmasterContext tms  
+﻿@page "/login"
+@using TicketMaster.Data.DTOs;
+@using TicketMaster.Data.Services.Interfaces;
+@inject ILoginService ILS  
 
-<div class="login-container">  
-   <form @onsubmit="GetUser" method="post" class="login-form">  
-       <h4>Login</h4>  
-       <input type="text" placeholder="Username" @bind-value="Model.Username" class="input-field" />  
-       <input type="password" placeholder="Password" @bind-value="Model.Password" class="input-field" />  
-       <button type="submit" class="submit-button">Login</button>  
-   </form>  
+<div class="login-container">
+    <form @onsubmit="SubmitEvent" method="post" class="login-form">
+        <h4>Login</h4>  
+        <input type="text" placeholder="Username" @bind-value="Model.Username" class="input-field" />  
+        <input type="password" placeholder="Password" @bind-value="Model.Password" class="input-field" />  
+        <button type="submit" class="submit-button">Login</button>  
+    </form>  
 
-   @if (valid)  
-   {  
-       <p class="success-message">Sikeres bejelentkezés</p>  
-       @if (isAdmin)  
-       {  
-           <p class="admin-message">adminisztrátori bejelentkezés</p>  
-       }  
-   }  
+    @if (valid)  
+    {  
+        <p class="success-message">Sikeres bejelentkezés</p>  
+        @if (isAdmin)  
+        {  
+            <p class="admin-message">Adminisztrátori bejelentkezés</p>  
+        }  
+    }  
 </div>  
 
-@code {  
-   public bool valid = false;  
-   public bool isAdmin = false;  
-   private LUser Model { get; set; }  
+@code {
 
-   protected override void OnInitialized() {  
-       Model = new();  
-   }  
+    public bool valid = false;  
+    public bool isAdmin = false;  
+    private LoginUserDTO Model { get; set; }
 
-   private void GetUser() {  
-       string username;  
-       string password;  
-       isAdmin = false;  
-       if (tms.Users.Any(o => o.Username.CompareTo(Model.Username) == 0))  
-       {  
-           username = tms.Users.Where(o => o.Username == Model.Username).Select(o => o.Username).First();  
-           password = tms.Users.Where(o => o.Username == Model.Username).Select(o => o.PasswordHash).First();  
-       }  
-       else  
-       {  
-           username = tms.Administrators.Where(o => o.Name == Model.Username).Select(o => o.Name).First();  
-           password = tms.Administrators.Where(o => o.Name == Model.Username).Select(o => o.PasswordHash).First();  
-           isAdmin = true;  
-       }  
-       Console.WriteLine(Model.Username + " " + username);  
-       Console.WriteLine(Model.Password + " " + password);  
-       Console.WriteLine(valid = (username.Equals(Model.Username) && password.Equals(Model.Password)));  
-   }  
+    public void SubmitEvent()
+    {
+        valid = ILS.LoginUser(ref isAdmin, Model);
+    }
 
-   public class LUser {  
-       public string Username { get; set; }  
-       public string Password { get; set; }  
-   }  
+    protected override void OnInitialized() {  
+        Model = new();  
+    }
 }  
 
 <style>  

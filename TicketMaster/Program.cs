@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using TicketMaster.Objects;
 using TicketMaster.Objects.Users;
 using Microsoft.AspNetCore.Identity;
+using TicketMaster.Data.Services.Interfaces;
+using TicketMaster.Data.Services.Implementations;
 
 namespace TicketMaster;
 
@@ -19,6 +21,7 @@ public class Program
         builder.Services.AddServerSideBlazor();
         builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
         builder.Services.AddScoped<IMovieService, MovieService>();
+        builder.Services.AddScoped<ILoginService, LoginService>();
         builder.Services.AddControllers();
 
         //init mysql server context
