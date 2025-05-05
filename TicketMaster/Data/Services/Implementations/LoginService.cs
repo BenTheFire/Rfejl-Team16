@@ -18,18 +18,25 @@ namespace TicketMaster.Data.Services.Implementations
             string username;
             string password;
             isAdmin = false;
-            if (_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0))
+            if (String.IsNullOrEmpty(Model.Username) && String.IsNullOrEmpty(Model.Password))
             {
-                username = _context.Users.Where(o => o.Username == Model.Username).Select(o => o.Username).First();
-                password = _context.Users.Where(o => o.Username == Model.Username).Select(o => o.PasswordHash).First();
+                if (_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0))
+                {
+                    username = _context.Users.Where(o => o.Username == Model.Username).Select(o => o.Username).First();
+                    password = _context.Users.Where(o => o.Username == Model.Username).Select(o => o.PasswordHash).First();
+                }
+                else
+                {
+                    username = _context.Administrators.Where(o => o.Name == Model.Username).Select(o => o.Name).First();
+                    password = _context.Administrators.Where(o => o.Name == Model.Username).Select(o => o.PasswordHash).First();
+                    isAdmin = true;
+                }
+                return username.Equals(Model.Username) && password.Equals(Model.Password);
             }
             else
             {
-                username = _context.Administrators.Where(o => o.Name == Model.Username).Select(o => o.Name).First();
-                password = _context.Administrators.Where(o => o.Name == Model.Username).Select(o => o.PasswordHash).First();
-                isAdmin = true;
+                return false;
             }
-            return username.Equals(Model.Username) && password.Equals(Model.Password);
         }
     }
 }
