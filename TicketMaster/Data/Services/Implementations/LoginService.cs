@@ -23,9 +23,12 @@ namespace TicketMaster.Data.Services.Implementations
             }
 
 
-            var user = _context.Users.Where(o => o.Username == Model.Username).First();
-            string username = user.Username;
-            string passwordHash = user.PasswordHash;
+            string username = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.Username
+                ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.Name
+                ?? throw new Exception("Shit went down");
+            string passwordHash = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.PasswordHash
+                ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.PasswordHash
+                ?? throw new Exception("Shit went down");
 
             isAdmin = !_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0);
 
