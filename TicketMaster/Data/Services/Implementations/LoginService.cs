@@ -14,7 +14,7 @@ namespace TicketMaster.Data.Services.Implementations
             _context = c;
         }
         private readonly TicketmasterContext _context;
-        public bool LoginUser(ref bool isAdmin, LoginUserDTO Model)
+        public bool LoginUser(ref bool isAdmin, ref bool isVendor, LoginUserDTO Model)
         {
             if (Model.Username.IsNullOrEmpty() || Model.Password.IsNullOrEmpty())
             {
@@ -27,9 +27,11 @@ namespace TicketMaster.Data.Services.Implementations
             {
                 username = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.Username
                     ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.Name
+                    ?? _context.Vendors.Where(o => o.Name == Model.Username).FirstOrDefault()?.Name
                     ?? throw new Exception("Shit went down");
                 passwordHash = _context.Users.Where(o => o.Username == Model.Username).FirstOrDefault()?.PasswordHash
                     ?? _context.Administrators.Where(o => o.Name == Model.Username).FirstOrDefault()?.PasswordHash
+                    ?? _context.Vendors.Where(o => o.Name == Model.Username).FirstOrDefault()?.PasswordHash
                     ?? throw new Exception("Shit went down");
             }
             catch
@@ -37,11 +39,13 @@ namespace TicketMaster.Data.Services.Implementations
                 return false;
             }
 
-            isAdmin = !_context.Users.Any(o => o.Username.CompareTo(Model.Username) == 0);
+            if (isAdmin = _context.Administrators.Any(o => o.Name == username)) { isVendor = true; }
+            else isVendor = _context.Vendors.Any(o => o.Name == username);
 
-            return username.Equals(Model.Username) &&
-                /*new PasswordHasher<string>().HashPassword(Model.Username, */Model.Password//)
-                    .Equals(passwordHash);
+
+                return username.Equals(Model.Username) &&
+                    /*new PasswordHasher<string>().HashPassword(Model.Username, */Model.Password//)
+                        .Equals(passwordHash);
         }
     }
 }
