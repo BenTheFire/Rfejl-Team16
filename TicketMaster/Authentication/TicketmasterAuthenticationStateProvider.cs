@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
-using Org.BouncyCastle.Security;
 using System.Security.Claims;
 
 namespace TicketMaster.Authentication
@@ -13,7 +12,8 @@ namespace TicketMaster.Authentication
             (
                 new[] 
                 {
-                    new Claim(ClaimTypes.Name, _currentUser.Username)
+                    new Claim(ClaimTypes.Name, _currentUser.Username),
+                    new Claim(ClaimTypes.Role, _currentUser.GetType().Name)
                 }, 
                 "TicketmasterAuth"
             ) : new ClaimsIdentity();
@@ -29,7 +29,8 @@ namespace TicketMaster.Authentication
             (
                 new[]
                 {
-                    new Claim(ClaimTypes.Name, _currentUser.Username)
+                    new Claim(ClaimTypes.Name, _currentUser.Username),
+                    new Claim(ClaimTypes.Role, _currentUser.GetType().Name)
                 },
                 "TicketmasterAuth"
             ) : new ClaimsIdentity();
