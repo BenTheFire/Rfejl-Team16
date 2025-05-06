@@ -84,7 +84,7 @@
         <div style="display: flex; flex-direction: column; gap: 20px; border: 1px solid black; padding: 20px; border-radius: 10px;">
             <div style="display: flex; gap: 20px; border: 1px solid black; padding: 15px; border-radius: 8px;">
                 <div style="flex-grow: 1;">
-                    <h3>@movieData.Title (MOVIE_RELEASE_YEAR)</h3>
+                    <h3>@movieData.Title (@movieData.ReleaseDate)</h3>
                     <p style="font-size: 0.9em; color: #555;">@GetMovieDW()</p>
                     <p>@movieData.Description</p>
                 </div>
@@ -99,10 +99,12 @@
                         @foreach (var screening in screeningData)
                         {
                             <li>
-                                <strong>@screening.Time.ToString("yyyy-MM-dd HH:mm")</strong>
-                                <p>@screening.InLocation.Name</p>
-                                <p>@screening.InLocation.Address</p>
-                                <p>Available Seats: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
+                                <div>
+                                    <strong>@screening.Time.ToString("yyyy-MM-dd HH:mm")</strong>
+                                    <br>@screening.InLocation.Name
+                                    <br>@screening.InLocation.Address
+                                    <br>Available Seats: @screening.SeatsTaken / @screening.InLocation.Capacity
+                                </div>
                             </li>
                         }
                     </ul>
@@ -113,8 +115,9 @@
                         @foreach (var casting in castData)
                         {
                             <li>
-                                <strong>@casting.Role</strong>
-                                <p>@casting.Person.Name</p>
+                                <div>
+                                    <strong>@casting.Role</strong> - @casting.Person.Name
+                                </div>
                             </li>
                         }
                     </ul>

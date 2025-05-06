@@ -41,7 +41,7 @@
     public Dictionary<int, string> imgLinks = new();
     protected override async Task OnInitializedAsync()
     {
-        await TMS.FetchMoviesDataAsync();
+        await TMS.UpdateImagesAndDateAsync();
         await FetchMovies();
     }
 
