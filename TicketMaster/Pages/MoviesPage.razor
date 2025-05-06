@@ -45,7 +45,7 @@
     public string GetMovieDW()
     {
         List<Casting> Director = castData.Where(c => c.Role == "Director").ToList();
-        List<Casting> Writer = castData.FindAll(c => c.Role == "Writer").ToList();
+        List<Casting> Writer = castData.Where(c => c.Role == "Writer").ToList();
 
         string MovieDW = "";
         if (Director.Count > 0)
@@ -56,7 +56,8 @@
             }
             else
             {
-                MovieDW += "Directed by: " + string.Join(", ", Director.Select(d => d.Person.Name));
+                MovieDW += "Directed by: " + string.Join(", ", Director.Select(d => d.Person.Name))
+                + (Writer.Count == 0 ? ", " : "");
             }
         }
         if (Writer.Count > 0)
