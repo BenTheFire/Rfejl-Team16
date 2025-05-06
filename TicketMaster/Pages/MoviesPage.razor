@@ -10,8 +10,8 @@
     [Parameter] public string Id { get; set; }
 
     public Movie movieData;
-    public List<Casting> castData;
-    public List<Screening> screeningData;
+    public List<Casting> castData = new();
+    public List<Screening> screeningData = new();
     public string imageLink;
 
     protected override async Task OnInitializedAsync()
@@ -19,7 +19,7 @@
         var result = await IMS.FetchMovieDataAsync(Id);
         movieData = result.Movie;
         castData = result.Cast;
-        // SCREENING HERE
+        screeningData = await IMS.FetchScreenings(Id);
         imageLink = await ImgLink();
         base.OnInitialized();
     }
@@ -79,45 +79,52 @@
 }
 
 <body>
-    <div style="display: flex; flex-direction: column; gap: 20px; border: 1px solid black; padding: 20px; border-radius: 10px;">
-        <div style="display: flex; gap: 20px; border: 1px solid black; padding: 15px; border-radius: 8px;">
-            <div style="flex-grow: 1;">
-                <h3>@movieData.Title (MOVIE_RELEASE_YEAR)</h3>
-                <p style="font-size: 0.9em; color: #555;">@GetMovieDW()</p>
-                <p>@movieData.Description</p>
-            </div>
-            <div style="width: 150px; height: 200px; border: 1px solid red; display: flex; justify-content: center; align-items: center; color: red; border-radius: 5px;">
+    @if (movieData != null)
+    {
+        <div style="display: flex; flex-direction: column; gap: 20px; border: 1px solid black; padding: 20px; border-radius: 10px;">
+            <div style="display: flex; gap: 20px; border: 1px solid black; padding: 15px; border-radius: 8px;">
+                <div style="flex-grow: 1;">
+                    <h3>@movieData.Title (MOVIE_RELEASE_YEAR)</h3>
+                    <p style="font-size: 0.9em; color: #555;">@GetMovieDW()</p>
+                    <p>@movieData.Description</p>
+                </div>
+                <div style="width: 150px; height: 200px; border: 1px solid red; display: flex; justify-content: center; align-items: center; color: red; border-radius: 5px;">
 
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex-grow: 2; border: 1px solid black; padding: 15px; border-radius: 8px;">
+                    <ul>
+                        @foreach (var screening in screeningData)
+                        {
+                            <li>
+                                <strong>@screening.Time.ToString("yyyy-MM-dd HH:mm")</strong>
+                                <p>@screening.InLocation.Name</p>
+                                <p>@screening.InLocation.Address</p>
+                                <p>Available Seats: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div style="flex-grow: 1; border: 1px solid black; padding: 15px; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
+                    <h4>Cast</h4>
+                    <ul>
+                        @foreach (var casting in castData)
+                        {
+                            <li>
+                                <strong>@casting.Role</strong>
+                                <p>@casting.Person.Name</p>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
-
-        <div style="display: flex; gap: 20px;">
-            <div style="flex-grow: 2; border: 1px solid black; padding: 15px; border-radius: 8px;">
-                <ul>
-					@foreach (var screening in screeningData)
-                    {
-                        <li>
-							<strong>@screening.Time.ToString("yyyy-MM-dd HH:mm")</strong>
-							<p>@screening.InLocation.Name</p>
-							<p>@screening.InLocation.Address</p>
-							<p>Available Seats: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
-                        </li>
-                    }
-                </ul>
-            </div>
-            <div style="flex-grow: 1; border: 1px solid black; padding: 15px; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
-                <h4>Cast</h4>
-                <ul>
-                    @foreach (var casting in castData)
-                    {
-                        <li>
-                            <strong>@casting.Role</strong>
-                            <p>@casting.Person.Name</p>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-    </div>
+    }
+    else
+    {
+        <p>Loading...</p>
+    }
 </body>
 
