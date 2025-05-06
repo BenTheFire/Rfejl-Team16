@@ -69,5 +69,9 @@ namespace TicketMaster.Data.Services.Implementations
             }
             Console.WriteLine($"Updated images for {noImageMovies.Count} entries.");
         }
+        public async Task FetchMoviesImagesAsync()
+        {
+            
+        }
     }
 }
