@@ -14,24 +14,28 @@
     }
     else 
     {
-        <div class="container">
-            <div class="row">
-                @foreach (var movie in fetchedMovies)
-                {
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-4">
-                        <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
-                            <div class="card" style="width: 18rem; height: 36rem;">
-                                <img src="@movie.ImageSource" class="card-img-top" alt="Movie Poster">
-                                <div class="card-body">
-                                    <h5 class="card-title">@movie.Title (@movie.ReleaseDate)</h5>
-                                    <h5 class="card-title">@GetMovieLength(movie.LengthInSeconds).ToShortTimeString()</h5>
+        <div class="container mt-4 bg-dark text-white p-4 rounded fade-in">
+            <div class="container">
+                <div class="row">
+                    @foreach (var movie in fetchedMovies)
+                    {
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                            <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
+                                <div class="card" style="width: 18rem; height: 36rem;">
+                                    <img src="@movie.ImageSource" alt="Movie Poster" class="card-img-top" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">@movie.Title (@movie.ReleaseDate)</h5>
+                                        <h5 class="card-title">@GetMovieLength(movie.LengthInSeconds).ToShortTimeString()</h5>
+                                    </div>
                                 </div>
-                            </div>
-                        </NavLink>
-                    </div>
-                }
+                            </NavLink>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
+
+
     }
 </body>
 @code
@@ -65,3 +69,60 @@
     //Kis függvény az oldalak közötti váltásra
     public string HrefMovieLink(Movie movie) => $"/movies/{(movie.ImdbId):D7}";
 }
+<style>
+    /* General container styling */
+    .container {
+        margin-top: 2rem;
+    }
+
+    /* Movie card customization */
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 1rem;
+        overflow: hidden;
+        background-color: #1c1c1c;
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+        /* Hover effect */
+        .card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+        }
+
+    /* Poster image styling */
+    .card-img-top {
+        height: 24rem;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Card content */
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Movie title */
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #f8f9fa;
+    }
+
+    /* Responsive tweaks */
+   
+
+    {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .card-img-top {
+        height: auto;
+    }
+
+    }
+</style>
