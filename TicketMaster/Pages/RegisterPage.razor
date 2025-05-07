@@ -1,0 +1,53 @@
+﻿@page "/register"
+@using TicketMaster.Data.DTOs;
+@inject TicketMaster.Data.Services.Interfaces.IRegisterService RS
+
+<h3>RegisterPage</h3>
+
+<div class="register-container">
+    <form @onsubmit="SubmitRegister" method="post" class="register-form">
+        <h4>Register</h4>
+        <input type="email" @bind-value="Model.Email" />
+        <input type="text" @bind-value="Model.Username" />
+        <input type="password" @bind-value="Model.Password" />
+        <input type="password" @bind-value="PwAgain" />
+        <button type="submit" />
+    </form>
+
+    @if (!PwMatch)
+    {
+        <p class="fail-message">Passwords do not match</p>
+    }
+    @if (UserExists)
+    {
+        <p class="fail-message">Username already exists</p>
+    }
+</div>
+
+@code {
+    private RegisterUserDTO Model = new RegisterUserDTO();
+    private string PwAgain = "";
+    private bool PwMatch = true;
+    private bool UserExists = false;
+    public async Task SubmitRegister()
+    {
+        if (Model.Password != PwAgain)
+        {
+            PwMatch = false;
+            return;
+        }
+        RegisterUserDTO newUser = new RegisterUserDTO()
+            {
+                Username = Model.Username,
+                Password = Model.Password,
+                Email = Model.Email,
+                Phone = null
+            };
+        UserExists = await RS.RegisterUser(newUser);
+    }
+    protected override void OnInitialized()
+    {
+        Model = new();
+    }
+
+}

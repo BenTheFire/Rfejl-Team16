@@ -20,26 +20,7 @@
         movieData = result.Movie;
         castData = result.Cast;
         screeningData = await IMS.FetchScreenings(Id);
-        imageLink = await ImgLink();
         base.OnInitialized();
-    }
-
-    public async Task<string> ImgLink()
-    {
-        string imgString = "";
-        await foreach (var imgSrc in OmdbSource.ImageSrcLinkAsync(movieData))
-        {
-            if (imgSrc != null)
-            {
-                imgString = imgSrc;
-                break;
-            }
-            else
-            {
-                continue;
-            }
-        }
-        return imgString;
     }
 
     public string GetMovieDW()
@@ -56,7 +37,7 @@
             }
             else
             {
-                MovieDW += "Directed by: " + string.Join(", ", Director.Select(d => d.Person.Name))
+                MovieDW += " Directed by: " + string.Join(", ", Director.Select(d => d.Person.Name))
                 + (Writer.Count == 0 ? ", " : "");
             }
         }
@@ -68,7 +49,7 @@
             }
             else
             {
-                MovieDW += "Written by:" + string.Join(", ", Writer.Select(w => w.Person.Name));
+                MovieDW += " Written by: " + string.Join(", ", Writer.Select(w => w.Person.Name));
             }
         }
         if (!Director.Any() && !Writer.Any())
@@ -77,6 +58,20 @@
         }
         return MovieDW;
     }
+    private string ConvertToHoursAndMinutes(int seconds)
+    {
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+
+        if (hours > 0)
+        {
+            return $"{hours}h {minutes}min";
+        }
+        else
+        {
+            return $"{minutes}min";
+        }
+    }
 }
 
 <body>
@@ -84,11 +79,12 @@
     {
         <div class="movie-container">
             <div class="movie-header">
-                <img src="@movieData.ImageSource" alt="@movieData.Title" class="poster" />
+                <img src="@movieData.ImageSource" alt="@movieData.Title Poster" class="poster" />
                 <div class="movie-details">
                     <h2>@movieData.Title (@movieData.ReleaseDate)</h2>
                     <p class="meta">@GetMovieDW()</p>
                     <p class="description">@movieData.Description</p>
+                    <p class="description">@ConvertToHoursAndMinutes(movieData.LengthInSeconds)</p>
                 </div>
             </div>
 
@@ -160,10 +156,10 @@
     flex: 1;
 }
 
-.movie-details h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 2rem;
-}
+    .movie-details h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+    }
 
 .meta {
     font-size: 0.95rem;
@@ -190,28 +186,27 @@
     border-radius: 0.5rem;
 }
 
-.screenings ul, .cast ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.screenings li, .cast li {
-    margin-bottom: 1rem;
-    background: #333;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    line-height: 1.4;
-}
-
-
-    .poster {
-        width: 100%;
-        max-width: 300px;
-        height: auto;
+    .screenings ul, .cast ul {
+        list-style: none;
+        padding-left: 0;
     }
 
-    .info-section {
-        flex-direction: column;
+    .screenings li, .cast li {
+        margin-bottom: 1rem;
+        background: #333;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        line-height: 1.4;
     }
+
+
+.poster {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+}
+
+.info-section {
+    flex-direction: column;
 }
 </style>
