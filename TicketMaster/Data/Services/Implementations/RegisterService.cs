@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using TicketMaster.Authentication;
 using TicketMaster.Data.DTOs;
 using TicketMaster.Data.Services.Interfaces;
@@ -14,11 +15,11 @@ namespace TicketMaster.Data.Services.Implementations
         public RegisterService(
             TicketmasterContext context,
             PasswordService pws,
-            TicketmasterAuthenticationStateProvider tasp)
+            AuthenticationStateProvider asp)
         {
             _context = context;
             PWS = pws;
-            TASP = tasp;
+            TASP = (TicketmasterAuthenticationStateProvider)asp;
         }
         public async Task<bool> RegisterUser(RegisterUserDTO userDTO)
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
@@ -7,12 +8,6 @@ namespace TicketMaster.Authentication
     public class TicketmasterAuthenticationStateProvider : AuthenticationStateProvider
     {
         private IAuthenticateUser? _currentUser;
-        private readonly HttpContext? _httpContext;
-        
-        public TicketmasterAuthenticationStateProvider(IHttpContextAccessor httpContext)
-        {
-            _httpContext = httpContext.HttpContext;
-        }
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var identity = _currentUser != null ? new ClaimsIdentity
@@ -44,15 +39,6 @@ namespace TicketMaster.Authentication
 
             var principal = new ClaimsPrincipal(identity);
 
-            if (_httpContext != null)
-            {
-                _httpContext.SignInAsync("TicketmasterAuth", principal);
-            }
-            else
-            {
-                Console.WriteLine("Cookie could not be accessed!");
-            }
-
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
         }
 
@@ -60,15 +46,6 @@ namespace TicketMaster.Authentication
         {
             _currentUser = null;
             var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
-
-            if (_httpContext != null)
-            {
-                _httpContext.SignOutAsync("TicketmasterAuth");
-            }
-            else
-            {
-                Console.WriteLine("Cookie could not be accessed!");
-            }
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(anonymous)));
         }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TicketMaster.Authentication;
@@ -24,21 +25,21 @@ public class Program
         builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddControllers();
 
-        builder.Services.AddHttpContextAccessor();
-
         builder.Services.AddScoped<PasswordService>();
         builder.Services.AddScoped<AuthenticationService>();
-        builder.Services.AddScoped<TicketmasterAuthenticationStateProvider>();
-        builder.Services.AddAuthentication("TicketmasterAuth")
-            .AddCookie("TicketmasterAuth", options =>
+        builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
+        builder.Services.AddAuthentication("TicketmasterAuth");
+            /*.AddCookie("TicketmasterAuth", options =>
             {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.HttpOnly = false;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.MaxAge = TimeSpan.FromDays(3);
+                options.LoginPath = "/login";
+                options.LogoutPath = "/logout";
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
-            });
+            });*/
         builder.Services.AddAuthorization();
 
         //init mysql server context
@@ -66,6 +67,9 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseRouting();
 
