@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using TicketMaster.Data;
-using Microsoft.EntityFrameworkCore;
-using TicketMaster.Objects;
-using Microsoft.AspNetCore.Identity;
-using TicketMaster.Data.Services.Interfaces;
-using TicketMaster.Data.Services.Implementations;
-using TicketMaster.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore;
+using TicketMaster.Authentication;
+using TicketMaster.Data.Services.Implementations;
+using TicketMaster.Data.Services.Interfaces;
+using TicketMaster.Objects;
 
 namespace TicketMaster;
 
@@ -23,12 +19,26 @@ public class Program
         builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
         builder.Services.AddScoped<IMovieService, MovieService>();
         builder.Services.AddScoped<ILoginService, LoginService>();
+        builder.Services.AddScoped<IRegisterService, RegisterService>();
+        builder.Services.AddScoped<IScreeningService, ScreeningService>();
         builder.Services.AddControllers();
+
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddScoped<PasswordService>();
         builder.Services.AddScoped<AuthenticationService>();
         builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
-        builder.Services.AddAuthenticationCore();
+        builder.Services.AddAuthentication("TicketmasterAuth")
+            .AddCookie("TicketmasterAuth", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.MaxAge = TimeSpan.FromDays(3);
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+            });
+        builder.Services.AddAuthorization();
 
         //init mysql server context
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -38,6 +48,9 @@ public class Program
 
         /*builder.Services.AddDefaultIdentity<UnregisteredUser>(
             o => o.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<TicketmasterContext>();*/
+
+        // ALL PASSWORDS IN DATABASE ARE NOW HASHED!
+        // HashAllPasswordsInDatabase(connectionString);
 
         var app = builder.Build();
 
@@ -61,5 +74,36 @@ public class Program
         app.MapFallbackToPage("/_Host");
 
         app.Run();
+    }
+
+    /// <summary>
+    /// In case passwords need to be rehashed in the database
+    /// </summary>
+    /// <param name="connectionString"></param>
+    static void HashAllPasswordsInDatabase(string? connectionString)
+    {
+        TicketmasterContext context = new(new DbContextOptionsBuilder<TicketmasterContext>().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).Options);
+        PasswordService pws = new();
+
+        foreach (var user in context.Users)
+        {
+            try
+            {
+                if (!pws.VerifyPassword(user, user.PasswordHash))
+                {
+                    var oldpwh = user.PasswordHash;
+                    user.PasswordHash = pws.HashPassword(user, user.PasswordHash);
+                    Console.WriteLine(oldpwh + "\n" + user.PasswordHash);
+                }
+            }
+            catch (FormatException)
+            {
+                var oldpwh = user.PasswordHash;
+                user.PasswordHash = pws.HashPassword(user, user.PasswordHash);
+                Console.WriteLine(oldpwh + "\n" + user.PasswordHash);
+            }
+        }
+
+        context.SaveChanges();
     }
 }
