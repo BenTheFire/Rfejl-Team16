@@ -1,4 +1,6 @@
-﻿namespace TicketMaster.Objects
+﻿using System.ComponentModel;
+
+namespace TicketMaster.Objects
 {
     public class Ticket
     {
@@ -7,6 +9,8 @@
         public CustomerData Customer { get; set; }
         public float Price { get; set; }
         public string Seat { get; set; }
+        [DefaultValue(0)]
+        public int Status { get; set; }
         public Vendor ByVendor { get; set; }
     }
 }

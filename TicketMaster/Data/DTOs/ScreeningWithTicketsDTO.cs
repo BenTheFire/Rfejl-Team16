@@ -4,7 +4,7 @@ namespace TicketMaster.Data.DTOs
 {
     public class ScreeningWithTicketsDTO
     {
-        public Screening screening;
-        public List<Ticket> tickets;
+        public Screening Screening;
+        public List<Ticket> Tickets;
     }
 }
