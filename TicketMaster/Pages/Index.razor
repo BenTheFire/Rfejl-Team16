@@ -26,7 +26,7 @@
                     {
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                             <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
-                                <div class="card" style="width: 18rem; height: 36rem;">
+                                <div class="card">
                                     <img src="@movie.ImageSource" alt="Movie Poster" class="card-img-top" />
                                     <div class="card-body">
                                         <h5 class="card-title">@movie.Title (@movie.ReleaseDate)</h5>
@@ -78,6 +78,7 @@
     /* General container styling */
     .container {
         margin-top: 2rem;
+        display: flex
     }
 
     /* Movie card customization */
@@ -85,6 +86,7 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border-radius: 1rem;
         overflow: hidden;
+        margin: auto;
         background-color: #1c1c1c;
         color: #ffffff;
         border: none;
@@ -99,35 +101,28 @@
 
     /* Poster image styling */
     .card-img-top {
-        height: 24rem;
+        height: 70%;
         object-fit: cover;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     /* Card content */
     .card-body {
-        padding: 1rem;
+        padding: 1%;
     }
 
     /* Movie title */
     .card-title {
         font-size: 1.1rem;
         font-weight: 600;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.5%;
         color: #f8f9fa;
     }
 
     /* Responsive tweaks */
-   
-
     {
         width: 100% !important;
         height: auto !important;
     }
 
-    .card-img-top {
-        height: auto;
-    }
-
-    }
 </style>
