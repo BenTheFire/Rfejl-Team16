@@ -9,13 +9,11 @@ namespace TicketMaster.Data.Services.Implementations
     {
         private TicketmasterAuthenticationStateProvider TASP;
         private AuthenticationService AS;
-        public LoginService(TicketmasterContext c, TicketmasterAuthenticationStateProvider tasp, AuthenticationService authS)
+        public LoginService(TicketmasterAuthenticationStateProvider tasp, AuthenticationService authS)
         {
-            _context = c;
             TASP = tasp;
             AS = authS;
         }
-        private readonly TicketmasterContext _context;
         public bool LoginUser(ref bool isAdmin, ref bool isVendor, LoginUserDTO Model)
         {
             var loginUser = AS.Authenticate(Model.Username, Model.Password);
@@ -48,6 +46,11 @@ namespace TicketMaster.Data.Services.Implementations
                     isVendor = false;
                     return false;
             }
+        }
+
+        public void LogOut()
+        {
+            TASP.MarkUserAsLoggedOut();
         }
     }
 }
