@@ -39,6 +39,9 @@ public class Program
         /*builder.Services.AddDefaultIdentity<UnregisteredUser>(
             o => o.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<TicketmasterContext>();*/
 
+        // ALL PASSWORDS IN DATABASE ARE NOW HASHED!
+        // HashAllPasswordsInDatabase(connectionString);
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -61,5 +64,36 @@ public class Program
         app.MapFallbackToPage("/_Host");
 
         app.Run();
+    }
+
+    /// <summary>
+    /// In case passwords need to be rehashed in the database
+    /// </summary>
+    /// <param name="connectionString"></param>
+    static void HashAllPasswordsInDatabase(string? connectionString)
+    {
+        TicketmasterContext context = new(new DbContextOptionsBuilder<TicketmasterContext>().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).Options);
+        PasswordService pws = new();
+
+        foreach (var user in context.Users)
+        {
+            try
+            {
+                if (!pws.VerifyPassword(user, user.PasswordHash))
+                {
+                    var oldpwh = user.PasswordHash;
+                    user.PasswordHash = pws.HashPassword(user, user.PasswordHash);
+                    Console.WriteLine(oldpwh + "\n" + user.PasswordHash);
+                }
+            }
+            catch (FormatException)
+            {
+                var oldpwh = user.PasswordHash;
+                user.PasswordHash = pws.HashPassword(user, user.PasswordHash);
+                Console.WriteLine(oldpwh + "\n" + user.PasswordHash);
+            }
+        }
+
+        context.SaveChanges();
     }
 }
