@@ -27,7 +27,7 @@ public class Program
 
         builder.Services.AddScoped<PasswordService>();
         builder.Services.AddScoped<AuthenticationService>();
-        builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
+        builder.Services.AddScoped<TicketmasterAuthenticationStateProvider>();
         builder.Services.AddAuthentication("TicketmasterAuth")
             .AddCookie("TicketmasterAuth", options =>
             {
