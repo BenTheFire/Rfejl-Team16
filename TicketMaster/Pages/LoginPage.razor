@@ -3,30 +3,32 @@
 @using TicketMaster.Data.Services.Interfaces;
 @inject ILoginService ILS
 
-<div class="login-container">
-    <form @onsubmit="SubmitEvent" method="post" class="login-form">
-        <h4>Login</h4>  
-        <input type="text" placeholder="Username" @bind-value="Model.Username" class="input-field" />  
-        <input type="password" placeholder="Password" @bind-value="Model.Password" class="input-field" />  
-        <button type="submit" class="submit-button" >Login</button>  
-    </form>  
+<body>
+    <div class="login-container">
+        <form @onsubmit="SubmitEvent" method="post" class="login-form">
+            <h4>Login</h4>  
+            <input type="text" placeholder="Username" @bind-value="Model.Username" class="input-field" />  
+            <input type="password" placeholder="Password" @bind-value="Model.Password" class="input-field" />  
+            <button type="submit" class="submit-button" >Login</button>  
+        </form>  
 
-    @if (valid)  
-    {  
-        <p class="success-message">Successful login</p>  
-        @if (isAdmin)  
+        @if (valid)  
         {  
-            <p class="admin-message">(admin login)</p>  
-        }
-        else if (isVendor)
-        {
-            <p class="admin-message">(vendor login)</p>
-        }
-    }  
-    @if (valid == false && tried == true) {
-            <p class="failed-message">Login failed</p>
-        }
-</div>  
+            <p class="success-message">Successful login</p>  
+            @if (isAdmin)  
+            {  
+                <p class="admin-message">(admin login)</p>  
+            }
+            else if (isVendor)
+            {
+                <p class="admin-message">(vendor login)</p>
+            }
+        }  
+        @if (valid == false && tried == true) {
+                <p class="failed-message">Login failed</p>
+            }
+    </div>
+</body>
 
 @code {
 

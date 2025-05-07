@@ -8,6 +8,8 @@ namespace TicketMaster.Data.Services.Implementations
 {
     public class RegisterService : IRegisterService
     {
+        private const string SECRET_KEY = "v39g#2mK8pQx7FnWsYbRtJvU1zDeOi0lHkAg64ScBr5qYtNuZmWxEcVbN9rFjI2oP7uQyXzKlTaShGi8cD4eJfRw1sA6mQnLpZ3oIuYvXtCrEwB5nMrJqKzHdLfPgWbSj2aV8dRcXyTzUoI9pLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFUIIAIAIAUAISUIIAIUIIIAIhojhZmurd";
+
         private readonly TicketmasterContext _context;
         private readonly PasswordService PWS;
         private readonly TicketmasterAuthenticationStateProvider TASP;
@@ -71,7 +73,7 @@ namespace TicketMaster.Data.Services.Implementations
         }
         public async Task<bool> RegisterAdmin(RegisterAdminDTO adminDTO)
         {
-            if (adminDTO.SshKey != "") //IMPLEMENT SSH CHECK
+            if (adminDTO.SshKey != SECRET_KEY) //IMPLEMENT SSH CHECK
             {
                 return false;
             }
