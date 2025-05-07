@@ -1,9 +1,41 @@
 ﻿@page "/testenvironment"
+@using TicketMaster.Objects;
 @using TicketMaster.Data.Services.Interfaces;
 @inject IRegisterService RS
+@inject IMovieService MS
+@inject IScreeningService SS
+@inject ITicketMasterService TMS
+@inject ITicketService TS
 
-<h3>AdminTestEnvironmentPage</h3>
+<body>
+    <h3>AdminTestEnvironmentPage</h3>
+
+    <form @onsubmit="CreateTicket">
+        <input type="number" placeholder="Screening ID" @bind-value="Ticket.OfScreeningId"/>
+        <input type="number" placeholder="Customer ID" @bind-value="Ticket.CustomerId" />
+        <input type="number" placeholder="Price of ticket" @bind-value="Ticket.Price" />
+        <input type="string" placeholder="Seat" @bind-value="Ticket.Price" />
+        <input type="number" placeholder="Vendor ID" @bind-value="Ticket.VendorId" />
+        <input type="datetime" placeholder="Time of purchase" @bind-value="Ticket.PurchaseTime" />
+        <button type="submit">Create Ticket</button>
+    </form>
+</body>
 
 @code {
+    private TicketDTO Ticket = new();
 
+    private async Task CreateTicket()
+    {
+
+    }
+    private class TicketDTO
+    {
+        public int OfScreeningId { get; set; }
+        public int CustomerId { get; set; }
+        public float Price { get; set; }
+        public string Seat { get; set; }
+        public int Status { get; set; }
+        public int VendorId { get; set; }
+        public DateTime PurchaseTime { get; set; }
+    }
 }
