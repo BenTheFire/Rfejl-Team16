@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using TicketMaster.Authentication;
+﻿using TicketMaster.Authentication;
 using TicketMaster.Data.DTOs;
 using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Objects;
@@ -10,9 +9,9 @@ namespace TicketMaster.Data.Services.Implementations
     {
         private TicketmasterAuthenticationStateProvider TASP;
         private AuthenticationService AS;
-        public LoginService(AuthenticationStateProvider asp, AuthenticationService authS)
+        public LoginService(TicketmasterAuthenticationStateProvider tasp, AuthenticationService authS)
         {
-            TASP = (TicketmasterAuthenticationStateProvider)asp;
+            TASP = tasp;
             AS = authS;
         }
         public bool LoginUser(ref bool isAdmin, ref bool isVendor, LoginUserDTO Model)

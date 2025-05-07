@@ -1,27 +1,23 @@
-﻿@using TicketMaster.Authentication;
-@using Microsoft.AspNetCore.Components.Authorization;
-@using System.Security.Claims;
-
-<div class="nav-menu">
-    <ul>
-    <li>
-        <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" activeclassname="active-link">
-            🏠 Home
-        </NavLink>
-    </li>
-    <li>
-        <AuthorizeView Roles="User">
-            <Authorized>
-                Logout
-            </Authorized>
-            <NotAuthorized>
-                <NavLink href="/login" class="nav-link" activeclassname="active-link">
-                    🔒 Login
-                </NavLink>
-            </NotAuthorized>
-        </AuthorizeView>
+﻿<div class="nav-menu">
+    <CascadingAuthenticationState>
+        <li>
+            <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" activeclassname="active-link">
+                🏠 Home
+            </NavLink>
         </li>
-    </ul>
+        <li>
+            <AuthorizeView>
+                <Authorized>
+                    Logout
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink href="/login" class="nav-link" activeclassname="active-link">
+                        🔒 Login
+                    </NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </li>
+    </CascadingAuthenticationState>
 </div>
 
 @code {
