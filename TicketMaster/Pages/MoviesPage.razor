@@ -37,7 +37,7 @@
             }
             else
             {
-                MovieDW += "Directed by: " + string.Join(", ", Director.Select(d => d.Person.Name))
+                MovieDW += " Directed by: " + string.Join(", ", Director.Select(d => d.Person.Name))
                 + (Writer.Count == 0 ? ", " : "");
             }
         }
@@ -49,7 +49,7 @@
             }
             else
             {
-                MovieDW += "Written by:" + string.Join(", ", Writer.Select(w => w.Person.Name));
+                MovieDW += " Written by: " + string.Join(", ", Writer.Select(w => w.Person.Name));
             }
         }
         if (!Director.Any() && !Writer.Any())
@@ -57,6 +57,20 @@
             MovieDW = "Unknown Director and Writer";
         }
         return MovieDW;
+    }
+    private string ConvertToHoursAndMinutes(int seconds)
+    {
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+
+        if (hours > 0)
+        {
+            return $"{hours}h {minutes}min";
+        }
+        else
+        {
+            return $"{minutes}min";
+        }
     }
 }
 
@@ -70,6 +84,7 @@
                     <h2>@movieData.Title (@movieData.ReleaseDate)</h2>
                     <p class="meta">@GetMovieDW()</p>
                     <p class="description">@movieData.Description</p>
+                    <p class="description">@ConvertToHoursAndMinutes(movieData.LengthInSeconds)</p>
                 </div>
             </div>
 
