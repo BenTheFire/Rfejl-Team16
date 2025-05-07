@@ -23,7 +23,6 @@
         base.OnInitialized();
     }
 
-
     private string ConvertToHoursAndMinutes(int seconds)
     {
         int hours = seconds / 3600;
@@ -39,22 +38,34 @@
         }
     }
 
-    private string MovieDirectors()
+    private bool SameDW()
     {
-        var directors = castData
-            .Where(c => c.Role == "Director")
-            .Select(c => c.Person.Name);
+        int d0id = castData.Find(c => c.Role == "Director").Person.Id;
+        int w0id = castData.Find(c => c.Role == "Writer").Person.Id;
 
-        return "Directed By: " + string.Join(", ", directors);
+        if (d0id == w0id){
+            return true;
+        }
+
+        return false;
     }
 
-    private string MovieWriters()
+    private List<Person> MovieDirectors()
     {
-        var writers = castData
-             .Where(c => c.Role == "Writer")
-             .Select(c => c.Person.Name);
+        List<Person> directors = castData
+            .Where(c => c.Role == "Director")
+            .Select(c => c.Person).ToList();
 
-        return "Written By: " + string.Join(", ", writers);
+        return directors;
+    }
+
+    private List<Person> MovieWriters()
+    {
+        List<Person> writers = castData
+             .Where(c => c.Role == "Writer")
+             .Select(c => c.Person).ToList();
+
+        return writers;
     }
 }
 
@@ -66,7 +77,19 @@
                 <img src="@movieData.ImageSource" alt="@movieData.Title Poster" class="poster" />
                 <div class="movie-details">
                     <h2>@movieData.Title (@movieData.ReleaseDate)</h2>
-                    <p class="meta">@MovieDirectors()<br />@MovieWriters()</p>
+                    <p class="meta">
+                        @if (SameDW())
+                        {
+                            <p>Directed and Written by: @MovieDirectors().First().Name</p>
+                        }
+                        else
+                        {
+                            <p>
+                                Directed by: @string.Join(", ", (MovieDirectors().Select(d => d.Name).ToList()))<br />
+                                Written by: @string.Join(", ", (MovieWriters().Select(d => d.Name).ToList()))
+                            </p>
+                        }
+                    </p>
                     <p class="description">@movieData.Description</p>
                     <p class="description">@ConvertToHoursAndMinutes(movieData.LengthInSeconds)</p>
                 </div>
