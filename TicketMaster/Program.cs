@@ -23,6 +23,8 @@ public class Program
         builder.Services.AddScoped<IScreeningService, ScreeningService>();
         builder.Services.AddControllers();
 
+        builder.Services.AddHttpContextAccessor();
+
         builder.Services.AddScoped<PasswordService>();
         builder.Services.AddScoped<AuthenticationService>();
         builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
@@ -37,8 +39,6 @@ public class Program
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
         builder.Services.AddAuthorization();
-
-        builder.Services.AddHttpContextAccessor();
 
         //init mysql server context
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
