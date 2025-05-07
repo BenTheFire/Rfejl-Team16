@@ -7,6 +7,7 @@ namespace TicketMaster.Data.Services.Interfaces
     {
         public Task<ScreeningWithTicketsDTO> FetchTicketsForScreening(Screening screening);
         public Task<List<Screening>> FetchScreenings();
+        public Task<Screening> FetchScreening(int id);
         public Task<List<Screening>> FetchScreeningsByLocation(Location location);
         public Task<List<Screening>> FetchScreeningsByVendor(Vendor vendor);
     }

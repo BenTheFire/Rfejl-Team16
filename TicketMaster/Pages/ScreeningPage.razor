@@ -23,17 +23,22 @@
 @code {
     [Parameter] public string ScreeningId { get; set; }
 
-    private Screening screening = new();
+    private Screening? screening;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             int id = int.Parse(ScreeningId);
-            screening = (await SS.FetchScreenings()).Where(o => o.Id == id).First();
-        } catch (Exception e)
+            screening = await SS.FetchScreening(id);
+            Console.WriteLine(id);
+
+            Console.WriteLine(screening.OfMovie.Title);
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            screening = null;
         }
     }
 }

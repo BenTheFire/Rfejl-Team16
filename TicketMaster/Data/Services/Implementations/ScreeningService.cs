@@ -29,5 +29,16 @@ namespace TicketMaster.Data.Services.Implementations
         {
             return await _context.Screenings.Where(o => o.InLocation.Vendors.Contains(vendor)).ToListAsync();
         }
+        public async Task<Screening> FetchScreening(int id)
+        {
+            return new Screening()
+            {
+                Id = id,
+                InLocation = await _context.Screenings.Where(o => o.Id == id).Select(o => o.InLocation).FirstAsync(),
+                OfMovie = await _context.Screenings.Where(o => o.Id == id).Select(o => o.OfMovie).FirstAsync(),
+                Time = (await _context.Screenings.Where(o => o.Id == id).FirstAsync()).Time,
+                SeatsTaken = (await _context.Screenings.Where(o => o.Id == id).FirstAsync()).SeatsTaken
+            };
+        }
     }
 }
