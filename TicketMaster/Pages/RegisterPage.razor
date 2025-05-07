@@ -1,26 +1,29 @@
 ﻿@page "/register"
-@using TicketMaster.Data.DTOs;
-@inject TicketMaster.Data.Services.Interfaces.IRegisterService RS
+@using TicketMaster.Data.DTOs
+@using TicketMaster.Data.Services.Interfaces
+@inject IRegisterService RS
 
-<h3>RegisterPage</h3>
 
 <div class="register-container">
     <form @onsubmit="SubmitRegister" method="post" class="register-form">
-        <h4>Register</h4>
-        <input type="email" @bind-value="Model.Email" />
-        <input type="text" @bind-value="Model.Username" />
-        <input type="password" @bind-value="Model.Password" />
-        <input type="password" @bind-value="PwAgain" />
-        <button type="submit" />
+        <h1>Register</h1>
+
+        <input type="email" placeholder="Email" @bind-value="Model.Email" class="input-field" />
+        <input type="text" placeholder="Username" @bind-value="Model.Username" class="input-field" />
+        <input type="password" placeholder="Password" @bind-value="Model.Password" class="input-field" />
+        <input type="password" placeholder="Confirm Password" @bind-value="PwAgain" class="input-field" />
+
+        <button type="submit" class="submit-button">Register</button>
     </form>
 
     @if (!PwMatch)
     {
-        <p class="fail-message">Passwords do not match</p>
+        <p class="fail-message">❌ Passwords do not match</p>
     }
+
     @if (UserExists)
     {
-        <p class="fail-message">Username already exists</p>
+        <p class="fail-message">❌ Username already exists</p>
     }
 </div>
 
@@ -51,3 +54,70 @@
     }
 
 }
+<style>
+    .register-container {
+        width: 350px;
+        height: 450px; /* Fixed Height for Consistency */
+        margin: 100px auto;
+        background-color: #333;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        color: #f1f1f1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    .register-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+        .register-form h1 {
+            font-size: 24px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+    .input-field {
+        width: 100%;
+        padding: 10px;
+        background-color: #444;
+        border: 1px solid #555;
+        border-radius: 6px;
+        color: #fff;
+        transition: border-color 0.3s;
+    }
+
+        .input-field:focus {
+            border-color: #ffd700;
+            outline: none;
+        }
+
+    .submit-button {
+        padding: 10px;
+        background-color: #ffd700;
+        color: #333;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .submit-button:hover {
+            background-color: #e6c200;
+        }
+
+    .fail-message {
+        color: #ff4d4f;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>
