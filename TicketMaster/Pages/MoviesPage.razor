@@ -82,44 +82,37 @@
 <body>
     @if (movieData != null)
     {
-        <div style="display: flex; flex-direction: column; gap: 20px; border: 1px solid black; padding: 20px; border-radius: 10px;">
-            <div style="display: flex; gap: 20px; border: 1px solid black; padding: 15px; border-radius: 8px;">
-                <div style="flex-grow: 1;">
-                    <h3>@movieData.Title (@movieData.ReleaseDate)</h3>
-                    <p style="font-size: 0.9em; color: #555;">@GetMovieDW()</p>
-                    <p>@movieData.Description</p>
-                </div>
-                <div style="width: 150px; height: 200px; border: 1px solid red; display: flex; justify-content: center; align-items: center; color: red; border-radius: 5px;">
-                    <img src="@movieData.ImageSource"/>
+        <div class="movie-container">
+            <div class="movie-header">
+                <img src="@movieData.ImageSource" alt="@movieData.Title" class="poster" />
+                <div class="movie-details">
+                    <h2>@movieData.Title (@movieData.ReleaseDate)</h2>
+                    <p class="meta">@GetMovieDW()</p>
+                    <p class="description">@movieData.Description</p>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 20px;">
-                <div style="flex-grow: 2; border: 1px solid black; padding: 15px; border-radius: 8px;">
+            <div class="info-section">
+                <div class="screenings">
+                    <h3>Screenings</h3>
                     <ul>
                         @foreach (var screening in screeningData)
                         {
                             <li>
-                                <div>
-                                    <strong>@screening.Time.ToString("yyyy-MM-dd HH:mm")</strong>
-                                    <br>@screening.InLocation.Name
-                                    <br>@screening.InLocation.Address
-                                    <br>Available Seats: @screening.SeatsTaken / @screening.InLocation.Capacity
-                                </div>
+                                <strong>@screening.Time.ToString("yyyy-MM-dd HH:mm")</strong><br />
+                                @screening.InLocation.Name - @screening.InLocation.Address<br />
+                                <span>Seats: @screening.SeatsTaken / @screening.InLocation.Capacity</span>
                             </li>
                         }
                     </ul>
                 </div>
-                <div style="flex-grow: 1; border: 1px solid black; padding: 15px; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
-                    <h4>Cast</h4>
+
+                <div class="cast">
+                    <h3>Cast</h3>
                     <ul>
                         @foreach (var casting in castData)
                         {
-                            <li>
-                                <div>
-                                    <strong>@casting.Role</strong> - @casting.Person.Name
-                                </div>
-                            </li>
+                            <li><strong>@casting.Role:</strong> @casting.Person.Name</li>
                         }
                     </ul>
                 </div>
@@ -128,7 +121,97 @@
     }
     else
     {
-        <p>Loading...</p>
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
     }
-</body>
 
+</body>
+<style>
+.movie-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #1e1e1e;
+    color: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.movie-header {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.poster {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.movie-details {
+    flex: 1;
+}
+
+.movie-details h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+}
+
+.meta {
+    font-size: 0.95rem;
+    color: #aaa;
+    margin-bottom: 1rem;
+}
+
+.description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.info-section {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.screenings, .cast {
+    flex: 1 1 45%;
+    background-color: #2a2a2a;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.screenings ul, .cast ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.screenings li, .cast li {
+    margin-bottom: 1rem;
+    background: #333;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    line-height: 1.4;
+}
+
+
+    .poster {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+    }
+
+    .info-section {
+        flex-direction: column;
+    }
+}
+</style>
