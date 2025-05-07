@@ -19,6 +19,8 @@ public class Program
         builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
         builder.Services.AddScoped<IMovieService, MovieService>();
         builder.Services.AddScoped<ILoginService, LoginService>();
+        builder.Services.AddScoped<IRegisterService, RegisterService>();
+        builder.Services.AddScoped<IScreeningService, ScreeningService>();
         builder.Services.AddControllers();
 
         builder.Services.AddScoped<PasswordService>();
