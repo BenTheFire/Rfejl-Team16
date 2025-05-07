@@ -1,15 +1,22 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>TicketMaster</PageTitle>
+<div class="main-layout">
 
-<div class="page">
+    <!-- Sidebar / Navbar -->
     <div class="sidebar">
+        <h2 class="brand">TicketMaster</h2>
         <NavMenu />
     </div>
 
-    <main>
-        <article class="content px-4">
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <header class="header">
+            <div class="header-title">Dashboard</div>
+            
+        </header>
+
+        <main class="content">
             @Body
-        </article>
-    </main>
+        </main>
+    </div>
 </div>
