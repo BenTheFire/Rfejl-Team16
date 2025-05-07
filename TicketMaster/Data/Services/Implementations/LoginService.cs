@@ -17,16 +17,13 @@ namespace TicketMaster.Data.Services.Implementations
         public bool LoginUser(ref bool isAdmin, ref bool isVendor, LoginUserDTO Model)
         {
             var loginUser = AS.Authenticate(Model.Username, Model.Password);
-            if (loginUser != null)
-            {
-                TASP.MarkUserAsAuthenticated(loginUser);
-            }
-            else
+            if (loginUser == null)
             {
                 isAdmin = false;
                 isVendor = false;
                 return false;
             }
+            TASP.MarkUserAsAuthenticated(loginUser);
             switch (loginUser)
             {
                 case User:
@@ -48,9 +45,6 @@ namespace TicketMaster.Data.Services.Implementations
             }
         }
 
-        public void LogOut()
-        {
-            TASP.MarkUserAsLoggedOut();
-        }
+        public void LogOut() => TASP.MarkUserAsLoggedOut();
     }
 }

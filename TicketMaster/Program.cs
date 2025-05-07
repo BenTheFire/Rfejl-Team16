@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using TicketMaster.Data;
-using Microsoft.EntityFrameworkCore;
-using TicketMaster.Objects;
-using Microsoft.AspNetCore.Identity;
-using TicketMaster.Data.Services.Interfaces;
-using TicketMaster.Data.Services.Implementations;
-using TicketMaster.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore;
+using TicketMaster.Authentication;
+using TicketMaster.Data.Services.Implementations;
+using TicketMaster.Data.Services.Interfaces;
+using TicketMaster.Objects;
 
 namespace TicketMaster;
 
@@ -28,7 +24,19 @@ public class Program
         builder.Services.AddScoped<PasswordService>();
         builder.Services.AddScoped<AuthenticationService>();
         builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
-        builder.Services.AddAuthenticationCore();
+        builder.Services.AddAuthentication("TicketmasterAuth")
+            .AddCookie("TicketmasterAuth", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.MaxAge = TimeSpan.FromDays(7);
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+            });
+        builder.Services.AddAuthorization();
+
+        builder.Services.AddHttpContextAccessor();
 
         //init mysql server context
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

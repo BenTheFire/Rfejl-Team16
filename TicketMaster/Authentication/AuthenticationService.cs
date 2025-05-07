@@ -1,4 +1,5 @@
-﻿using TicketMaster.Objects;
+﻿using Microsoft.AspNetCore.Authentication;
+using TicketMaster.Objects;
 
 namespace TicketMaster.Authentication
 {
