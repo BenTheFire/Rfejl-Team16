@@ -21,9 +21,9 @@
                     <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-4">
                         <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
                             <div class="card" style="width: 18rem; height: 36rem;">
-                                <img src="@imgLinks[movie.ImdbId]" class="card-img-top" alt="Movie Poster">
+                                <img src="@movie.ImageSource" class="card-img-top" alt="Movie Poster">
                                 <div class="card-body">
-                                    <h5 class="card-title">@movie.Title</h5>
+                                    <h5 class="card-title">@movie.Title (@movie.ReleaseDate)</h5>
                                     <h5 class="card-title">@GetMovieLength(movie.LengthInSeconds).ToShortTimeString()</h5>
                                 </div>
                             </div>
@@ -38,20 +38,15 @@
 {
     bool isLoaded = false;
     public List<Movie> fetchedMovies = new();
-    public Dictionary<int, string> imgLinks = new();
     protected override async Task OnInitializedAsync()
     {
-        await TMS.FetchMoviesDataAsync();
+        await TMS.UpdateImagesAndDateAsync();
         await FetchMovies();
     }
 
     public async Task FetchMovies()
     {
         fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
-        foreach (var movie in fetchedMovies)
-        {
-            imgLinks.Add(movie.ImdbId, movie.ImageSource);
-        }
         isLoaded = true;
     }
 

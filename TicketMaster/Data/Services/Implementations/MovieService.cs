@@ -49,6 +49,7 @@ namespace TicketMaster.Data.Services.Implementations
                 (from scr in _context.Screenings
                  where scr.OfMovie == guh.Movie
                  select scr)
+                .Include(scr => scr.InLocation)
                 .ToListAsync();
         }
     }

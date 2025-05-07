@@ -4,11 +4,11 @@ namespace TicketMaster.Data.DTOs
 {
     public class MovieWithCast
     {
-        public MovieWithCast((Movie movie, List<(Person person, string role)> cast) thing)
+        public MovieWithCast((Movie movie, List<(Person person, string role)> cast) movieWithCastInput)
         {
-            Movie = thing.movie;
+            Movie = movieWithCastInput.movie;
             Cast = new();
-            foreach (var item in thing.cast)
+            foreach (var item in movieWithCastInput.cast)
             {
                 Cast.Add(new(item));
             }
@@ -18,10 +18,10 @@ namespace TicketMaster.Data.DTOs
     }
     public class Casting
     {
-        public Casting((Person person, string role) thing)
+        public Casting((Person person, string role) castingInput)
         {
-            Person = thing.person;
-            Role = thing.role;
+            Person = castingInput.person;
+            Role = castingInput.role;
         }
         public Person Person { get; init; }
         public string Role { get; init; }

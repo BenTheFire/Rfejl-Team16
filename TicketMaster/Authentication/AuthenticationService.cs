@@ -1,4 +1,5 @@
-﻿using TicketMaster.Objects;
+﻿using Microsoft.AspNetCore.Authentication;
+using TicketMaster.Objects;
 
 namespace TicketMaster.Authentication
 {
@@ -15,9 +16,10 @@ namespace TicketMaster.Authentication
 
         public IAuthenticateUser? Authenticate(string username, string password)
         {
-            IAuthenticateUser? authuser = _context.Users.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
-                ?? _context.Administrators.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
+            IAuthenticateUser? authuser = 
+                _context.Administrators.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
                 ?? _context.Vendors.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
+                ?? _context.Users.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
                 ?? null;
 
             if (authuser == null || !_passwordService.VerifyPassword(authuser, password))
