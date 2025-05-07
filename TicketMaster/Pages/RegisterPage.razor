@@ -18,9 +18,9 @@
     {
         <p class="fail-message">Passwords do not match</p>
     }
-    @if ()
+    @if (UserExists)
     {
-        
+        <p class="fail-message">Username already exists</p>
     }
 </div>
 
@@ -28,15 +28,22 @@
     private RegisterUserDTO Model = new RegisterUserDTO();
     private string PwAgain = "";
     private bool PwMatch = true;
-    private bool UserExists = true;
-    public void SubmitRegister()
+    private bool UserExists = false;
+    public async Task SubmitRegister()
     {
         if (Model.Password != PwAgain)
         {
             PwMatch = false;
             return;
         }
-
+        RegisterUserDTO newUser = new RegisterUserDTO()
+            {
+                Username = Model.Username,
+                Password = Model.Password,
+                Email = Model.Email,
+                Phone = null
+            };
+        UserExists = await RS.RegisterUser(newUser);
     }
     protected override void OnInitialized()
     {
