@@ -1,5 +1,52 @@
-﻿<h3>AdminEditPeople</h3>
-
+﻿@page "/admin/edit/locations"
+@using TicketMaster.Data.Services.Interfaces
+@inject ITicketMasterService TMS
+<body>
+    <h3>Edit Locations</h3>
+    <form onsubmit="@createLocation">
+        <input type="text" placeholder="Name of location" @bind-value="L.Name" />
+        <input type="text" placeholder="Address of location" @bind-value="L.Address" />
+        <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
+        <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+        <button type="submit">Create Location</button>
+    </form>
+    <form onsubmit="@updateLocation">
+        <input type="number" placeholder="Location ID" @bind-value="L.Id" />
+        <input type="text" placeholder="Name of location" @bind-value="L.Name" />
+        <input type="text" placeholder="Address of location" @bind-value="L.Address" />
+        <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
+        <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+        <button type="submit">Update Location</button>
+    </form>
+    <form onsubmit="@deleteLocation">
+        <input type="number" placeholder="Location ID to delete" @bind-value ="L.Id" />
+        <button>Delete Location</button>
+    </form>
+</body>
 @code {
+    private LocationDTO L = new();
+    private async Task createLocation()
+    {
+
+    }
+
+    private async Task updateLocation()
+    {
+
+    }
+
+    private async Task deleteLocation()
+    {
+        
+    }
+
+    private class LocationDTO
+    {
+        public int? Id { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public int Capacity { get; set; }
+        public int VendorId { get; set; }
+    }
 
 }

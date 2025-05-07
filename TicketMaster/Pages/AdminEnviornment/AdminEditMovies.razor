@@ -1,5 +1,48 @@
-﻿<h3>AdminEditPeople</h3>
+﻿@page "/admin/edit/movies"
+@using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Objects
+@inject IMovieService MS
+<body>
+    <h3>Edit Locations</h3>
+    <form onsubmit="@createMovie">
+        <input type="text" placeholder="Title of movie" @bind-value="M.Title" />
+        <input type="text" placeholder="Description of movie" @bind-value="M.Description" />
+        <input type="number" placeholder="Length in seconds" @bind-value="M.LengthInSeconds" />
+        <input type="text" placeholder="Image source link" @bind-value="M.ImageSource" />
+        <input type="text" placeholder="Release date" @bind-value="M.ReleaseDate" />
+        <input type="number" placeholder="IMDb ID" @bind-value="M.ImdbId" />
 
+        <button type="submit">Create Location</button>
+    </form>
+    <form onsubmit="@updateMovie">
+        <input type="number" placeholder="ID of movie to update" @bind-value="M.Id" />
+        <input type="text" placeholder="Title of movie" @bind-value="M.Title" />
+        <input type="text" placeholder="Description of movie" @bind-value="M.Description" />
+        <input type="number" placeholder="Length in seconds" @bind-value="M.LengthInSeconds" />
+        <input type="text" placeholder="Image source link" @bind-value="M.ImageSource" />
+        <input type="text" placeholder="Release date" @bind-value="M.ReleaseDate" />
+        <input type="number" placeholder="IMDb ID" @bind-value="M.ImdbId" />
+    </form>
+    <form onsubmit="@deleteMovie">
+        <input type="number" placeholder="Movie ID to delete" @bind-value="M.Id" />
+        <button>Delete Location</button>
+    </form>
+</body>
 @code {
+    private Movie M = new();
+    private async Task createMovie()
+    {
 
+    }
+
+    private async Task updateMovie()
+    {
+
+    }
+
+    private async Task deleteMovie()
+    {
+
+    }
 }
+
