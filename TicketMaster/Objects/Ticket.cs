@@ -12,5 +12,6 @@ namespace TicketMaster.Objects
         [DefaultValue(0)]
         public int Status { get; set; }
         public Vendor ByVendor { get; set; }
+        public DateTime? PurchaseTime { get; set; }
     }
 }
