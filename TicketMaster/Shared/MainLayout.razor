@@ -2,8 +2,13 @@
 
 <div class="main-layout">
 
+    <!-- Hamburger container with background -->
+    <div class="hamburger-container">
+        <button class="hamburger" @onclick="ToggleMenu">☰</button>
+    </div>
+
     <!-- Sidebar / Navbar -->
-    <div class="sidebar">
+    <div class="sidebar @(isMenuOpen ? "open" : "")">
         <h2 class="brand">TicketMaster</h2>
         <NavMenu />
     </div>
@@ -15,3 +20,12 @@
         </main>
     </div>
 </div>
+
+@code {
+    private bool isMenuOpen = false;
+
+    private void ToggleMenu()
+    {
+        isMenuOpen = !isMenuOpen;
+    }
+}
