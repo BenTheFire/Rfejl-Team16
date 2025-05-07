@@ -30,7 +30,7 @@ public class Program
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.MaxAge = TimeSpan.FromDays(7);
+                options.Cookie.MaxAge = TimeSpan.FromDays(3);
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
