@@ -20,7 +20,6 @@
         movieData = result.Movie;
         castData = result.Cast;
         screeningData = await IMS.FetchScreenings(Id);
-        base.OnInitialized();
     }
 
     public string GetMovieDW()
@@ -72,6 +71,7 @@
             return $"{minutes}min";
         }
     }
+    public string HrefScreeningLink(Screening screening) => $"/screening/{screening.Id}";
 }
 
 <body>
@@ -94,11 +94,11 @@
                     <ul>
                         @foreach (var screening in screeningData)
                         {
-                            <li>
+                            <NavLink href="@HrefScreeningLink(screening)">
                                 <strong>@screening.Time.ToString("yyyy-MM-dd HH:mm")</strong><br />
                                 @screening.InLocation.Name - @screening.InLocation.Address<br />
                                 <span>Seats: @screening.SeatsTaken / @screening.InLocation.Capacity</span>
-                            </li>
+                            </NavLink>
                         }
                     </ul>
                 </div>
