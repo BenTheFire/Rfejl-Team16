@@ -21,6 +21,7 @@ public class Program
         builder.Services.AddScoped<ILoginService, LoginService>();
         builder.Services.AddScoped<IRegisterService, RegisterService>();
         builder.Services.AddScoped<IScreeningService, ScreeningService>();
+        builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddControllers();
 
         builder.Services.AddHttpContextAccessor();
