@@ -78,7 +78,6 @@
     /* General container styling */
     .container {
         margin-top: 2rem;
-        display: flex
     }
 
     /* Movie card customization */
@@ -86,7 +85,59 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border-radius: 1rem;
         overflow: hidden;
-        margin: auto;
+        background-color: #1c1c1c;
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+        /* Hover effect */
+        .card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+        }
+
+    /* Poster image styling */
+    .card-img-top {
+        height: 24rem;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Card content */
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Movie title */
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #f8f9fa;
+    }
+
+    /* Responsive tweaks */
+
+
+    {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .card-img-top {
+        height: auto;
+    }
+    /* General container styling */
+    .container {
+        margin-top: 2rem;
+    }
+
+    /* Movie card customization */
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 1rem;
+        margin: auto
         background-color: #1c1c1c;
         color: #ffffff;
         border: none;
@@ -108,14 +159,14 @@
 
     /* Card content */
     .card-body {
-        padding: 1%;
+        padding: 1rem;
     }
 
     /* Movie title */
     .card-title {
         font-size: 1.1rem;
         font-weight: 600;
-        margin-bottom: 0.5%;
+        margin-bottom: 0.5rem;
         color: #f8f9fa;
     }
 
