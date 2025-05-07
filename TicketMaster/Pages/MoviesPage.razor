@@ -20,26 +20,7 @@
         movieData = result.Movie;
         castData = result.Cast;
         screeningData = await IMS.FetchScreenings(Id);
-        imageLink = await ImgLink();
         base.OnInitialized();
-    }
-
-    public async Task<string> ImgLink()
-    {
-        string imgString = "";
-        await foreach (var imgSrc in OmdbSource.ImageSrcLinkAsync(movieData))
-        {
-            if (imgSrc != null)
-            {
-                imgString = imgSrc;
-                break;
-            }
-            else
-            {
-                continue;
-            }
-        }
-        return imgString;
     }
 
     public string GetMovieDW()
