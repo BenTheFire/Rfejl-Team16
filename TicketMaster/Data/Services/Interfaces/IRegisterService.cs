@@ -4,7 +4,8 @@ namespace TicketMaster.Data.Services.Interfaces
 {
     public interface IRegisterService
     {
-        public void RegisterUser(LoginUserDTO userDTO);
-        public void RegisterVendor(RegisterVendorDTO vendorDTO);
+        public Task<bool> RegisterAdmin(RegisterAdminDTO adminDTO);
+        public Task<bool> RegisterUser(RegisterUserDTO userDTO);
+        public Task<bool> RegisterVendor(RegisterVendorDTO vendorDTO);
     }
 }
