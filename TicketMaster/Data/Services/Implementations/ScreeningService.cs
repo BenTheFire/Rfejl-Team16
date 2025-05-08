@@ -56,17 +56,19 @@ namespace TicketMaster.Data.Services.Implementations
 
         public async Task UpdateScreening(ScreeningDTO screening)
         {
-            Screening updatedScreening = await _context.Screenings.Where(o => o.Id == screening.Id).FirstAsync();
-            if (updatedScreening != null)
+            try
             {
-                updatedScreening.Time = screening.Time;
-                updatedScreening.SeatsTaken = screening.SeatsTaken;
-                updatedScreening.InLocation = await _context.Locations.Where(o => o.Id == screening.InLocationId).FirstAsync();
-                updatedScreening.OfMovie = await _context.Movies.Where(o => o.Id == screening.OfMovieId).FirstAsync();
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Screening ({screening.Id}) updated succesfully");
-            }
-            else
+                Screening updatedScreening = await _context.Screenings.Where(o => o.Id == screening.Id).FirstAsync();
+                if (updatedScreening != null)
+                {
+                    updatedScreening.Time = screening.Time;
+                    updatedScreening.SeatsTaken = screening.SeatsTaken;
+                    updatedScreening.InLocation = await _context.Locations.Where(o => o.Id == screening.InLocationId).FirstAsync();
+                    updatedScreening.OfMovie = await _context.Movies.Where(o => o.Id == screening.OfMovieId).FirstAsync();
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Screening ({screening.Id}) updated succesfully");
+                }
+            } catch (Exception e)
             {
                 Console.WriteLine($"Screening ({screening.Id}) not found");
             }
@@ -74,15 +76,17 @@ namespace TicketMaster.Data.Services.Implementations
 
         public async Task DeleteScreening(int id)
         {
-            Screening delete = await _context.Screenings.Where(o => o.Id == id).FirstAsync();
-            if (delete != null)
+            try
             {
-                _context.Screenings.Remove(delete);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Screening ({id}) deleted succesfully");
-            }
-            else
-            {
+                Screening delete = await _context.Screenings.Where(o => o.Id == id).FirstAsync();
+                if (delete != null)
+                {
+                    _context.Screenings.Remove(delete);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Screening ({id}) deleted succesfully");
+                }
+            }catch (Exception e)
+            { 
                 Console.WriteLine($"Screening ({id}) not found");
             }
         }
