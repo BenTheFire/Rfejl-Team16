@@ -8,24 +8,13 @@
             </li>
             <li>
                 <NavLink href="/vendor" class="nav-link" activeclassname="active-link">
-                    Vendor Station
+                    💵Vendor Station
                 </NavLink>
             </li>
-            <li class="dropdown">
-                <button class="nav-link dropdown-toggle" @onclick="ToggleDropdown">
-                    Admin Pages
-                </button>
-                @if (isDropdownOpen)
-                {
-                    <ul class="dropdown-menu">
-                        <li><NavLink href="/admin/edit/movies" class="nav-link">Edit Movies</NavLink></li>
-                        <li><NavLink href="/admin/edit/location" class="nav-link">Edit Locations</NavLink></li>
-                        <li><NavLink href="/admin/edit/people" class="nav-link">Edit People</NavLink></li>
-                        <li><NavLink href="/admin/edit/screenings" class="nav-link">Edit Screenings</NavLink></li>
-                        <li><NavLink href="/admin/edit/tickets" class="nav-link">Edit Tickets</NavLink></li>
-                        <li><NavLink href="/admin/edit/vendors" class="nav-link">Edit Vendors</NavLink></li>
-                    </ul>
-                }
+            <li>
+                <NavLink href="/admin/edit" class="nav-link" activeclassname="active-link">
+                    💻Admin Hub
+                </NavLink>
             </li>
             <li>
                 <AuthorizeView>
