@@ -10,6 +10,12 @@
     margin: 10px;
 }
 
+.no-bullets {
+    list-style-type: none;
+    padding-left: 0; 
+    margin: 0; 
+}
+
 .nav-menu {
     display: flex;
     flex-direction: column;
