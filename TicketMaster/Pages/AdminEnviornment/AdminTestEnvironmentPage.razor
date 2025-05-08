@@ -22,26 +22,26 @@
 
     <ul>
         <li>
-            
+            <a href="/admin/edit/people">Edit People</a>
+        </li>
+        <li>
+            <a href="/admin/edit/movies">Edit Movies</a>
+        </li>
+        <li>
+            <a href="/admin/edit/locations">Edit Locations</a>
+        </li>
+        <li>
+            <a href="/admin/edit/screenings">Edit Screenings</a>
+        </li>
+        <li>
+            <a href="/admin/edit/tickets">Edit Tickets</a>
+        </li>
+        <li>
+            <a href="/admin/edit/vendors">Edit Vendors</a>
         </li>
     </ul>
 </body>
 
 @code {
-    private TicketDTO Ticket = new();
 
-    private async Task CreateTicket()
-    {
-
-    }
-    private class TicketDTO
-    {
-        public int OfScreeningId { get; set; }
-        public int CustomerId { get; set; }
-        public float Price { get; set; }
-        public string Seat { get; set; }
-        public int Status { get; set; }
-        public int VendorId { get; set; }
-        public DateTime PurchaseTime { get; set; }
-    }
 }

@@ -1,9 +1,9 @@
-﻿@page "/admin/edit/vendor"
+﻿@page "/admin/edit/vendors"
 @using TicketMaster.Data.Services.Interfaces
 @using TicketMaster.Objects
 @inject ITicketMasterService TMS
 <body>
-    <h3>Edit Locations</h3>
+    <h3>Edit Vendors</h3>
     <form onsubmit="@createVendor">
         <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
         <input type="text" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
