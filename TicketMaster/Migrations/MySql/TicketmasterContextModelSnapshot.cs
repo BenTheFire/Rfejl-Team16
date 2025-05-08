@@ -40,46 +40,16 @@ namespace TicketMaster.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("NormalizedUserName")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -277,46 +247,12 @@ namespace TicketMaster.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -330,46 +266,16 @@ namespace TicketMaster.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("NormalizedUserName")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
