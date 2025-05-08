@@ -21,7 +21,7 @@ namespace TicketMaster.Data.Services.Implementations
                 {
                     Price = ticket.Price,
                     Seat = ticket.Seat,
-                    Status = ticket.Status,
+                    Status = (int)ticket.Status,
                     PurchaseTime = ticket.PurchaseTime
                 };
                 newTicket.OfScreening = await _context.Screenings.Where(o => o.Id == ticket.OfScreeningId).FirstAsync();
@@ -60,10 +60,10 @@ namespace TicketMaster.Data.Services.Implementations
                 var toUpdate = await _context.Tickets.Where(o => o.Id == ticket.Id).FirstAsync();
                 Ticket updatedTicket = new Ticket()
                 {
-                    Id = ticket.Id,
+                    Id = (int)ticket.Id,
                     Price = ticket.Price,
                     Seat = ticket.Seat,
-                    Status = ticket.Status,
+                    Status = (int)ticket.Status,
                     PurchaseTime = ticket.PurchaseTime
                 };
                 updatedTicket.OfScreening = await _context.Screenings.Where(o => o.Id == ticket.OfScreeningId).FirstAsync();

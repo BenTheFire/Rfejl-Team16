@@ -45,7 +45,7 @@
 
     private async Task deleteTicket()
     {
-        await TS.DeleteTicket(T.Id);
+        await TS.DeleteTicket((int)T.Id);
     }
     
 }

@@ -20,7 +20,7 @@ namespace TicketMaster.Data.Services.Implementations
             Location addLocation = new Location()
             {
                 Address = location.Address,
-                Capacity = location.Capacity,
+                Capacity = (int)location.Capacity,
                 Name = location.Name
             };
 
@@ -52,9 +52,9 @@ namespace TicketMaster.Data.Services.Implementations
             if (toUpdate != null)
             {
                 toUpdate.Address = location.Address;
-                toUpdate.Capacity = location.Capacity;
+                toUpdate.Capacity = (int)location.Capacity;
                 toUpdate.Name = location.Name;
-                toUpdate.Capacity = location.Capacity;
+                toUpdate.Capacity = (int)location.Capacity;
                 
                 await _context.SaveChangesAsync();
                 Console.WriteLine($"Location ({location.Id}) succesfully updated");

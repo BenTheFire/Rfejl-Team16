@@ -45,7 +45,7 @@ namespace TicketMaster.Data.Services.Implementations
             Screening newScreening = new Screening()
             {
                 Time = screening.Time,
-                SeatsTaken = screening.SeatsTaken
+                SeatsTaken = (int)screening.SeatsTaken
             };
             newScreening.InLocation = await _context.Locations.Where(o => o.Id == screening.InLocationId).FirstAsync();
             newScreening.OfMovie = await _context.Movies.Where(o => o.Id == screening.OfMovieId).FirstAsync();
@@ -62,7 +62,7 @@ namespace TicketMaster.Data.Services.Implementations
                 if (updatedScreening != null)
                 {
                     updatedScreening.Time = screening.Time;
-                    updatedScreening.SeatsTaken = screening.SeatsTaken;
+                    updatedScreening.SeatsTaken = (int)screening.SeatsTaken;
                     updatedScreening.InLocation = await _context.Locations.Where(o => o.Id == screening.InLocationId).FirstAsync();
                     updatedScreening.OfMovie = await _context.Movies.Where(o => o.Id == screening.OfMovieId).FirstAsync();
                     await _context.SaveChangesAsync();
