@@ -1,12 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 
 namespace TicketMaster.Authentication
 {
     public class TicketmasterAuthenticationStateProvider : AuthenticationStateProvider
     {
         private AuthenticateUser? _currentUser;
+        private SignInManager<AuthenticateUser> SIM;
+        public TicketmasterAuthenticationStateProvider(SignInManager<AuthenticateUser> signInManager)
+        {
+            SIM = signInManager;
+        }
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var identity = _currentUser != null ? new ClaimsIdentity
@@ -23,30 +30,22 @@ namespace TicketMaster.Authentication
             return Task.FromResult(new AuthenticationState(principal));
         }
 
-        public void MarkUserAsAuthenticated(AuthenticateUser user)
+        public async Task MarkUserAsAuthenticated(AuthenticateUser user)
         {
             _currentUser = user;
-            var identity = _currentUser != null ? new ClaimsIdentity
-            (
-                new[]
+
+            await SIM.SignInWithClaimsAsync(_currentUser, true, new[]
                 {
                     new Claim(ClaimTypes.Name, _currentUser.UserName),
                     new Claim(ClaimTypes.Role, _currentUser.GetType().Name)
-                },
-                "TicketmasterAuth"
-            ) : new ClaimsIdentity();
-
-            var principal = new ClaimsPrincipal(identity);
-
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
+                });
         }
 
-        public void MarkUserAsLoggedOut()
+        public async Task MarkUserAsLoggedOut()
         {
             _currentUser = null;
-            var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
 
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(anonymous)));
+            await SIM.SignOutAsync();
         }
     }
 }
