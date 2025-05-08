@@ -1,7 +1,8 @@
 ﻿@page "/admin/edit/vendors"
 @using TicketMaster.Data.Services.Interfaces
 @using TicketMaster.Objects
-@inject ITicketMasterService TMS
+@using TicketMaster.Data.DTOs
+@inject IVendorService VS
 <body>
     <h3>Edit Vendors</h3>
     <form onsubmit="@createVendor">
@@ -28,25 +29,17 @@
     private VendorDTO V = new();
     private async Task createVendor()
     {
-
+        await VS.CreateVendor(V);
     }
 
     private async Task updateVendor()
     {
-
+        await VS.UpdateVendor(V);
     }
 
     private async Task deleteVendor()
     {
-
-    }
-    private class VendorDTO
-    {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
-        public string Email { get; set; }
-        public int LocationId { get; set; }
+        await VS.DeleteVendor((int)V.Id);
     }
 }
 

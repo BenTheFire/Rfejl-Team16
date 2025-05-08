@@ -31,7 +31,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasIndex("VendorsId");
 
-                    b.ToTable("LocationVendor");
+                    b.ToTable("LocationVendor", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Administrator", b =>
@@ -54,7 +54,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("Administrators");
+                    b.ToTable("Administrators", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Credit", b =>
@@ -73,7 +73,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasIndex("WhoIsId");
 
-                    b.ToTable("Credits");
+                    b.ToTable("Credits", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.CustomerData", b =>
@@ -97,7 +97,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasIndex("OfUserId");
 
-                    b.ToTable("CustomerData");
+                    b.ToTable("CustomerData", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Location", b =>
@@ -119,7 +119,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Movie", b =>
@@ -150,7 +150,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movies", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Person", b =>
@@ -172,7 +172,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("People");
+                    b.ToTable("People", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Screening", b =>
@@ -199,7 +199,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasIndex("OfMovieId");
 
-                    b.ToTable("Screenings");
+                    b.ToTable("Screenings", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Ticket", b =>
@@ -238,7 +238,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasIndex("OfScreeningId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.User", b =>
@@ -257,7 +257,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("TicketMaster.Objects.Vendor", b =>
@@ -280,7 +280,7 @@ namespace TicketMaster.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vendors");
+                    b.ToTable("Vendors", (string)null);
                 });
 
             modelBuilder.Entity("LocationVendor", b =>

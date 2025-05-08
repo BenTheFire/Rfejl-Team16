@@ -1,10 +1,11 @@
 ﻿@page "/admin/edit/tickets"
 @using TicketMaster.Data.Services.Interfaces
 @using TicketMaster.Objects
-@inject ITicketMasterService TMS
+@using TicketMaster.Data.DTOs
+@inject ITicketService TS
 <body>
     <h3>Edit Tickets</h3>
-    <form onsubmit="@createScreening">
+    <form onsubmit="@createTicket">
         <input type="number" placeholder="ID of screening" @bind-value="T.OfScreeningId" />
         <input type="number" placeholder="ID of customer" @bind-value="T.CustomerId" />
         <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
@@ -14,7 +15,7 @@
         <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
         <button type="submit">Create Ticket</button>
     </form>
-    <form onsubmit="@updateScreening">
+    <form onsubmit="@updateTicket">
         <input type="number" placeholder="ID of ticket to update" @bind-value="T.Id" />
         <input type="number" placeholder="ID of screening" @bind-value="T.OfScreeningId" />
         <input type="number" placeholder="ID of customer" @bind-value="T.CustomerId" />
@@ -25,38 +26,28 @@
         <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
         <button type="submit">Update Ticket</button>
     </form>
-    <form onsubmit="@deleteScreening">
+    <form onsubmit="@deleteTicket">
         <input type="number" placeholder="Ticket ID to delete" @bind-value="T.Id" />
         <button type="submit">Delete Ticket</button>
     </form>
 </body>
 @code {
     private TicketDTO T = new();
-    private async Task createScreening()
+    private async Task createTicket()
     {
-
+        await TS.CreateTicket(T);
     }
 
-    private async Task updateScreening()
+    private async Task updateTicket()
     {
-
+        await TS.UpdateTicket(T);
     }
 
-    private async Task deleteScreening()
+    private async Task deleteTicket()
     {
-
+        await TS.DeleteTicket(T.Id);
     }
-    public class TicketDTO
-    {
-        public int Id { get; set; }
-        public int OfScreeningId { get; set; }
-        public int CustomerId { get; set; }
-        public float Price { get; set; }
-        public string Seat { get; set; }
-        public int Status { get; set; }
-        public int ByVendorId { get; set; }
-        public DateTime PurchaseTime { get; set; }
-    }
+    
 }
 
 

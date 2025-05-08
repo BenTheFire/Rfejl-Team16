@@ -1,4 +1,6 @@
-﻿using TicketMaster.Data.Services.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using TicketMaster.Data.DTOs;
+using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Objects;
 
 namespace TicketMaster.Data.Services.Implementations
@@ -9,6 +11,74 @@ namespace TicketMaster.Data.Services.Implementations
         public TicketService(TicketmasterContext c)
         {
             _context = c;
+        }
+
+        public async Task CreateTicket(TicketDTO ticket)
+        {
+            try
+            {
+                Ticket newTicket = new Ticket()
+                {
+                    Price = ticket.Price,
+                    Seat = ticket.Seat,
+                    Status = ticket.Status,
+                    PurchaseTime = ticket.PurchaseTime
+                };
+                newTicket.OfScreening = await _context.Screenings.Where(o => o.Id == ticket.OfScreeningId).FirstAsync();
+                newTicket.Customer = await _context.CustomerData.Where(o => o.Id == ticket.CustomerId).FirstAsync();
+                newTicket.ByVendor = await _context.Vendors.Where(o => o.Id == ticket.ByVendorId).FirstAsync();
+                await _context.Tickets.AddAsync(newTicket);
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"New ticket created succesfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public async Task DeleteTicket(int id)
+        {
+            var todelete = await _context.Tickets.Where(o => o.Id == id).FirstAsync();
+            if (todelete != null)
+            {
+                _context.Tickets.Remove(todelete);
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Ticket({id}) deleted succesfully");
+            }
+            else
+            {
+                Console.WriteLine($"Ticket ({id}) not found");
+            }
+        }
+        public async Task UpdateTicket(TicketDTO ticket)
+        {
+            try
+            {
+                var toUpdate = await _context.Tickets.Where(o => o.Id == ticket.Id).FirstAsync();
+                Ticket updatedTicket = new Ticket()
+                {
+                    Id = ticket.Id,
+                    Price = ticket.Price,
+                    Seat = ticket.Seat,
+                    Status = ticket.Status,
+                    PurchaseTime = ticket.PurchaseTime
+                };
+                updatedTicket.OfScreening = await _context.Screenings.Where(o => o.Id == ticket.OfScreeningId).FirstAsync();
+                updatedTicket.Customer = await _context.CustomerData.Where(o => o.Id == ticket.CustomerId).FirstAsync();
+                updatedTicket.ByVendor = await _context.Vendors.Where(o => o.Id == ticket.ByVendorId).FirstAsync();
+               
+                _context.Tickets.Remove(updatedTicket);
+                await _context.SaveChangesAsync();
+                await _context.Tickets.AddAsync(updatedTicket);
+                await _context.SaveChangesAsync();
+               
+                Console.WriteLine($"Ticket updated succesfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public List<Ticket> FetchOwnedTickets(string username)
