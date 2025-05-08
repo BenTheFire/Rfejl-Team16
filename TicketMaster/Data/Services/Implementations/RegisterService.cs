@@ -25,14 +25,14 @@ namespace TicketMaster.Data.Services.Implementations
         }
         public async Task<bool> RegisterUser(RegisterUserDTO userDTO)
         {
-            if (_context.Users.Any(u => u.Username == userDTO.Username))
+            if (_context.Users.Any(u => u.UserName == userDTO.Username))
             {
                 return false;
             }
 
             User user = new()
             {
-                Username = userDTO.Username
+                UserName = userDTO.Username
             };
             user.PasswordHash = PWS.HashPassword(user, userDTO.Password);
 
@@ -53,14 +53,14 @@ namespace TicketMaster.Data.Services.Implementations
 
         public async Task<bool> RegisterVendor(RegisterVendorDTO vendorDTO)
         {
-            if (_context.Vendors.Any(v => v.Username == vendorDTO.Username))
+            if (_context.Vendors.Any(v => v.UserName == vendorDTO.Username))
             {
                 return false;
             }
 
             Vendor vendor = new()
             {
-                Username = vendorDTO.Username,
+                UserName = vendorDTO.Username,
                 Email = vendorDTO.Email
             };
             vendor.PasswordHash = PWS.HashPassword(vendor, vendorDTO.Password);
@@ -79,14 +79,14 @@ namespace TicketMaster.Data.Services.Implementations
                 return false;
             }
 
-            if (_context.Administrators.Any(a => a.Username == adminDTO.Username))
+            if (_context.Administrators.Any(a => a.UserName == adminDTO.Username))
             {
                 return false;
             }
 
             Administrator admin = new()
             {
-                Username = adminDTO.Username,
+                UserName = adminDTO.Username,
                 Email = adminDTO.Email
             };
             admin.PasswordHash = PWS.HashPassword(admin, adminDTO.Password);

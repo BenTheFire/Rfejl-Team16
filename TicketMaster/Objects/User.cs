@@ -2,10 +2,8 @@
 
 namespace TicketMaster.Objects
 {
-    public class User : IAuthenticateUser
+    public class User : AuthenticateUser
     {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
+
     }
 }
