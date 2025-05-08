@@ -31,17 +31,26 @@
     cursor: pointer;
 }
 
+
+    .top-row:not(.auth) {
+.hamburger {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #222;
+    cursor: pointer;
+}
 .main-content {
     flex-grow: 1;
     padding: 1rem;
 }
-
+    color: #222;
 /* Responsive layout */
 @media (max-width: 768px) {
     .main-layout {
         flex-direction: column;
     }
-
+        margin-left: 0;
     .sidebar {
         position: absolute;
         top: 0;
@@ -49,17 +58,19 @@
         height: 100vh;
         transform: translateX(-100%);
         z-index: 999;
-    }
-
+@media (min-width: 641px) {
+    .page {
         .sidebar.open {
             transform: translateX(0);
         }
+        position: sticky;
+        top: 0;
+    }
 
     .hamburger {
         display: block;
     }
 
-    .hamburger-container {
-        display: block;
+}
     }
 }

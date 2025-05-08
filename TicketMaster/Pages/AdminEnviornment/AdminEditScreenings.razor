@@ -1,0 +1,81 @@
+﻿@page "/admin/edit/screenings"
+@using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Objects
+@using TicketMaster.Data.DTOs
+@inject IScreeningService SS
+<body>
+    <h3>Edit Screenings</h3>
+    <div class="forms">
+        <div class="formContainer">
+            <form onsubmit="@createScreening">
+                <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
+                <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
+                <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+                <button type="submit" class="buttonAdd">Create Screening</button>
+            </form>
+        </div>
+        <div class="formContainer">
+            <form onsubmit="@updateScreening">
+                <input type="number" placeholder="ID of Screening" @bind-value="S.Id" />
+                <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
+                <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
+                <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+                <button type="submit" class="buttonEdit">Update Screening</button>
+            </form>
+        </div>
+        <div class="formContainer">
+            <form onsubmit="@deleteScreening">
+                <input type="number" placeholder="Screening ID to delete" @bind-value="S.Id" />
+                <button type="submit" class="buttonDelete">Delete Screening</button>
+            </form>
+        </div>
+    </div>
+</body>
+@code {
+    private ScreeningDTO S = new();
+    private async Task createScreening()
+    {
+        await SS.CreateScreening(S);
+    }
+
+    private async Task updateScreening()
+    {
+        await SS.UpdateScreening(S);
+    }
+
+    private async Task deleteScreening()
+    {
+        await SS.DeleteScreening((int)S.Id);
+    }
+    
+}
+
+<style>
+    .forms {
+        display: flex;
+        align-content: normal;
+        justify-content: normal;
+    }
+
+    .formContainer {
+        display: flex;
+        align-content: normal;
+        justify-content: normal;
+        flex-direction: column;
+    }
+
+    .buttonDelete {
+        background-color: red;
+    }
+
+    .buttonAdd {
+        background-color: palegreen;
+    }
+
+    .buttonEdit {
+        background-color: cornflowerblue;
+    }
+</style>
+

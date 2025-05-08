@@ -1,0 +1,64 @@
+﻿@page "/admin/edit"
+
+<!--
+    Needed functionalities, admin creates, updates, deletes:
+    - People
+    - Movies
+    - Locations
+    - Screenings
+    - Tickets
+    - Vendors
+-->
+
+<body>
+    <div class="admin-container">
+        <h3>Admin Test Environment</h3>
+
+        <ul class="admin-link-list">
+            <li><a href="/admin/edit/people">👤 Edit People</a></li>
+            <li><a href="/admin/edit/movies">🎬 Edit Movies</a></li>
+            <li><a href="/admin/edit/locations">📍 Edit Locations</a></li>
+            <li><a href="/admin/edit/screenings">📅 Edit Screenings</a></li>
+            <li><a href="/admin/edit/tickets">🎟️ Edit Tickets</a></li>
+            <li><a href="/admin/edit/vendors">🏪 Edit Vendors</a></li>
+        </ul>
+    </div>
+</body>
+
+<style>
+    .admin-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .admin-link-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .admin-link-list li {
+            margin-bottom: 12px;
+            background-color: #555;
+        }
+
+        .admin-link-list a {
+            display: block;
+            padding: 12px 18px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.2s ease-in-out;
+        }
+</style>
+
+@code {
+
+}

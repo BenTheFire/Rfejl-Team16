@@ -1,0 +1,87 @@
+﻿@page "/admin/edit/tickets"
+@using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Objects
+@using TicketMaster.Data.DTOs
+@inject ITicketService TS
+<body>
+    <h3>Edit Tickets</h3>
+    <div class="forms">
+        <div class="formContainer">
+            <form onsubmit="@createTicket">
+                <input type="number" placeholder="ID of screening" @bind-value="T.OfScreeningId" />
+                <input type="number" placeholder="ID of customer" @bind-value="T.CustomerId" />
+                <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+                <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
+                <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+                <input type="number" placeholder="ID of vendor" @bind-value="T.ByVendorId" />
+                <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+                <button type="submit" class="buttonAdd">Create Ticket</button>
+            </form>
+        </div>
+        <div class="formContainer">
+            <form onsubmit="@updateTicket">
+                <input type="number" placeholder="ID of ticket to update" @bind-value="T.Id" />
+                <input type="number" placeholder="ID of screening" @bind-value="T.OfScreeningId" />
+                <input type="number" placeholder="ID of customer" @bind-value="T.CustomerId" />
+                <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+                <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
+                <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+                <input type="number" placeholder="ID of vendor" @bind-value="T.ByVendorId" />
+                <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+                <button type="submit" class="buttonEdit">Update Ticket</button>
+            </form>
+        </div>
+        <div class="formContainer">
+            <form onsubmit="@deleteTicket">
+                <input type="number" placeholder="Ticket ID to delete" @bind-value="T.Id" />
+                <button type="submit" class="buttonDelete">Delete Ticket</button>
+            </form>
+        </div>
+    </div>
+</body>
+@code {
+    private TicketDTO T = new();
+    private async Task createTicket()
+    {
+        await TS.CreateTicket(T);
+    }
+
+    private async Task updateTicket()
+    {
+        await TS.UpdateTicket(T);
+    }
+
+    private async Task deleteTicket()
+    {
+        await TS.DeleteTicket((int)T.Id);
+    }
+    
+}
+<style>
+.forms{
+    display: flex;
+    align-content: normal;
+    justify-content: normal;
+}
+
+.formContainer {
+    display: flex;
+    align-content: normal;
+    justify-content: normal;
+    flex-direction: column;
+}
+
+.buttonDelete {
+    background-color: red;
+}
+
+.buttonAdd {
+    background-color: palegreen;
+}
+
+.buttonEdit {
+    background-color: cornflowerblue;
+}
+</style>
+
+

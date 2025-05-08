@@ -1,15 +1,25 @@
-﻿<div class="nav-menu">
-    <CascadingAuthenticationState>
-        <ul>
+﻿<div class="nav-container">
+    <ul class="no-bullet">
+        <CascadingAuthenticationState>
             <li>
                 <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" activeclassname="active-link">
                     🏠 Home
                 </NavLink>
             </li>
             <li>
+                <NavLink href="/vendor" class="nav-link" activeclassname="active-link">
+                    💵Vendor Station
+                </NavLink>
+            </li>
+            <li>
+                <NavLink href="/admin/edit" class="nav-link" activeclassname="active-link">
+                    💻Admin Hub
+                </NavLink>
+            </li>
+            <li>
                 <AuthorizeView>
                     <Authorized>
-                        Logout
+                        ⚙️Profile Settings
                     </Authorized>
                     <NotAuthorized>
                         <NavLink href="/login" class="nav-link" activeclassname="active-link">
@@ -18,9 +28,12 @@
                     </NotAuthorized>
                 </AuthorizeView>
             </li>
-        </ul>
-    </CascadingAuthenticationState>
+        </CascadingAuthenticationState>
+    </ul>
 </div>
 
 @code {
+    private bool isDropdownOpen = false;
+
+    private void ToggleDropdown() => isDropdownOpen = !isDropdownOpen;
 }
