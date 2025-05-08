@@ -4,26 +4,35 @@
 @inject ILocationService LS
 <body>
     <h3>Edit Locations</h3>
-    <form onsubmit="@createLocation">
-        <input type="text" placeholder="Name of location" @bind-value="L.Name" />
-        <input type="text" placeholder="Address of location" @bind-value="L.Address" />
-        <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
-        <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
-        <button type="submit">Create Location</button>
-    </form>
-    <form onsubmit="@updateLocation">
-        <input type="number" placeholder="Location ID" @bind-value="L.Id" />
-        <input type="text" placeholder="Name of location" @bind-value="L.Name" />
-        <input type="text" placeholder="Address of location" @bind-value="L.Address" />
-        <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
-        <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
-        <button type="submit">Update Location</button>
-    </form>
-    <form onsubmit="@deleteLocation">
-        <input type="number" placeholder="Location ID to delete" @bind-value ="L.Id" />
-        <button>Delete Location</button>
-    </form>
+    <div class="forms">
+        <div class="formContainer">
+            <form onsubmit="@createLocation">
+                <input type="text" placeholder="Name of location" @bind-value="L.Name"/>
+                <input type="text" placeholder="Address of location" @bind-value="L.Address" />
+                <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
+                <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+                <button type="submit" class="buttonAdd">Create Location</button>
+            </form>
+        </div>
+        <div class="formContainer">
+            <form onsubmit="@updateLocation">
+                <input type="number" placeholder="Location ID" @bind-value="L.Id" />
+                <input type="text" placeholder="Name of location" @bind-value="L.Name" />
+                <input type="text" placeholder="Address of location" @bind-value="L.Address" />
+                <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
+                <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+                <button type="submit" class="buttonEdit">Update Location</button>
+            </form>
+        </div>
+        <div class="formContainer">
+            <form onsubmit="@deleteLocation">
+                <input type="number" placeholder="Location ID to delete" @bind-value ="L.Id" />
+                <button type="submit" class="buttonDelete">Delete Location</button>
+            </form>
+        </div>
+    </div>
 </body>
+
 @code {
     private LocationDTO L = new();
     private async Task createLocation()
@@ -42,3 +51,30 @@
     }
 
 }
+
+<style>
+.forms{
+    display: flex;
+    align-content: normal;
+    justify-content: normal;
+}
+
+.formContainer {
+    display: flex;
+    align-content: normal;
+    justify-content: normal;
+    flex-direction: column;
+}
+
+.buttonDelete {
+    background-color: red;
+}
+
+.buttonAdd {
+    background-color: palegreen;
+}
+
+.buttonEdit {
+    background-color: cornflowerblue;
+}
+</style>
