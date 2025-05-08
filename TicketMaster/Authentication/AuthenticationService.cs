@@ -14,12 +14,12 @@ namespace TicketMaster.Authentication
             _passwordService = passwordService;
         }
 
-        public AuthenticateUser? Authenticate(string username, string password)
+        public IAuthenticateUser? Authenticate(string username, string password)
         {
-            AuthenticateUser? authuser = 
-                _context.Administrators.Where(o => o.UserName == username).FirstOrDefault() as AuthenticateUser
-                ?? _context.Vendors.Where(o => o.UserName == username).FirstOrDefault() as AuthenticateUser
-                ?? _context.Users.Where(o => o.UserName == username).FirstOrDefault() as AuthenticateUser
+            IAuthenticateUser? authuser = 
+                _context.Administrators.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
+                ?? _context.Vendors.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
+                ?? _context.Users.Where(o => o.Username == username).FirstOrDefault() as IAuthenticateUser
                 ?? null;
 
             if (authuser == null || !_passwordService.VerifyPassword(authuser, password))

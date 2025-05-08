@@ -3,9 +3,12 @@ using TicketMaster.Authentication;
 
 namespace TicketMaster.Objects
 {
-    public class Vendor : AuthenticateUser
+    public class Vendor : IAuthenticateUser
     {
-        public new int Id { get => int.Parse(base.Id); set => base.Id = value.ToString(); }
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string PasswordHash { get; set; }
+        public string Email { get; set; }
         public DbSet<Location> Locations { get; set; }
     }
 }

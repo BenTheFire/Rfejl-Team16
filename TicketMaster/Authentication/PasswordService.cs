@@ -5,19 +5,19 @@ namespace TicketMaster.Authentication
 {
     public class PasswordService
     {
-        private readonly PasswordHasher<AuthenticateUser> _passwordHasher;
+        private readonly PasswordHasher<IAuthenticateUser> _passwordHasher;
 
         public PasswordService()
         {
-            _passwordHasher = new PasswordHasher<AuthenticateUser>();
+            _passwordHasher = new PasswordHasher<IAuthenticateUser>();
         }
 
-        public string HashPassword(AuthenticateUser user, string password)
+        public string HashPassword(IAuthenticateUser user, string password)
         {
             return _passwordHasher.HashPassword(user, password);
         }
 
-        public bool VerifyPassword(AuthenticateUser user, string password)
+        public bool VerifyPassword(IAuthenticateUser user, string password)
         {
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
             return result == PasswordVerificationResult.Success;

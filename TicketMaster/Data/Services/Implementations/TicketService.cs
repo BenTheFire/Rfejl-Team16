@@ -17,7 +17,7 @@ namespace TicketMaster.Data.Services.Implementations
                 from u in _context.Users
                 join c in _context.CustomerData on u equals c.OfUser
                 join t in _context.Tickets on c equals t.Customer
-                where u.UserName == username && t.Status == 1 // approved
+                where u.Username == username && t.Status == 1 // approved
                 orderby t.OfScreening.Time ascending
                 select t).ToList();
             return ret;
@@ -28,7 +28,7 @@ namespace TicketMaster.Data.Services.Implementations
             var ret = (
                 from v in _context.Vendors
                 join t in _context.Tickets on v equals t.ByVendor
-                where v.UserName == vendorname && t.Status == 0 // pending
+                where v.Username == vendorname && t.Status == 0 // pending
                 select t).ToList();
             return ret;
         }
@@ -39,7 +39,7 @@ namespace TicketMaster.Data.Services.Implementations
                 from u in _context.Users
                 join c in _context.CustomerData on u equals c.OfUser
                 join t in _context.Tickets on c equals t.Customer
-                where u.UserName == username
+                where u.Username == username
                 orderby t.PurchaseTime descending
                 select t).ToList();
             return ret;

@@ -24,10 +24,21 @@ public class Program
         builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddControllers();
 
+        builder.Services.AddHttpContextAccessor();
+
         builder.Services.AddScoped<PasswordService>();
         builder.Services.AddScoped<AuthenticationService>();
         builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
-        builder.Services.AddAuthentication("TicketmasterAuth");
+        builder.Services.AddAuthentication("TicketmasterAuth")
+            .AddCookie("TicketmasterAuth", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.MaxAge = TimeSpan.FromDays(3);
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+            });
         builder.Services.AddAuthorization();
 
         //init mysql server context
