@@ -36,14 +36,16 @@ namespace TicketMaster.Data.Services.Implementations
 
         public async Task DeleteVendor(int id)
         {
-            var toRemove = await _context.Vendors.Where(o => o.Id == id).FirstAsync();
-            if (toRemove != null)
+            try
             {
-                _context.Vendors.Remove(toRemove);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Vendor ({id}) deleted succesfully");
-            }
-            else
+                var toRemove = await _context.Vendors.Where(o => o.Id == id).FirstAsync();
+                if (toRemove != null)
+                {
+                    _context.Vendors.Remove(toRemove);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Vendor ({id}) deleted succesfully");
+                }
+            } catch (Exception e)
             {
                 Console.WriteLine($"Vendor ({id}) not found");
             }
@@ -51,20 +53,22 @@ namespace TicketMaster.Data.Services.Implementations
 
         public async Task UpdateVendor(VendorDTO vendor)
         {
-            var toUpdate = await _context.Vendors.Where(o => o.Id == vendor.Id).FirstAsync();
-            Location location = await _context.Locations.Where(o => o.Id == vendor.LocationId).FirstAsync();
-            if (toUpdate != null)
+            try
             {
-                toUpdate.Email = vendor.Email;
-                toUpdate.Username = vendor.Username;
-                var all = await _context.Locations.ToListAsync();
-                toUpdate.Locations.RemoveRange(all);
-                await _context.SaveChangesAsync();
-                await toUpdate.Locations.AddAsync(location);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Vendor ({vendor.Id}) updated succesfully");
-            }
-            else
+                var toUpdate = await _context.Vendors.Where(o => o.Id == vendor.Id).FirstAsync();
+                Location location = await _context.Locations.Where(o => o.Id == vendor.LocationId).FirstAsync();
+                if (toUpdate != null)
+                {
+                    toUpdate.Email = vendor.Email;
+                    toUpdate.Username = vendor.Username;
+                    var all = await _context.Locations.ToListAsync();
+                    toUpdate.Locations.RemoveRange(all);
+                    await _context.SaveChangesAsync();
+                    await toUpdate.Locations.AddAsync(location);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Vendor ({vendor.Id}) updated succesfully");
+                }
+            } catch (Exception e)
             {
                 Console.WriteLine($"Vendor ({vendor.Id}) not found");
             }

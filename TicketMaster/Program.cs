@@ -24,6 +24,7 @@ public class Program
         builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddScoped<ILocationService, LocationService>();
         builder.Services.AddScoped<IVendorService, VendorService>();
+        builder.Services.AddScoped<IPeopleService, PeopleService>();
         builder.Services.AddControllers();
 
         builder.Services.AddHttpContextAccessor();

@@ -39,14 +39,16 @@ namespace TicketMaster.Data.Services.Implementations
 
         public async Task DeleteTicket(int id)
         {
-            var todelete = await _context.Tickets.Where(o => o.Id == id).FirstAsync();
-            if (todelete != null)
+            try
             {
-                _context.Tickets.Remove(todelete);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Ticket({id}) deleted succesfully");
-            }
-            else
+                var todelete = await _context.Tickets.Where(o => o.Id == id).FirstAsync();
+                if (todelete != null)
+                {
+                    _context.Tickets.Remove(todelete);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Ticket({id}) deleted succesfully");
+                }
+            } catch (Exception e) 
             {
                 Console.WriteLine($"Ticket ({id}) not found");
             }
@@ -73,11 +75,11 @@ namespace TicketMaster.Data.Services.Implementations
                 await _context.Tickets.AddAsync(updatedTicket);
                 await _context.SaveChangesAsync();
                
-                Console.WriteLine($"Ticket updated succesfully");
+                Console.WriteLine($"Ticket ({ticket.Id}) updated succesfully");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Ticket ({ticket.Id}) not found");
             }
         }
 
