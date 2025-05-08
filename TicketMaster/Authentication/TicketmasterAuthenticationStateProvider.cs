@@ -1,19 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 
 namespace TicketMaster.Authentication
 {
     public class TicketmasterAuthenticationStateProvider : AuthenticationStateProvider
     {
         private AuthenticateUser? _currentUser;
-        private SignInManager<AuthenticateUser> SIM;
-        public TicketmasterAuthenticationStateProvider(SignInManager<AuthenticateUser> signInManager)
-        {
-            SIM = signInManager;
-        }
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var identity = _currentUser != null ? new ClaimsIdentity
@@ -30,22 +23,30 @@ namespace TicketMaster.Authentication
             return Task.FromResult(new AuthenticationState(principal));
         }
 
-        public async Task MarkUserAsAuthenticated(AuthenticateUser user)
+        public void MarkUserAsAuthenticated(AuthenticateUser user)
         {
             _currentUser = user;
-
-            await SIM.SignInWithClaimsAsync(_currentUser, true, new[]
+            var identity = _currentUser != null ? new ClaimsIdentity
+            (
+                new[]
                 {
                     new Claim(ClaimTypes.Name, _currentUser.UserName),
                     new Claim(ClaimTypes.Role, _currentUser.GetType().Name)
-                });
+                },
+                "TicketmasterAuth"
+            ) : new ClaimsIdentity();
+
+            var principal = new ClaimsPrincipal(identity);
+
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
         }
 
-        public async Task MarkUserAsLoggedOut()
+        public void MarkUserAsLoggedOut()
         {
             _currentUser = null;
+            var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
 
-            await SIM.SignOutAsync();
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(anonymous)));
         }
     }
 }

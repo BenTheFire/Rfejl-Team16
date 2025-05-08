@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TicketMaster.Authentication;
 using TicketMaster.Data.Services.Implementations;
@@ -13,11 +12,6 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        builder.Services.AddDefaultIdentity<AuthenticateUser>()
-            .AddEntityFrameworkStores<TicketmasterContext>();
-
-        builder.Services.AddScoped<SignInManager<AuthenticateUser>>();
 
         // Add services to the container.
         builder.Services.AddRazorPages();
@@ -101,13 +95,5 @@ public class Program
         }
 
         context.SaveChanges();
-    }
-
-    static void DeleteAllUsers(string? connectionString)
-    {
-        TicketmasterContext context = new(new DbContextOptionsBuilder<TicketmasterContext>().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).Options);
-        context.Users.RemoveRange(context.Users);
-        context.Administrators.RemoveRange(context.Administrators);
-        context.Vendors.RemoveRange(context.Vendors);
     }
 }

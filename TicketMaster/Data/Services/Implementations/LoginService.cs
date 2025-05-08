@@ -24,7 +24,7 @@ namespace TicketMaster.Data.Services.Implementations
                 isVendor = false;
                 return false;
             }
-            TASP.MarkUserAsAuthenticated(loginUser).Wait();
+            TASP.MarkUserAsAuthenticated(loginUser);
             switch (loginUser)
             {
                 case User:
@@ -46,6 +46,6 @@ namespace TicketMaster.Data.Services.Implementations
             }
         }
 
-        public void LogOut() => TASP.MarkUserAsLoggedOut().Wait();
+        public void LogOut() => TASP.MarkUserAsLoggedOut();
     }
 }
