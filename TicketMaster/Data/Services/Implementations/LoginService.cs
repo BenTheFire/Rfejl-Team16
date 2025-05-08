@@ -5,7 +5,7 @@ using TicketMaster.Data.Services.Interfaces;
 using TicketMaster.Objects;
 
 namespace TicketMaster.Data.Services.Implementations
-{
+{ 
     public class LoginService : ILoginService
     {
         private TicketmasterAuthenticationStateProvider TASP;
