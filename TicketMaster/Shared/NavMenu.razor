@@ -1,22 +1,24 @@
 ﻿<div class="nav-menu">
     <CascadingAuthenticationState>
-        <li>
-            <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" activeclassname="active-link">
-                🏠 Home
-            </NavLink>
-        </li>
-        <li>
-            <AuthorizeView>
-                <Authorized>
-                    Logout
-                </Authorized>
-                <NotAuthorized>
-                    <NavLink href="/login" class="nav-link" activeclassname="active-link">
-                        🔒 Login
-                    </NavLink>
-                </NotAuthorized>
-            </AuthorizeView>
-        </li>
+        <ul>
+            <li>
+                <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" activeclassname="active-link">
+                    🏠 Home
+                </NavLink>
+            </li>
+            <li>
+                <AuthorizeView>
+                    <Authorized>
+                        Logout
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink href="/login" class="nav-link" activeclassname="active-link">
+                            🔒 Login
+                        </NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </li>
+        </ul>
     </CascadingAuthenticationState>
 </div>
 
