@@ -11,9 +11,11 @@
                 <input type="text" placeholder="Address of location" @bind-value="L.Address" />
                 <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
                 <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+                <br />
                 <button type="submit" class="buttonAdd">Create Location</button>
             </form>
         </div>
+        <br />
         <div class="formContainer">
             <form onsubmit="@updateLocation">
                 <input type="number" placeholder="Location ID" @bind-value="L.Id" />
@@ -21,12 +23,15 @@
                 <input type="text" placeholder="Address of location" @bind-value="L.Address" />
                 <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
                 <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+                <br />
                 <button type="submit" class="buttonEdit">Update Location</button>
             </form>
         </div>
+        <br />
         <div class="formContainer">
             <form onsubmit="@deleteLocation">
                 <input type="number" placeholder="Location ID to delete" @bind-value ="L.Id" />
+                <br />
                 <button type="submit" class="buttonDelete">Delete Location</button>
             </form>
         </div>
