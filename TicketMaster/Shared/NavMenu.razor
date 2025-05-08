@@ -1,54 +1,50 @@
 ﻿<div class="nav-container">
-    <button class="hamburger" @onclick="ToggleMenu">☰</button>
-
-    <div class="nav-menu @(isMenuOpen ? "show" : "")">
-        <ul>
-            <CascadingAuthenticationState>
-                <li>
-                    <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" activeclassname="active-link">
-                        🏠 Home
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink href="/vendor" class="nav-link" activeclassname="active-link">
-                        Vendor Station
-                    </NavLink>
-                </li>
-                <li class="dropdown">
-                    <span class="nav-link dropdown-toggle" @onclick="ToggleDropdown">Admin Pages</span>
-                    @if (isDropdownOpen)
-                    {
-                        <ul class="dropdown-menu">
-                            <li><NavLink href="/admin/edit/movies" class="nav-link">Edit Movies</NavLink></li>
-                            <li><NavLink href="/admin/edit/location" class="nav-link">Edit Locations</NavLink></li>
-                            <li><NavLink href="/admin/edit/people" class="nav-link">Edit People</NavLink></li>
-                            <li><NavLink href="/admin/edit/screenings" class="nav-link">Edit Screenings</NavLink></li>
-                            <li><NavLink href="/admin/edit/tickets" class="nav-link">Edit Tickets</NavLink></li>
-                            <li><NavLink href="/admin/edit/vendors" class="nav-link">Edit Vendors</NavLink></li>
-                        </ul>
-                    }
-                </li>
-                <li>
-                    <AuthorizeView>
-                        <Authorized>
-                            ⚙️Profile Settings
-                        </Authorized>
-                        <NotAuthorized>
-                            <NavLink href="/login" class="nav-link" activeclassname="active-link">
-                                🔒 Login
-                            </NavLink>
-                        </NotAuthorized>
-                    </AuthorizeView>
-                </li>
-            </CascadingAuthenticationState>
-        </ul>
-    </div>
+    <ul>
+        <CascadingAuthenticationState>
+            <li>
+                <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" activeclassname="active-link">
+                    🏠 Home
+                </NavLink>
+            </li>
+            <li>
+                <NavLink href="/vendor" class="nav-link" activeclassname="active-link">
+                    Vendor Station
+                </NavLink>
+            </li>
+            <li class="dropdown">
+                <button class="nav-link dropdown-toggle" @onclick="ToggleDropdown">
+                    Admin Pages
+                </button>
+                @if (isDropdownOpen)
+                {
+                    <ul class="dropdown-menu">
+                        <li><NavLink href="/admin/edit/movies" class="nav-link">Edit Movies</NavLink></li>
+                        <li><NavLink href="/admin/edit/location" class="nav-link">Edit Locations</NavLink></li>
+                        <li><NavLink href="/admin/edit/people" class="nav-link">Edit People</NavLink></li>
+                        <li><NavLink href="/admin/edit/screenings" class="nav-link">Edit Screenings</NavLink></li>
+                        <li><NavLink href="/admin/edit/tickets" class="nav-link">Edit Tickets</NavLink></li>
+                        <li><NavLink href="/admin/edit/vendors" class="nav-link">Edit Vendors</NavLink></li>
+                    </ul>
+                }
+            </li>
+            <li>
+                <AuthorizeView>
+                    <Authorized>
+                        ⚙️Profile Settings
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink href="/login" class="nav-link" activeclassname="active-link">
+                            🔒 Login
+                        </NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </li>
+        </CascadingAuthenticationState>
+    </ul>
 </div>
 
 @code {
-    private bool isMenuOpen = false;
     private bool isDropdownOpen = false;
 
-    private void ToggleMenu() => isMenuOpen = !isMenuOpen;
     private void ToggleDropdown() => isDropdownOpen = !isDropdownOpen;
 }

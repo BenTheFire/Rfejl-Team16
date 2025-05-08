@@ -37,6 +37,19 @@
     font-weight: bold;
 }
 
+.dropdown-menu {
+    margin-left: 15px;
+    padding: 0;
+    list-style: none;
+}
+
+button.dropdown-toggle {
+    background: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .nav-menu {
         display: none;
