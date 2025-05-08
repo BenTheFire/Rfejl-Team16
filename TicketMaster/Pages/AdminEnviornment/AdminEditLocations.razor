@@ -3,6 +3,9 @@
 @using TicketMaster.Data.DTOs
 @inject ILocationService LS
 <body>
+    <AuthorizeView Roles="Administrator">
+        <NotAuthorized>403 - You are not an admin</NotAuthorized>
+        <Authorized>
     <h3>Edit Locations</h3>
     <div class="forms">
         <div class="formContainer">
@@ -36,6 +39,8 @@
             </form>
         </div>
     </div>
+    </Authorized>
+    </AuthorizeView>
 </body>
 
 @code {

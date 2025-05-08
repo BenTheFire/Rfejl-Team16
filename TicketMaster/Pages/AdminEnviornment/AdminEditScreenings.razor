@@ -4,34 +4,39 @@
 @using TicketMaster.Data.DTOs
 @inject IScreeningService SS
 <body>
-    <h3>Edit Screenings</h3>
-    <div class="forms">
-        <div class="formContainer">
-            <form onsubmit="@createScreening">
-                <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
-                <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
-                <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
-                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
-                <button type="submit" class="buttonAdd">Create Screening</button>
-            </form>
+    <AuthorizeView Roles="Administrator">
+        <NotAuthorized>403 - You are not an admin</NotAuthorized>
+        <Authorized>
+        <h3>Edit Screenings</h3>
+        <div class="forms">
+            <div class="formContainer">
+                <form onsubmit="@createScreening">
+                    <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
+                    <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
+                    <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+                    <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+                    <button type="submit" class="buttonAdd">Create Screening</button>
+                </form>
+            </div>
+            <div class="formContainer">
+                <form onsubmit="@updateScreening">
+                    <input type="number" placeholder="ID of Screening" @bind-value="S.Id" />
+                    <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
+                    <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
+                    <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+                    <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+                    <button type="submit" class="buttonEdit">Update Screening</button>
+                </form>
+            </div>
+            <div class="formContainer">
+                <form onsubmit="@deleteScreening">
+                    <input type="number" placeholder="Screening ID to delete" @bind-value="S.Id" />
+                    <button type="submit" class="buttonDelete">Delete Screening</button>
+                </form>
+            </div>
         </div>
-        <div class="formContainer">
-            <form onsubmit="@updateScreening">
-                <input type="number" placeholder="ID of Screening" @bind-value="S.Id" />
-                <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
-                <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
-                <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
-                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
-                <button type="submit" class="buttonEdit">Update Screening</button>
-            </form>
-        </div>
-        <div class="formContainer">
-            <form onsubmit="@deleteScreening">
-                <input type="number" placeholder="Screening ID to delete" @bind-value="S.Id" />
-                <button type="submit" class="buttonDelete">Delete Screening</button>
-            </form>
-        </div>
-    </div>
+        </Authorized>
+        </AuthorizeView>
 </body>
 @code {
     private ScreeningDTO S = new();

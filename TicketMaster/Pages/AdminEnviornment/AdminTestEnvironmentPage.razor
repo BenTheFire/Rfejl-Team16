@@ -11,18 +11,23 @@
 -->
 
 <body>
-    <div class="admin-container">
-        <h3>Admin Test Environment</h3>
+    <AuthorizeView Roles="Administrator">
+        <NotAuthorized>403 - You are not an admin</NotAuthorized>
+        <Authorized>
+            <div class="admin-container">
+                <h3>Admin Test Environment</h3>
 
-        <ul class="admin-link-list">
-            <li><a href="/admin/edit/people">👤 Edit People</a></li>
-            <li><a href="/admin/edit/movies">🎬 Edit Movies</a></li>
-            <li><a href="/admin/edit/locations">📍 Edit Locations</a></li>
-            <li><a href="/admin/edit/screenings">📅 Edit Screenings</a></li>
-            <li><a href="/admin/edit/tickets">🎟️ Edit Tickets</a></li>
-            <li><a href="/admin/edit/vendors">🏪 Edit Vendors</a></li>
-        </ul>
-    </div>
+                <ul class="admin-link-list">
+                    <li><a href="/admin/edit/people">👤 Edit People</a></li>
+                    <li><a href="/admin/edit/movies">🎬 Edit Movies</a></li>
+                    <li><a href="/admin/edit/locations">📍 Edit Locations</a></li>
+                    <li><a href="/admin/edit/screenings">📅 Edit Screenings</a></li>
+                    <li><a href="/admin/edit/tickets">🎟️ Edit Tickets</a></li>
+                    <li><a href="/admin/edit/vendors">🏪 Edit Vendors</a></li>
+                </ul>
+            </div>
+        </Authorized>
+    </AuthorizeView>
 </body>
 
 <style>

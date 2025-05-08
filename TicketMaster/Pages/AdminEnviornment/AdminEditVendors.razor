@@ -4,34 +4,39 @@
 @using TicketMaster.Data.DTOs
 @inject IVendorService VS
 <body>
-    <h3>Edit Vendors</h3>
-    <div class="forms">
-        <div class="formContainer">
-            <form onsubmit="@createVendor">
-                <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
-                <input type="text" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
-                <input type="text" placeholder="Email of Vendor" @bind-value="V.Email" />
-                <input type="number" placeholder="ID of Location" @bind-value="V.LocationId" />
-                <button type="submit" class="buttonAdd">Create Vendor</button>
-            </form>
+    <AuthorizeView Roles="Administrator">
+        <NotAuthorized>403 - You are not an admin</NotAuthorized>
+        <Authorized>
+        <h3>Edit Vendors</h3>
+        <div class="forms">
+            <div class="formContainer">
+                <form onsubmit="@createVendor">
+                    <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
+                    <input type="text" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
+                    <input type="text" placeholder="Email of Vendor" @bind-value="V.Email" />
+                    <input type="number" placeholder="ID of Location" @bind-value="V.LocationId" />
+                    <button type="submit" class="buttonAdd">Create Vendor</button>
+                </form>
+            </div>
+            <div class="formContainer">
+                <form onsubmit="@updateVendor">
+                    <input type="number" placeholder="ID of Vendor to update" @bind-value="V.Id" />
+                    <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
+                    <input type="text" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
+                    <input type="text" placeholder="Email of Vendor" @bind-value="V.Email" />
+                    <input type="number" placeholder="ID of Location" @bind-value="V.LocationId" />
+                    <button type="submit" class="buttonEdit">Update Vendor</button>
+                </form>
+            </div>
+            <div class="formContainer">
+                <form onsubmit="@deleteVendor">
+                    <input type="number" placeholder="Vendor ID to delete" @bind-value="V.Id" />
+                    <button type="submit" class="buttonDelete">Delete Vendor</button>
+                </form>
+            </div>
         </div>
-        <div class="formContainer">
-            <form onsubmit="@updateVendor">
-                <input type="number" placeholder="ID of Vendor to update" @bind-value="V.Id" />
-                <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
-                <input type="text" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
-                <input type="text" placeholder="Email of Vendor" @bind-value="V.Email" />
-                <input type="number" placeholder="ID of Location" @bind-value="V.LocationId" />
-                <button type="submit" class="buttonEdit">Update Vendor</button>
-            </form>
-        </div>
-        <div class="formContainer">
-            <form onsubmit="@deleteVendor">
-                <input type="number" placeholder="Vendor ID to delete" @bind-value="V.Id" />
-                <button type="submit" class="buttonDelete">Delete Vendor</button>
-            </form>
-        </div>
-    </div>
+        </Authorized>
+    </AuthorizeView>
 </body>
 @code {
     private VendorDTO V = new();
