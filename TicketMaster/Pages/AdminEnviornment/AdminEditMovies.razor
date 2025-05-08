@@ -12,7 +12,7 @@
         <input type="text" placeholder="Release date" @bind-value="M.ReleaseDate" />
         <input type="number" placeholder="IMDb ID" @bind-value="M.ImdbId" />
 
-        <button type="submit">Create Location</button>
+        <button type="submit">Create Movie</button>
     </form>
     <form onsubmit="@updateMovie">
         <input type="number" placeholder="ID of movie to update" @bind-value="M.Id" />
@@ -22,10 +22,11 @@
         <input type="text" placeholder="Image source link" @bind-value="M.ImageSource" />
         <input type="text" placeholder="Release date" @bind-value="M.ReleaseDate" />
         <input type="number" placeholder="IMDb ID" @bind-value="M.ImdbId" />
+        <button type="submit">Update Movie</button>
     </form>
     <form onsubmit="@deleteMovie">
         <input type="number" placeholder="Movie ID to delete" @bind-value="M.Id" />
-        <button>Delete Location</button>
+        <button type="submit">Delete Movie</button>
     </form>
 </body>
 @code {

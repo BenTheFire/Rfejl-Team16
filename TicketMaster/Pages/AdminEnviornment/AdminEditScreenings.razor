@@ -1,7 +1,52 @@
-﻿@page "/admin/edit/screenings"
+﻿@page "/admin/edit/screening"
+@using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Objects
+@inject ITicketMasterService TMS
 <body>
-    <h3>AdminEditPeople</h3>
+    <h3>Edit Locations</h3>
+    <form onsubmit="@createScreening">
+        <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
+        <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
+        <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+        <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+        <button type="submit">Create Screening</button>
+    </form>
+    <form onsubmit="@updateScreening">
+        <input type="number" placeholder="ID of Screening" @bind-value="S.Id" />
+        <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
+        <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
+        <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+        <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+        <button type="submit">Update Screening</button>
+    </form>
+    <form onsubmit="@deleteScreening">
+        <input type="number" placeholder="Screening ID to delete" @bind-value="S.Id" />
+        <button type="submit">Delete Screening</button>
+    </form>
 </body>
 @code {
+    private ScreeningDTO S = new();
+    private async Task createScreening()
+    {
 
+    }
+
+    private async Task updateScreening()
+    {
+
+    }
+
+    private async Task deleteScreening()
+    {
+
+    }
+    public class ScreeningDTO 
+    {
+        public int Id { get; set; }
+        public int InLocationId { get; set; }
+        public int OfMovieId { get; set; }
+        public DateTime Time { get; set; }
+        public int SeatsTaken { get; set; }
+    }
 }
+

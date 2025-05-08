@@ -1,7 +1,43 @@
 ﻿@page "/admin/edit/people"
+@using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Objects
+@inject ITicketMasterService TMS
 <body>
-    <h3>AdminEditPeople</h3>
+    <h3>Edit Locations</h3>
+    <form onsubmit="@createPerson">
+        <input type="text" placeholder="Name of person" @bind-value="P.Name" />
+        <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
+        <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
+
+        <button type="submit">Create Person</button>
+    </form>
+    <form onsubmit="@updatePerson">
+        <input type="number" placeholder="ID of person" @bind-value="P.Id"/>
+        <input type="text" placeholder="Name of person" @bind-value="P.Name" />
+        <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
+        <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
+        <button type="submit">Update Person</button>
+    </form>
+    <form onsubmit="@deletePerson">
+        <input type="number" placeholder="Person ID to delete" @bind-value="P.Id" />
+        <button type="submit">Delete Person</button>
+    </form>
 </body>
 @code {
+    private Person P = new();
+    private async Task createPerson()
+    {
 
+    }
+
+    private async Task updatePerson()
+    {
+
+    }
+
+    private async Task deletePerson()
+    {
+
+    }
 }
+

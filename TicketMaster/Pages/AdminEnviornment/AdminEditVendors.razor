@@ -1,7 +1,52 @@
-﻿@page "/admin/edit/vendors"
+﻿@page "/admin/edit/vendor"
+@using TicketMaster.Data.Services.Interfaces
+@using TicketMaster.Objects
+@inject ITicketMasterService TMS
 <body>
-    <h3>AdminEditPeople</h3>
+    <h3>Edit Locations</h3>
+    <form onsubmit="@createVendor">
+        <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
+        <input type="text" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
+        <input type="text" placeholder="Email of Vendor" @bind-value="V.Email" />
+        <input type="number" placeholder="ID of Location" @bind-value="V.LocationId" />
+        <button type="submit">Create Vendor</button>
+    </form>
+    <form onsubmit="@updateVendor">
+        <input type="number" placeholder="ID of Vendor to update" @bind-value="V.Id" />
+        <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
+        <input type="text" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
+        <input type="text" placeholder="Email of Vendor" @bind-value="V.Email" />
+        <input type="number" placeholder="ID of Location" @bind-value="V.LocationId" />
+        <button type="submit">Update Vendor</button>
+    </form>
+    <form onsubmit="@deleteVendor">
+        <input type="number" placeholder="Vendor ID to delete" @bind-value="V.Id" />
+        <button type="submit">Delete Vendor</button>
+    </form>
 </body>
 @code {
+    private VendorDTO V = new();
+    private async Task createVendor()
+    {
 
+    }
+
+    private async Task updateVendor()
+    {
+
+    }
+
+    private async Task deleteVendor()
+    {
+
+    }
+    private class VendorDTO
+    {
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string PasswordHash { get; set; }
+        public string Email { get; set; }
+        public int LocationId { get; set; }
+    }
 }
+
