@@ -52,5 +52,48 @@ namespace TicketMaster.Data.Services.Implementations
                 .Include(scr => scr.InLocation)
                 .ToListAsync();
         }
+
+        public async Task CreateMovie(Movie movie)
+        {
+            _context.Movies.Add(movie);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Movie created succesfully");
+        }
+
+        public async Task DeleteMovie(int id)
+        {
+            var toDelete = await _context.Movies.Where(o => o.Id == id).FirstAsync();
+            if (toDelete != null) 
+            { 
+                _context.Movies.Remove(toDelete);
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Movie ({id}) deleted succesfully");
+            }
+            else
+            {
+                Console.WriteLine($"Movie ({id}) not found");
+            }
+        }
+
+        public async Task UpdateMovie(Movie movie)
+        {
+
+            var toUpdate = await _context.Movies.Where(o => o.Id == movie.Id).FirstAsync();
+            if (toUpdate != null)
+            { 
+                toUpdate.Title = movie.Title;
+                toUpdate.ImageSource = movie.ImageSource;
+                toUpdate.ImdbId = movie.ImdbId;
+                toUpdate.ReleaseDate = movie.ReleaseDate;
+                toUpdate.Description = movie.Description;
+                toUpdate.LengthInSeconds = movie.LengthInSeconds;
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Movie ({movie.Id}) updated succesfully");
+            }
+            else
+            {
+                Console.WriteLine($"Movie ({movie.Id}) not found");
+            }
+        }
     }
 }

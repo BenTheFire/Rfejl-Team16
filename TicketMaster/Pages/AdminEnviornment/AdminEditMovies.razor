@@ -33,17 +33,17 @@
     private Movie M = new();
     private async Task createMovie()
     {
-
+        await MS.CreateMovie(M);
     }
 
     private async Task updateMovie()
     {
-
+        await MS.UpdateMovie(M);
     }
 
     private async Task deleteMovie()
     {
-
+        await MS.DeleteMovie(M.Id);
     }
 }
 

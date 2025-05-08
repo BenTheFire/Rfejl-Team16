@@ -2,7 +2,7 @@
 @using TicketMaster.Data.Services.Interfaces
 @using TicketMaster.Objects
 @using TicketMaster.Data.DTOs
-@inject ITicketMasterService TMS
+@inject IScreeningService SS
 <body>
     <h3>Edit Screenings</h3>
     <form onsubmit="@createScreening">
@@ -29,17 +29,17 @@
     private ScreeningDTO S = new();
     private async Task createScreening()
     {
-
+        await SS.CreateScreening(S);
     }
 
     private async Task updateScreening()
     {
-
+        await SS.UpdateScreening(S);
     }
 
     private async Task deleteScreening()
     {
-
+        await SS.DeleteScreening(S.Id);
     }
     
 }
