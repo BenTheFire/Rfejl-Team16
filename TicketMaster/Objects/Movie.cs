@@ -1,4 +1,4 @@
-﻿namespace TicketMaster.Objects
+﻿namespace Ticketmaster.Objects
 {
     public class Movie
     {

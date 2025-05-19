@@ -1,7 +1,7 @@
-﻿using TicketMaster.Objects;
-using TicketMaster.Data.DTOs;
+﻿using Ticketmaster.Objects;
+using Ticketmaster.Data.DTOs;
 
-namespace TicketMaster.Data.Services.Interfaces
+namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface ITicketService
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace TicketMaster.Data.DTOs
+namespace Ticketmaster.Data.DTOs
 {
     public class VendorDTO
     {

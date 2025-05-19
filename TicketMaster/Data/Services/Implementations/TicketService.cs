@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicketMaster.Data.DTOs;
-using TicketMaster.Data.Services.Interfaces;
-using TicketMaster.Objects;
+using Ticketmaster.Data.DTOs;
+using Ticketmaster.Data.Services.Interfaces;
+using Ticketmaster.Objects;
 
-namespace TicketMaster.Data.Services.Implementations
+namespace Ticketmaster.Data.Services.Implementations
 {
     public class TicketService : ITicketService
     {

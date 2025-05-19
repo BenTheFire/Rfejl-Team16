@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace TicketMaster.Objects
+namespace Ticketmaster.Objects
 {
     public class Location
     {
@@ -8,6 +8,6 @@ namespace TicketMaster.Objects
         public string Name { get; set; }
         public string Address { get; set; }
         public int Capacity { get; set; }
-        public DbSet<Vendor> Vendors { get; set; }
+        //public DbSet<Vendor> ByVendor { get; set; }
     }
 }

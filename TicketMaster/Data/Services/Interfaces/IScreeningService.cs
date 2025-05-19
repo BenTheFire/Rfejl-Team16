@@ -1,7 +1,7 @@
-﻿using TicketMaster.Data.DTOs;
-using TicketMaster.Objects;
+﻿using Ticketmaster.Data.DTOs;
+using Ticketmaster.Objects;
 
-namespace TicketMaster.Data.Services.Interfaces
+namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface IScreeningService
     {

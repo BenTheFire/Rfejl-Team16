@@ -1,9 +1,9 @@
-﻿using TicketMaster.Authentication;
-using TicketMaster.Data.DTOs;
-using TicketMaster.Data.Services.Interfaces;
-using TicketMaster.Objects;
+﻿using Ticketmaster.Authentication;
+using Ticketmaster.Data.DTOs;
+using Ticketmaster.Data.Services.Interfaces;
+using Ticketmaster.Objects;
 
-namespace TicketMaster.Data.Services.Implementations
+namespace Ticketmaster.Data.Services.Implementations
 {
     public class LoginService : ILoginService
     {

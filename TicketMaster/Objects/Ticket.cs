@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TicketMaster.Objects
+namespace Ticketmaster.Objects
 {
     public class Ticket
     {
@@ -11,7 +11,6 @@ namespace TicketMaster.Objects
         public string Seat { get; set; }
         [DefaultValue(0)]
         public int Status { get; set; }
-        public Vendor ByVendor { get; set; }
         public DateTime? PurchaseTime { get; set; }
     }
 }

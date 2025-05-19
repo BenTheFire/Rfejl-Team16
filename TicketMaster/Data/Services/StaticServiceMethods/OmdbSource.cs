@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using TicketMaster.Objects;
+using Ticketmaster.Objects;
 
-namespace TicketMaster.Data.Services.StaticServiceMethods
+namespace Ticketmaster.Data.Services.StaticServiceMethods
 {
     public static class OmdbSource
     {

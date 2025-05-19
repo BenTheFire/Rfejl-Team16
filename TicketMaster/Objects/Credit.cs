@@ -1,4 +1,4 @@
-﻿namespace TicketMaster.Objects
+﻿namespace Ticketmaster.Objects
 {
     [Microsoft.EntityFrameworkCore.Keyless]
     public class Credit

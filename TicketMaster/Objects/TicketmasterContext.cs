@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
-namespace TicketMaster.Objects
+namespace Ticketmaster.Objects
 {
     public class TicketmasterContext : IdentityDbContext
     {

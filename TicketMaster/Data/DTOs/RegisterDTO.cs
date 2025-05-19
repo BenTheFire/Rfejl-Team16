@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicketMaster.Objects;
+using Ticketmaster.Objects;
 
-namespace TicketMaster.Data.DTOs
+namespace Ticketmaster.Data.DTOs
 {
     public class RegisterUserDTO
     {

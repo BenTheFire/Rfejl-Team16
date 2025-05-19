@@ -1,6 +1,6 @@
-﻿using TicketMaster.Data.DTOs;
+﻿using Ticketmaster.Data.DTOs;
 
-namespace TicketMaster.Data.Services.Interfaces
+namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface IVendorService
     {

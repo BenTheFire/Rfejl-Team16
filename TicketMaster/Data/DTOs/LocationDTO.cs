@@ -1,4 +1,4 @@
-﻿namespace TicketMaster.Data.DTOs
+﻿namespace Ticketmaster.Data.DTOs
 {
     public class LocationDTO
     {

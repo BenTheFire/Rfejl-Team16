@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Ticketmaster.Areas.Identity;
 using Ticketmaster.Data;
-using TicketMaster.Data.Services.Implementations;
-using TicketMaster.Data.Services.Interfaces;
+using Ticketmaster.Data.Services.Implementations;
+using Ticketmaster.Data.Services.Interfaces;
 
 namespace Ticketmaster;
 

@@ -1,4 +1,4 @@
-﻿namespace TicketMaster.Extra
+﻿namespace Ticketmaster.Extra
 {
     public static class Extensions
     {

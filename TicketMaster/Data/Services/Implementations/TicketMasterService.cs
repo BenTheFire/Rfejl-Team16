@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System.Text.Json;
-using TicketMaster.Data.Services.Interfaces;
-using TicketMaster.Data.Services.StaticServiceMethods;
-using TicketMaster.Extra;
-using TicketMaster.Objects;
+using Ticketmaster.Data.Services.Interfaces;
+using Ticketmaster.Data.Services.StaticServiceMethods;
+using Ticketmaster.Extra;
+using Ticketmaster.Objects;
 
-namespace TicketMaster.Data.Services.Implementations
+namespace Ticketmaster.Data.Services.Implementations
 {
     public class TicketMasterService : ITicketMasterService
     {

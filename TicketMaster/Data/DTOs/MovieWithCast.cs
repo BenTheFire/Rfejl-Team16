@@ -1,6 +1,6 @@
-﻿using TicketMaster.Objects;
+﻿using Ticketmaster.Objects;
 
-namespace TicketMaster.Data.DTOs
+namespace Ticketmaster.Data.DTOs
 {
     public class MovieWithCast
     {
