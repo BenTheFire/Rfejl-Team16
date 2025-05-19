@@ -1,0 +1,78 @@
+﻿@page "/admin/edit/people"
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Objects
+@inject IPeopleService PS
+<body>
+    <h3>Edit People</h3>
+    <div class="forms">
+        <div class="formContainer">
+        <form onsubmit="@createPerson">
+            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
+            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
+            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
+
+            <button type="submit" class="buttonAdd">Create Person</button>
+        </form>
+        </div>
+        <div class="formContainer">
+        <form onsubmit="@updatePerson">
+            <input type="number" placeholder="ID of person" @bind-value="P.Id"/>
+            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
+            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
+            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
+            <button type="submit" class="buttonEdit">Update Person</button>
+        </form>
+        </div>
+        <div class="formContainer">
+        <form onsubmit="@deletePerson">
+            <input type="number" placeholder="Person ID to delete" @bind-value="P.Id" />
+            <button type="submit" class="buttonDelete">Delete Person</button>
+        </form>
+        </div>
+    </div>
+</body>
+@code {
+    private Person P = new();
+    private async Task createPerson()
+    {
+        await PS.CreatePerson(P);
+    }
+
+    private async Task updatePerson()
+    {
+        await PS.UpdatePerson(P);
+    }
+
+    private async Task deletePerson()
+    {
+        await PS.DeletePerson(P.Id);
+    }
+}
+
+
+<style>
+    .forms {
+        display: flex;
+        align-content: normal;
+        justify-content: normal;
+    }
+
+    .formContainer {
+        display: flex;
+        align-content: normal;
+        justify-content: normal;
+        flex-direction: column;
+    }
+
+    .buttonDelete {
+        background-color: red;
+    }
+
+    .buttonAdd {
+        background-color: palegreen;
+    }
+
+    .buttonEdit {
+        background-color: cornflowerblue;
+    }
+</style>
