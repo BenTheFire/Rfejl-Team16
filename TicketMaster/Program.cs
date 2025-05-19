@@ -8,6 +8,7 @@ using Ticketmaster.Areas.Identity;
 using Ticketmaster.Data;
 using Ticketmaster.Data.Services.Implementations;
 using Ticketmaster.Data.Services.Interfaces;
+using Ticketmaster.Objects;
 
 namespace Ticketmaster;
 
@@ -20,8 +21,6 @@ public class Program
         // Add services to the container.
         builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
         builder.Services.AddScoped<IMovieService, MovieService>();
-        builder.Services.AddScoped<ILoginService, LoginService>();
-        builder.Services.AddScoped<IRegisterService, RegisterService>();
         builder.Services.AddScoped<IScreeningService, ScreeningService>();
         builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddScoped<ILocationService, LocationService>();
@@ -31,15 +30,14 @@ public class Program
 
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        builder.Services.AddDbContext<TicketmasterContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<TicketmasterContext>();
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-        builder.Services.AddSingleton<WeatherForecastService>();
 
         var app = builder.Build();
 

@@ -25,10 +25,10 @@ namespace Ticketmaster.Data.Services.Implementations
         {
             return await _context.Screenings.Where(o => o.InLocation == location).ToListAsync();
         }
-        public async Task<List<Screening>> FetchScreeningsByVendor(Vendor vendor)
-        {
-            return await _context.Screenings.Where(o => o.InLocation.Vendors.Contains(vendor)).ToListAsync();
-        }
+        //public async Task<List<Screening>> FetchScreeningsByVendor(Vendor vendor)
+        //{
+        //    return await _context.Screenings.Where(o => o.InLocation.Vendors.Contains(vendor)).ToListAsync();
+        //}
         public async Task<Screening> FetchScreening(int id)
         {
             return new Screening()
