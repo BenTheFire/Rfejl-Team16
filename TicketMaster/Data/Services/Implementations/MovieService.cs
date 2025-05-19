@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 using Ticketmaster.Data.DTOs;
 using Ticketmaster.Data.Services.Interfaces;
 using Ticketmaster.Objects;
@@ -17,7 +18,7 @@ namespace Ticketmaster.Data.Services.Implementations
         {
             int imdbIdInt = Convert.ToInt32(imdbId);
 
-            var result = await (
+            /*var result = await (
                 from movie in _context.Movies
                 join credit in _context.Credits on movie equals credit.OfMovie
                 join person in _context.People on credit.WhoIs equals person
@@ -27,17 +28,21 @@ namespace Ticketmaster.Data.Services.Implementations
                     Movie = movie,
                     Person = person,
                     credit.Role
-                }).ToListAsync();
+                }).ToListAsync();*/
+            Movie movie = await _context.Movies.Where(o => o.ImdbId == imdbIdInt).FirstAsync();
+            List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.Id  == imdbIdInt).ToListAsync();
+            List<Person> people = new List<Person>();
 
-            var cast = result
-                .GroupBy(x => x.Movie)
-                .Select(g => (
-                    movie: g.Key,
-                    cast: g.Select(x => (x.Person, x.Role)).ToList()
-                ))
-                .First();
+            var cast = new List<(Person, string)>();
 
-            return new(cast);
+            foreach (Credit credit in credits)
+            {
+                cast.Add(new(credit.WhoIs, credit.Role));
+            }
+
+            MovieWithCast result = new MovieWithCast((movie, cast));
+
+            return result;
 
         }
 
