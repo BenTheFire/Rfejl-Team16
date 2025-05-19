@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Ticketmaster.Areas.Identity;
 using Ticketmaster.Data;
+using TicketMaster.Data.Services.Implementations;
+using TicketMaster.Data.Services.Interfaces;
 
 namespace Ticketmaster;
 
@@ -16,6 +18,18 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
+        builder.Services.AddScoped<IMovieService, MovieService>();
+        builder.Services.AddScoped<ILoginService, LoginService>();
+        builder.Services.AddScoped<IRegisterService, RegisterService>();
+        builder.Services.AddScoped<IScreeningService, ScreeningService>();
+        builder.Services.AddScoped<ITicketService, TicketService>();
+        builder.Services.AddScoped<ILocationService, LocationService>();
+        builder.Services.AddScoped<IVendorService, VendorService>();
+        builder.Services.AddScoped<IPeopleService, PeopleService>();
+        builder.Services.AddControllers();
+
+
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
