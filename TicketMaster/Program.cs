@@ -1,11 +1,13 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
-using TicketMaster.Authentication;
-using TicketMaster.Data.Services.Implementations;
-using TicketMaster.Data.Services.Interfaces;
-using TicketMaster.Objects;
+using Ticketmaster.Areas.Identity;
+using Ticketmaster.Data;
 
-namespace TicketMaster;
+namespace Ticketmaster;
 
 public class Program
 {
@@ -14,52 +16,25 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(connectionString));
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddScoped<ITicketMasterService, TicketMasterService>();
-        builder.Services.AddScoped<IMovieService, MovieService>();
-        builder.Services.AddScoped<ILoginService, LoginService>();
-        builder.Services.AddScoped<IRegisterService, RegisterService>();
-        builder.Services.AddScoped<IScreeningService, ScreeningService>();
-        builder.Services.AddScoped<ITicketService, TicketService>();
-        builder.Services.AddScoped<ILocationService, LocationService>();
-        builder.Services.AddScoped<IVendorService, VendorService>();
-        builder.Services.AddScoped<IPeopleService, PeopleService>();
-        builder.Services.AddControllers();
-
-        builder.Services.AddHttpContextAccessor();
-
-        builder.Services.AddScoped<PasswordService>();
-        builder.Services.AddScoped<AuthenticationService>();
-        builder.Services.AddScoped<AuthenticationStateProvider, TicketmasterAuthenticationStateProvider>();
-        builder.Services.AddAuthentication("TicketmasterAuth")
-            .AddCookie("TicketmasterAuth", options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.MaxAge = TimeSpan.FromDays(3);
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromDays(7);
-            });
-        builder.Services.AddAuthorization();
-
-        //init mysql server context
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-        builder.Services.AddDbContext<TicketmasterContext>(
-            o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-        /*builder.Services.AddDefaultIdentity<UnregisteredUser>(
-            o => o.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<TicketmasterContext>();*/
-
-        // ALL PASSWORDS IN DATABASE ARE NOW HASHED!
-        // HashAllPasswordsInDatabase(connectionString);
+        builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+        builder.Services.AddSingleton<WeatherForecastService>();
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseMigrationsEndPoint();
+        }
+        else
         {
             app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -72,42 +47,12 @@ public class Program
 
         app.UseRouting();
 
-        app.MapControllers();
+        app.UseAuthorization();
 
+        app.MapControllers();
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
 
         app.Run();
-    }
-
-    /// <summary>
-    /// In case passwords need to be rehashed in the database
-    /// </summary>
-    /// <param name="connectionString"></param>
-    static void HashAllPasswordsInDatabase(string? connectionString)
-    {
-        TicketmasterContext context = new(new DbContextOptionsBuilder<TicketmasterContext>().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).Options);
-        PasswordService pws = new();
-
-        foreach (var user in context.Users)
-        {
-            try
-            {
-                if (!pws.VerifyPassword(user, user.PasswordHash))
-                {
-                    var oldpwh = user.PasswordHash;
-                    user.PasswordHash = pws.HashPassword(user, user.PasswordHash);
-                    Console.WriteLine(oldpwh + "\n" + user.PasswordHash);
-                }
-            }
-            catch (FormatException)
-            {
-                var oldpwh = user.PasswordHash;
-                user.PasswordHash = pws.HashPassword(user, user.PasswordHash);
-                Console.WriteLine(oldpwh + "\n" + user.PasswordHash);
-            }
-        }
-
-        context.SaveChanges();
     }
 }

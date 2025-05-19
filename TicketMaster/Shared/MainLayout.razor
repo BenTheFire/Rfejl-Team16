@@ -1,31 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="main-layout">
+<PageTitle>Ticketmaster</PageTitle>
 
-    <!-- Hamburger container with background -->
-    <div class="hamburger-container">
-        <button class="hamburger" @onclick="ToggleMenu">☰</button>
-    </div>
-
-    <!-- Sidebar / Navbar -->
-    <div class="sidebar @(isMenuOpen ? "open" : "")">
-        <h2 class="brand">TicketMaster</h2>
+<div class="page">
+    <div class="sidebar">
         <NavMenu />
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <main class="content">
+    <main>
+        <div class="top-row px-4 auth">
+            <LoginDisplay />
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
             @Body
-        </main>
-    </div>
+        </article>
+    </main>
 </div>
-
-@code {
-    private bool isMenuOpen = false;
-
-    private void ToggleMenu()
-    {
-        isMenuOpen = !isMenuOpen;
-    }
-}

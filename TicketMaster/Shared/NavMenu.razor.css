@@ -1,71 +1,68 @@
-.nav-container {
-    position: relative;
+.navbar-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-.hamburger {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 24px;
-    margin: 10px;
+.top-row {
+    height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
 }
 
-.no-bullets {
-    list-style-type: none;
-    padding-left: 0; 
-    margin: 0; 
+.navbar-brand {
+    font-size: 1.1rem;
 }
 
-.nav-menu {
-    display: flex;
-    flex-direction: column;
+.oi {
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
 }
 
-    .nav-menu ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+    .nav-item:first-of-type {
+        padding-top: 1rem;
     }
 
-    .nav-menu li {
-        margin: 5px 0;
+    .nav-item:last-of-type {
+        padding-bottom: 1rem;
     }
 
-.dropdown-menu {
-    list-style-type: none;
-    margin: 5px 0 0 15px;
-    padding-left: 10px;
-    border-left: 2px solid #ccc;
+    .nav-item ::deep a {
+        color: #d7d7d7;
+        border-radius: 4px;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        line-height: 3rem;
+    }
+
+.nav-item ::deep a.active {
+    background-color: rgba(255,255,255,0.25);
+    color: white;
 }
 
-.dropdown-toggle {
-    cursor: pointer;
-    font-weight: bold;
+.nav-item ::deep a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
 }
 
-.dropdown-menu {
-    margin-left: 15px;
-    padding: 0;
-    list-style: none;
-}
-
-button.dropdown-toggle {
-    background: none;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .nav-menu {
+@media (min-width: 641px) {
+    .navbar-toggler {
         display: none;
     }
 
-        .nav-menu.show {
-            display: block;
-        }
-
-    .hamburger {
+    .collapse {
+        /* Never collapse the sidebar for wide screens */
         display: block;
+    }
+    
+    .nav-scrollable {
+        /* Allow sidebar to scroll for tall menus */
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
     }
 }
