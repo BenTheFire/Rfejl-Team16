@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
+using System.Text.Json;
 using Ticketmaster.Data.DTOs;
 using Ticketmaster.Objects;
 
@@ -138,11 +139,19 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
                 }
                 if (jsonDocument.RootElement.TryGetProperty("Director", out JsonElement director))
                 {
-                    casting.Add(new Casting((new Person() { Name = director.GetString() }, "Director")));
+                    string[] directors = director.GetString().Split(',');
+                    foreach (string actor in directors)
+                    {
+                        casting.Add(new Casting((new Person() { Name = actor.ToString() }, "Director")));
+                    }
                 }
                 if(jsonDocument.RootElement.TryGetProperty("Writer", out JsonElement writer))
                 {
-                    casting.Add(new Casting((new Person() { Name = writer.GetString() }, "Writer")));
+                    string[] writers = writer.GetString().Split(',');
+                    foreach (string actor in writers)
+                    {
+                        casting.Add(new Casting((new Person() { Name = actor.ToString() }, "Writer")));
+                    }
                 }
                 return casting;
             }

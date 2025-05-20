@@ -28,7 +28,7 @@ namespace Ticketmaster.Data.DTOs
             Person = castingInput.person;
             Role = castingInput.role;
         }
-        public Person Person { get; init; }
-        public string Role { get; init; }
+        public Person Person { get; set; }
+        public string Role { get; set; }
     }
 }

@@ -67,15 +67,67 @@ namespace Ticketmaster.Data.Services.Implementations
         public async Task CreateMovie(MovieWithCast movie)
         {
             await _context.Movies.AddAsync(movie.Movie);
-            await _context.Credits.AddRangeAsync(movie.Cast.Select(o => new Credit
+
+            foreach (Casting castMember in movie.Cast)
             {
-                OfMovie = movie.Movie,
-                WhoIs = o.Person,
-                Role = o.Role
-            }));
+                var existingPerson = await _context.People.FirstOrDefaultAsync(p => p.Name == castMember.Person.Name);
+
+                if (existingPerson == null)
+                {
+                    await _context.People.AddAsync(castMember.Person);
+                    Console.WriteLine($"Person ({castMember.Person.Name}) marked for creation.");
+                }
+                else
+                {
+                    movie.Cast.Where(o => o.Person == castMember.Person && o.Role == castMember.Role).First().Person = existingPerson;
+                    Console.WriteLine($"Person ({existingPerson.Name}) already exists, linking existing entity.");
+                }
+            }
+            foreach (var castMember in movie.Cast)
+            {
+                await _context.Credits.AddAsync(new Credit
+                {
+                    OfMovie = movie.Movie,     
+                    WhoIs = castMember.Person, 
+                    Role = castMember.Role
+                });
+                Console.WriteLine($"Credit ({castMember.Role}) for {castMember.Person.Name} marked for creation.");
+            }
+
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Movie, people (if new), and credits created/linked successfully.");
+        }
+        /*public async Task CreateMovie(MovieWithCast movie)
+        {
+            await _context.Movies.AddAsync(movie.Movie);
+            await _context.SaveChangesAsync();
+            List<Person> people = movie.Cast.Select(o => o.Person).ToList();
+            foreach (var person in people)
+            {
+                if (!await _context.People.AnyAsync(o => o.Name == person.Name))
+                {
+                    await _context.People.AddAsync(person);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Person ({person.Name}) created succesfully");
+                } else
+                {
+                    people.Where(o => o.Name == person.Name).First().Id = await _context.People.Where(o => o.Name == person.Name).Select(o => o.Id).FirstAsync();
+                }
+            }
+            foreach (var cast in movie.Cast)
+            {
+                await _context.Credits.AddAsync(new Credit
+                {
+                    OfMovie = movie.Movie,
+                    WhoIs = cast.Person,
+                    Role = cast.Role
+                });
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Credit ({cast.Role}) created succesfully");
+            }
             await _context.SaveChangesAsync();
             Console.WriteLine($"Movie created with cast succesfully");
-        }
+        }*/
 
         public async Task DeleteMovieByTitle(string title)
         {
@@ -97,25 +149,15 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task UpdateMovie(Movie movie)
         {
-            try
-            {
-                var toUpdate = await _context.Movies.Where(o => o.Id == movie.Id).FirstAsync();
-                if (toUpdate != null)
-                {
-                    toUpdate.Title = movie.Title;
-                    toUpdate.ImageSource = movie.ImageSource;
-                    toUpdate.ImdbId = movie.ImdbId;
-                    toUpdate.ReleaseDate = movie.ReleaseDate;
-                    toUpdate.Description = movie.Description;
-                    toUpdate.LengthInSeconds = movie.LengthInSeconds;
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine($"Movie ({movie.Id}) updated succesfully");
-                }
-            }
-            catch (Exception e)
+            if (!await _context.Movies.AnyAsync(o => o.Id == movie.Id))
             {
                 Console.WriteLine($"Movie ({movie.Id}) not found");
+                return;
             }
+
+            _context.Movies.Update(movie);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Movie ({movie.Id}) updated succesfully");
         }
 
         public async Task<bool> IsInDBByTitle(string title)

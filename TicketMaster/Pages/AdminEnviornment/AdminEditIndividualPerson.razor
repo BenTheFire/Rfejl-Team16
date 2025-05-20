@@ -1,0 +1,59 @@
+﻿@page "/admin/edit/person/{personId}"
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Objects
+@inject IPeopleService PS
+@inject NavigationManager NavigationManager
+
+<body>
+    @if(P != null)
+    {
+        <a href="/admin/edit/people">Go back</a>
+        <form onsubmit="@updatePerson">
+            <p>Name</p>
+            <input type="text" placeholder="Name of Person" @bind-value="P.Name" />
+            <p>Birth date</p>
+            <input type="date" placeholder="Birthday of Person" @bind-value="P.BirthDate" />
+            <p>Nationality</p>
+            <input type="text" placeholder="Nationality of Person" @bind-value="P.Nationality" />
+            <button type="submit" >Update Person</button>
+        </form>
+        <form onsubmit="@deletePerson">
+            <button type="submit">Delete Person</button>
+        </form>
+    } else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
+    }
+</body>
+
+@code {
+    [Parameter] public string PersonId { get; set; }
+    private Person P = new();    
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch the person data using the PersonId
+        var person = await PS.GetPersonById(Convert.ToInt16(PersonId));
+        if (person != null)
+        {
+            P = person;
+        }
+    }
+    private async Task updatePerson()
+    {
+        P.Id = Convert.ToInt16(PersonId); // Ensure the ID is set for the update
+        await PS.UpdatePerson(P);
+        await OnInitializedAsync();
+    }
+    private async Task deletePerson()
+    {
+        await PS.DeletePerson(P.Id);
+        P = null; // Clear the person data after deletion
+        //redirect to the people list
+        NavigationManager.NavigateTo("/admin/edit/people");
+    }
+}
