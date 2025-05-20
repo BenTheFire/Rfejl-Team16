@@ -33,8 +33,11 @@ public class Program
         builder.Services.AddDbContext<TicketmasterContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<TicketmasterContext>();
+
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+            .AddEntityFrameworkStores<TicketmasterContext>()
+            .AddDefaultTokenProviders();
+
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();

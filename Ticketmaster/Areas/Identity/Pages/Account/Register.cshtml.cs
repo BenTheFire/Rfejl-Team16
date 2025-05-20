@@ -23,26 +23,28 @@ namespace Ticketmaster.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+        private const string SecretKey = "v39g#2mK8pQx7FnWsYbRtJvU1zDeOi0lHkAg64ScBr5qYtNuZmWxEcVbN9rFjI2oP7uQyXzKlTaShGi8cD4eJfRw1sA6mQnLpZ3oIuYvXtCrEwB5nMrJqKzHdLfPgWbSj2aV8dRcXyTzUoI9pLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFUIIAIAIAUAISUIIAIUIIIAIhojhZmurd";
+
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -79,6 +81,10 @@ namespace Ticketmaster.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            [Required]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -97,6 +103,9 @@ namespace Ticketmaster.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Display(Name = "Admin Register Key")]
+            public string SecretKey { get; set; } = "";
         }
 
 
@@ -114,13 +123,31 @@ namespace Ticketmaster.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if (!await _roleManager.RoleExistsAsync("Admin"))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                    }
+                    if (!await _roleManager.RoleExistsAsync("User"))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("User"));
+                    }
+
+                    if (Input.SecretKey == SecretKey)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -130,9 +157,6 @@ namespace Ticketmaster.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
