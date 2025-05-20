@@ -142,5 +142,10 @@ namespace Ticketmaster.Data.Services.Implementations
                 }
             }
         }
+
+        public async Task<List<Movie>> GetMovies()
+        {
+            return await _context.Movies.ToListAsync();
+        }
     }
 }

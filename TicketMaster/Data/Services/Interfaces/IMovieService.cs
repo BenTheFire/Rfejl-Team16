@@ -5,6 +5,7 @@ namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface IMovieService
     {
+        public Task<List<Movie>> GetMovies();
         public Task<MovieWithCast> FetchMovieDataAsync(string imdbId);
         public Task<List<Screening>> FetchScreenings(string imdbId);
         public Task<bool> IsInDBByTitle(string title);
