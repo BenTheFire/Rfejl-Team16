@@ -2,10 +2,12 @@
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
 @inject IMovieService MS
+@using Ticketmaster.Data.Services.StaticServiceMethods
 <body>
     <h3>Edit Movies</h3>
     <div class="forms">
         <div class="formContainer">
+            <h4>Create movie</h4>
             <form onsubmit="@createMovie">
                 <input type="text" placeholder="Title of movie" @bind-value="M.Title" />
                 <input type="text" placeholder="Description of movie" @bind-value="M.Description" />
@@ -16,7 +18,18 @@
                 <button type="submit" class="buttonAdd">Create Movie</button>
             </form>
         </div>
+        <div>
+            <h4>Fetch movie from OMBD by title</h4>
+
+            <form onsubmit="@fetchMovie">
+                <input type="text" placeholder="Title of movie" @bind-value="M.Title" />
+                <button type="submit" class="buttonAdd">Fetch Movie </button>
+                <InputCheckbox @bind-Value="force"/> Force
+            </form>
+            <p>@text</p>
+        </div>
         <div class="formContainer">
+            <h4>Update movie</h4>
             <form onsubmit="@updateMovie">
                 <input type="number" placeholder="ID of movie to update" @bind-value="M.Id" />
                 <input type="text" placeholder="Title of movie" @bind-value="M.Title" />
@@ -29,15 +42,97 @@
             </form>
         </div>
         <div class="formContainer">
+            <h4>Delete movie</h4>
             <form onsubmit="@deleteMovie">
-                <input type="number" placeholder="Movie ID to delete" @bind-value="M.Id" />
+                <input type="text" placeholder="Movie's Title to delete" @bind-value="M.Title" />
                 <button type="submit" class="buttonDelete">Delete Movie</button>
             </form>
+            @if (isNotInDBDelete)
+            {
+                <p>Movie not in database</p>
+            }
+            else if (successDelete)
+            {
+                <p>Movie deleted from database</p>
+            }
         </div>
     </div>
 </body>
 @code {
+    private bool isInDBAdd = false;
+    private bool successAdd = false;
+    private bool isNotInDBDelete = false;
+    private bool successDelete = false;
+    private bool force = false;
+    private bool doesntExistAdd = false;
+    private string text = "";
     private Movie M = new();
+
+    private void ResetFetchMovieStatus()
+    {
+        isInDBAdd = false;
+        successAdd = false;
+        doesntExistAdd = false;
+    }
+
+    private async Task fetchMovie() {
+        ResetFetchMovieStatus();
+        if (await MS.IsInDBByTitle(M.Title))
+        {
+            isInDBAdd = true;
+        }
+        if (!force)
+        {
+            if (isInDBAdd)
+            {
+                text = "Movie already in database";
+                return;
+            }
+            await foreach (var item in OmdbSource.FetchMovieByTitle(M.Title))
+            {
+                if (item == null)
+                {
+                    text = $"Movie with title {M.Title} doesn't exist in Omdb";
+                    doesntExistAdd = true;
+                    return;
+                }
+                await MS.CreateMovie(item);
+                isInDBAdd = false;
+                successAdd = true;
+                doesntExistAdd = false;
+                text = $"Movie {M.Title} added succesfully";
+                return;
+            }
+        }
+        else
+        {
+            if (isInDBAdd)
+            {
+                await MS.UpdateMovieFromOmdbByTitle(M.Title);
+                successAdd = true;
+                doesntExistAdd = false;
+                text = $"Movie {M.Title} updated forcefully";
+                return;
+            }
+            else
+            {
+                await foreach (var item in OmdbSource.FetchMovieByTitle(M.Title))
+                {
+                    if (item == null)
+                    {
+                        doesntExistAdd = true;
+                        text = $"Movie {M.Title} doesn't exist in Omdb";
+                        return;
+                    }
+                    await MS.CreateMovie(item);
+                    successAdd = true;
+                    doesntExistAdd = false;
+                    text = $"Movie {M.Title} created forcefully";
+                    return;
+                }
+            }
+        }
+    }
     private async Task createMovie()
     {
         await MS.CreateMovie(M);
@@ -50,7 +145,14 @@
 
     private async Task deleteMovie()
     {
-        await MS.DeleteMovie(M.Id);
+        if (!await MS.IsInDBByTitle(M.Title))
+        {
+            isNotInDBDelete = true;
+            return;
+        }
+        isNotInDBDelete = false;
+        await MS.DeleteMovieByTitle(M.Title);
+        successDelete = true;
     }
 }
 <style>

@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Ticketmaster.Data.DTOs;
 using Ticketmaster.Data.Services.Interfaces;
+using Ticketmaster.Data.Services.StaticServiceMethods;
 using Ticketmaster.Objects;
 
 namespace Ticketmaster.Data.Services.Implementations
 {
+
     public class MovieService : IMovieService
     {
         public MovieService(TicketmasterContext c)
@@ -30,7 +31,7 @@ namespace Ticketmaster.Data.Services.Implementations
                     credit.Role
                 }).ToListAsync();*/
             Movie movie = await _context.Movies.Where(o => o.ImdbId == imdbIdInt).FirstAsync();
-            List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.Id  == imdbIdInt).ToListAsync();
+            List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.Id == imdbIdInt).ToListAsync();
             List<Person> people = new List<Person>();
 
             var cast = new List<(Person, string)>();
@@ -65,20 +66,21 @@ namespace Ticketmaster.Data.Services.Implementations
             Console.WriteLine($"Movie created succesfully");
         }
 
-        public async Task DeleteMovie(int id)
+        public async Task DeleteMovieByTitle(string title)
         {
             try
             {
-                var toDelete = await _context.Movies.Where(o => o.Id == id).FirstAsync();
+                var toDelete = await _context.Movies.Where(o => o.Title == title).FirstAsync();
                 if (toDelete != null)
                 {
                     _context.Movies.Remove(toDelete);
                     await _context.SaveChangesAsync();
-                    Console.WriteLine($"Movie ({id}) deleted succesfully");
+                    Console.WriteLine($"Movie ({title}) deleted succesfully");
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine($"Movie ({id}) not found");
+                Console.WriteLine($"Movie ({title}) not found");
             }
         }
 
@@ -98,9 +100,46 @@ namespace Ticketmaster.Data.Services.Implementations
                     await _context.SaveChangesAsync();
                     Console.WriteLine($"Movie ({movie.Id}) updated succesfully");
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine($"Movie ({movie.Id}) not found");
+            }
+        }
+
+        public async Task<bool> IsInDBByTitle(string title)
+        {
+            return await _context.Movies.AnyAsync(o => o.Title == title);
+        }
+
+        public async Task<bool> IsInDBByImdbId(string imdbId)
+        {
+            return await _context.Movies.AnyAsync(o => o.ImdbId == Convert.ToInt32(imdbId));
+        }
+
+        public async Task UpdateMovieFromOmdbByTitle(string title)
+        {
+            var movieToUpdate = await _context.Movies.Where(o => o.Title == title).FirstAsync();
+            if (movieToUpdate == null)
+            {
+                Console.WriteLine($"Movie ({title}) not found");
+                return;
+            }
+            else
+            {
+                await foreach (Movie item in OmdbSource.FetchMovieByTitle(title))
+                {
+                    movieToUpdate.Title = item.Title;
+                    movieToUpdate.Description = item.Description;
+                    movieToUpdate.LengthInSeconds = item.LengthInSeconds;
+                    movieToUpdate.ImageSource = item.ImageSource;
+                    movieToUpdate.ReleaseDate = item.ReleaseDate;
+                    movieToUpdate.ImdbId = item.ImdbId;
+                    _context.Movies.Update(movieToUpdate);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Movie ({title}) updated succesfully");
+                    return;
+                }
             }
         }
     }
