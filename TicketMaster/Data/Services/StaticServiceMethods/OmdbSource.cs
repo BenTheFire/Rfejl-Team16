@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Ticketmaster.Data.DTOs;
 using Ticketmaster.Objects;
 
 namespace Ticketmaster.Data.Services.StaticServiceMethods
@@ -56,16 +57,18 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
             yield return "";
             yield break;
         }
-        public static async IAsyncEnumerable<Movie> FetchMovieByImdbId(int imdbId)
+        public static async IAsyncEnumerable<MovieWithCast> FetchMovieByImdbId(int imdbId)
         {
             string apiResult;
             using var httpClient = new HttpClient();
             apiResult = await httpClient.GetStringAsync(OmdbApiImdbId(imdbId));
             JsonDocument apiJson = JsonDocument.Parse(apiResult);
             Movie movie = ParseMovie(apiJson);
+            List<Casting> cast = ParseCast(apiJson);
             if (movie != null)
             {
-                yield return movie;
+                MovieWithCast movieWithCast = new MovieWithCast(movie, cast);
+                yield return movieWithCast;
             }
             else
             {
@@ -73,16 +76,18 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
                 yield return null;
             }
         }
-        public static async IAsyncEnumerable<Movie> FetchMovieByTitle(string title)
+        public static async IAsyncEnumerable<MovieWithCast> FetchMovieByTitle(string title)
         {
             string apiResult;
             using var httpClient = new HttpClient();
             apiResult = await httpClient.GetStringAsync(OmdbApi + $"&t={title}");
             JsonDocument apiJson = JsonDocument.Parse(apiResult);
             Movie movie = ParseMovie(apiJson);
-            if (movie != null)
+            List<Casting> cast = ParseCast(apiJson);
+            if (movie != null && cast != null)
             {
-                yield return movie;
+                MovieWithCast movieWithCast = new MovieWithCast(movie, cast);
+                yield return movieWithCast;
             }
             else
             {
@@ -118,6 +123,28 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
                     movie.ImdbId = int.Parse(imdbId.GetString()[2..]);
                 }
                 return movie;
+            }
+            else return null;
+        }
+        private static List<Casting> ParseCast(JsonDocument jsonDocument)
+        {
+            List<Casting> casting = new List<Casting>();
+            if (jsonDocument.RootElement.TryGetProperty("Actors", out JsonElement result))
+            {
+                string[] actors = result.GetString().Split(',');
+                foreach (string actor in actors)
+                {
+                    casting.Add(new Casting((new Person() { Name = actor.ToString() }, "Actor")));
+                }
+                if (jsonDocument.RootElement.TryGetProperty("Director", out JsonElement director))
+                {
+                    casting.Add(new Casting((new Person() { Name = director.GetString() }, "Director")));
+                }
+                if(jsonDocument.RootElement.TryGetProperty("Writer", out JsonElement writer))
+                {
+                    casting.Add(new Casting((new Person() { Name = writer.GetString() }, "Writer")));
+                }
+                return casting;
             }
             else return null;
         }

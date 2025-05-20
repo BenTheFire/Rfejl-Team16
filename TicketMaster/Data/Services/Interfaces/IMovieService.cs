@@ -14,6 +14,7 @@ namespace Ticketmaster.Data.Services.Interfaces
         public Task<bool> IsInDBByTitle(string title);
         public Task<bool> IsInDBByImdbId(string imdbId);
         public Task CreateMovie(Movie movie);
+        public Task CreateMovie(MovieWithCast movie);
         public Task DeleteMovieByTitle(string title);
         public Task DeleteMovieByImdbId(string imdbId);
         public Task UpdateMovie(Movie movie);

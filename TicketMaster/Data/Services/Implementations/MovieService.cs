@@ -31,7 +31,7 @@ namespace Ticketmaster.Data.Services.Implementations
                     credit.Role
                 }).ToListAsync();*/
             Movie movie = await _context.Movies.Where(o => o.ImdbId == imdbIdInt).FirstAsync();
-            List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.Id == imdbIdInt).ToListAsync();
+            List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.ImdbId == imdbIdInt).Include(o => o.WhoIs).ToListAsync();
             List<Person> people = new List<Person>();
 
             var cast = new List<(Person, string)>();
@@ -58,12 +58,23 @@ namespace Ticketmaster.Data.Services.Implementations
                 .Include(scr => scr.InLocation)
                 .ToListAsync();
         }
-
         public async Task CreateMovie(Movie movie)
         {
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
             Console.WriteLine($"Movie created succesfully");
+        }
+        public async Task CreateMovie(MovieWithCast movie)
+        {
+            await _context.Movies.AddAsync(movie.Movie);
+            await _context.Credits.AddRangeAsync(movie.Cast.Select(o => new Credit
+            {
+                OfMovie = movie.Movie,
+                WhoIs = o.Person,
+                Role = o.Role
+            }));
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Movie created with cast succesfully");
         }
 
         public async Task DeleteMovieByTitle(string title)
@@ -127,14 +138,14 @@ namespace Ticketmaster.Data.Services.Implementations
             }
             else
             {
-                await foreach (Movie item in OmdbSource.FetchMovieByTitle(title))
+                await foreach (MovieWithCast item in OmdbSource.FetchMovieByTitle(title))
                 {
-                    movieToUpdate.Title = item.Title;
-                    movieToUpdate.Description = item.Description;
-                    movieToUpdate.LengthInSeconds = item.LengthInSeconds;
-                    movieToUpdate.ImageSource = item.ImageSource;
-                    movieToUpdate.ReleaseDate = item.ReleaseDate;
-                    movieToUpdate.ImdbId = item.ImdbId;
+                    movieToUpdate.Title = item.Movie.Title;
+                    movieToUpdate.Description = item.Movie.Description;
+                    movieToUpdate.LengthInSeconds = item.Movie.LengthInSeconds;
+                    movieToUpdate.ImageSource = item.Movie.ImageSource;
+                    movieToUpdate.ReleaseDate = item.Movie.ReleaseDate;
+                    movieToUpdate.ImdbId = item.Movie.ImdbId;
                     _context.Movies.Update(movieToUpdate);
                     await _context.SaveChangesAsync();
                     Console.WriteLine($"Movie ({title}) updated succesfully");
