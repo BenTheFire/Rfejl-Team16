@@ -1,20 +1,40 @@
 ﻿@inherits LayoutComponentBase
-
+@inject ThemeService ThemeService
 <PageTitle>Ticketmaster</PageTitle>
-
+<div class="@ThemeClass" style="min-height: 100vh;">
 <div class="page">
     <div class="sidebar">
         <NavMenu />
+           
+
+           
     </div>
 
-    <main>
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+        <main style="background-color: var(--bg-color); color: var(--text-color); min-height: 100vh;">
+       
 
-        <article class="content px-4">
+            <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+</div>
+@code {
+    private string ThemeClass =>
+        ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged); // ensures it runs on UI thread
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}

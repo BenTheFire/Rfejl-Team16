@@ -27,6 +27,8 @@ public class Program
         builder.Services.AddScoped<IVendorService, VendorService>();
         builder.Services.AddScoped<IPeopleService, PeopleService>();
         builder.Services.AddControllers();
+        builder.Services.AddSingleton<ThemeService>();
+
 
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

@@ -9,6 +9,7 @@
 
 .navbar-brand {
     font-size: 1.1rem;
+    color: #facc15;
 }
 
 .oi {
@@ -32,7 +33,7 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
+        color: #8b5cf6;
         border-radius: 4px;
         height: 3rem;
         display: flex;
