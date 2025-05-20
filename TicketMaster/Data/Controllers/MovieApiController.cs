@@ -14,23 +14,40 @@ namespace Ticketmaster.Data.Controllers
     {
         private IMovieService movieService;
 
-        public MovieApiController(IMovieService iMovieService, ITicketMasterService itms)
+        public MovieApiController(IMovieService iMovieService)
         {
             movieService = iMovieService;
         }
 
         [HttpGet("{imdbId}")]
-        public async Task<IActionResult> GetAsync(string imdbId)
+        public async Task<IActionResult> GetMovieAsync(string imdbId)
         {
             try
             {
                 MovieWithCast result = await movieService.FetchMovieDataAsync(imdbId);
-
-                if (result == null)
-                {
-                    return BadRequest("Imdb ID is not found in our database");
-                }
                 return Ok(result);
+            }
+            catch (MovieDbException)
+            {
+                return NotFound();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("{imdbId}/screenings")]
+        public async Task<IActionResult> GetScreeningsAsync(string imdbId)
+        {
+            try
+            {
+                var result = await movieService.FetchScreenings(imdbId);
+                return Ok(result);
+            }
+            catch (MovieDbException)
+            {
+                return NotFound();
             }
             catch
             {

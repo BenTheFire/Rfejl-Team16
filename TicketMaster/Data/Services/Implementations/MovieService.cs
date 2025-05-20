@@ -30,7 +30,8 @@ namespace Ticketmaster.Data.Services.Implementations
                     Person = person,
                     credit.Role
                 }).ToListAsync();*/
-            Movie movie = await _context.Movies.Where(o => o.ImdbId == imdbIdInt).FirstAsync();
+            Movie movie = await _context.Movies.Where(o => o.ImdbId == imdbIdInt).FirstOrDefaultAsync()
+                ?? throw new MovieDbException();
             List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.Id == imdbIdInt).ToListAsync();
             List<Person> people = new List<Person>();
 
@@ -81,6 +82,20 @@ namespace Ticketmaster.Data.Services.Implementations
             catch (Exception e)
             {
                 Console.WriteLine($"Movie ({title}) not found");
+            }
+        }
+
+        public async Task DeleteMovieByImdbId(string imdbId)
+        {
+            var toDelete = 
+                await _context.Movies
+                .Where(o => $"{o.ImdbId:D7}" == imdbId)
+                .FirstOrDefaultAsync();
+
+            if (toDelete != null)
+            {
+                _context.Movies.Remove(toDelete);
+                await _context.SaveChangesAsync();
             }
         }
 

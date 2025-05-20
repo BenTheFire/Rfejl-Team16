@@ -18,13 +18,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Ticketmaster.Data;
 
 namespace Ticketmaster.Areas.Identity.Pages.Account
 {
-    public class RegisterModel : PageModel
+    public class RegisterModel : PageModel, IAdminSecret
     {
-        private const string SecretKey = "v39g#2mK8pQx7FnWsYbRtJvU1zDeOi0lHkAg64ScBr5qYtNuZmWxEcVbN9rFjI2oP7uQyXzKlTaShGi8cD4eJfRw1sA6mQnLpZ3oIuYvXtCrEwB5nMrJqKzHdLfPgWbSj2aV8dRcXyTzUoI9pLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFeDsZwXvCbNmKlRpZqWtEvBcNxRyTzUiOpLqWeRtYhJgFUIIAIAIAUAISUIIAIUIIIAIhojhZmurd";
-
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
@@ -140,7 +139,7 @@ namespace Ticketmaster.Areas.Identity.Pages.Account
                         await _roleManager.CreateAsync(new IdentityRole("User"));
                     }
 
-                    if (Input.SecretKey == SecretKey)
+                    if (Input.SecretKey == IAdminSecret.SecretKey)
                     {
                         await _userManager.AddToRoleAsync(user, "Admin");
                     }
