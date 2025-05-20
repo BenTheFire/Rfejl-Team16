@@ -62,39 +62,16 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
             using var httpClient = new HttpClient();
             apiResult = await httpClient.GetStringAsync(OmdbApiImdbId(imdbId));
             JsonDocument apiJson = JsonDocument.Parse(apiResult);
-            Movie movie = new Movie();
-            if (apiJson.RootElement.TryGetProperty("Title", out JsonElement result))
+            Movie movie = ParseMovie(apiJson);
+            if (movie != null)
             {
-                movie.Title = result.GetString();
-                if (apiJson.RootElement.TryGetProperty("Plot", out JsonElement plot))
-                {
-                    movie.Description = plot.GetString();
-                }
-                if (apiJson.RootElement.TryGetProperty("Runtime", out JsonElement runtime))
-                {
-                    string[] time = runtime.GetString().Split(' ');
-                    movie.LengthInSeconds = int.Parse(time[0]) * 60;
-                }
-                if (apiJson.RootElement.TryGetProperty("Poster", out JsonElement poster))
-                {
-                    movie.ImageSource = poster.GetString();
-                }
-                if (apiJson.RootElement.TryGetProperty("Year", out JsonElement released))
-                {
-                    movie.ReleaseDate = released.GetString();
-                }
-                if (apiJson.RootElement.TryGetProperty("imdbID", out JsonElement imdbIdElem))
-                {
-                    movie.ImdbId = int.Parse(imdbIdElem.GetString()[2..]);
-                }
                 yield return movie;
             }
             else
             {
-                Console.WriteLine($"Movie with id {imdbId} is missing");
+                Console.WriteLine($"Movie with Imdb ID {imdbId} is missing");
                 yield return null;
             }
-            yield return null;
         }
         public static async IAsyncEnumerable<Movie> FetchMovieByTitle(string title)
         {
@@ -102,31 +79,9 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
             using var httpClient = new HttpClient();
             apiResult = await httpClient.GetStringAsync(OmdbApi + $"&t={title}");
             JsonDocument apiJson = JsonDocument.Parse(apiResult);
-            Movie movie = new Movie();
-            if (apiJson.RootElement.TryGetProperty("Title", out JsonElement result))
+            Movie movie = ParseMovie(apiJson);
+            if (movie != null)
             {
-                movie.Title = result.GetString();
-                if (apiJson.RootElement.TryGetProperty("Plot", out JsonElement plot))
-                {
-                    movie.Description = plot.GetString();
-                }
-                if (apiJson.RootElement.TryGetProperty("Runtime", out JsonElement runtime))
-                {
-                    string[] time = runtime.GetString().Split(' ');
-                    movie.LengthInSeconds = int.Parse(time[0]) * 60;
-                }
-                if (apiJson.RootElement.TryGetProperty("Poster", out JsonElement poster))
-                {
-                    movie.ImageSource = poster.GetString();
-                }
-                if (apiJson.RootElement.TryGetProperty("Year", out JsonElement released))
-                {
-                    movie.ReleaseDate = released.GetString();
-                }
-                if (apiJson.RootElement.TryGetProperty("imdbID", out JsonElement imdbId))
-                {
-                    movie.ImdbId = int.Parse(imdbId.GetString()[2..]);
-                }
                 yield return movie;
             }
             else
@@ -134,7 +89,37 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
                 Console.WriteLine($"Movie with title {title} is missing");
                 yield return null;
             }
-            yield return null;
+        }
+        private static Movie ParseMovie(JsonDocument jsonDocument)
+        {
+            Movie movie = new Movie();
+            if (jsonDocument.RootElement.TryGetProperty("Title", out JsonElement result))
+            {
+                movie.Title = result.GetString();
+                if (jsonDocument.RootElement.TryGetProperty("Plot", out JsonElement plot))
+                {
+                    movie.Description = plot.GetString();
+                }
+                if (jsonDocument.RootElement.TryGetProperty("Runtime", out JsonElement runtime))
+                {
+                    string[] time = runtime.GetString().Split(' ');
+                    movie.LengthInSeconds = int.Parse(time[0]) * 60;
+                }
+                if (jsonDocument.RootElement.TryGetProperty("Poster", out JsonElement poster))
+                {
+                    movie.ImageSource = poster.GetString();
+                }
+                if (jsonDocument.RootElement.TryGetProperty("Year", out JsonElement released))
+                {
+                    movie.ReleaseDate = released.GetString();
+                }
+                if (jsonDocument.RootElement.TryGetProperty("imdbID", out JsonElement imdbId))
+                {
+                    movie.ImdbId = int.Parse(imdbId.GetString()[2..]);
+                }
+                return movie;
+            }
+            else return null;
         }
     }
 }
