@@ -55,7 +55,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await IMS.FetchMovieDataByImdbAsync(ImdbId);
+        var result = await IMS.FetchMovieDataByImdbIdAsync(ImdbId);
         movieData = result.Movie;
         castData = result.Cast;
         screeningData = await IMS.FetchScreenings(ImdbId);

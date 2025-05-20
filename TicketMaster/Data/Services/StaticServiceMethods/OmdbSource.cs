@@ -6,7 +6,7 @@ namespace Ticketmaster.Data.Services.StaticServiceMethods
     public static class OmdbSource
     {
         private static string _key = "3a5dfbb5";
-        public static string OmdbApi = $"http://www.omdbapi.com/?apikey={_key}";
+        public static string OmdbApi = $"http://www.omdbapi.com/?apikey={_key}&plot=full";
         public static string OmdbApiImdbId(int imdbID) =>
             $"{OmdbApi}&i=tt{imdbID:D7}";
 

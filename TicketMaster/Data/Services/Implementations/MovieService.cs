@@ -15,7 +15,7 @@ namespace Ticketmaster.Data.Services.Implementations
         }
         private readonly TicketmasterContext _context;
 
-        public async Task<MovieWithCast> FetchMovieDataByImdbAsync(string imdbId)
+        public async Task<MovieWithCast> FetchMovieDataByImdbIdAsync(string imdbId)
         {
             int imdbIdInt = Convert.ToInt32(imdbId);
 
@@ -49,7 +49,7 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<List<Screening>> FetchScreenings(string imdbId)
         {
-            var guh = await FetchMovieDataByImdbAsync(imdbId);
+            var guh = await FetchMovieDataByImdbIdAsync(imdbId);
 
             return await
                 (from scr in _context.Screenings
@@ -161,6 +161,11 @@ namespace Ticketmaster.Data.Services.Implementations
         public async Task<Movie> FetchMovieByImdbIdAsync(string imdbId)
         {
             return await _context.Movies.Where(o => o.ImdbId == Convert.ToInt32(imdbId)).FirstAsync();
+        }
+
+        public Task DeleteMovieByImdbId(string imdbId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
