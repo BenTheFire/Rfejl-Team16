@@ -7,8 +7,11 @@ namespace Ticketmaster.Data.Services.Interfaces
     {
         public Task<MovieWithCast> FetchMovieDataAsync(string imdbId);
         public Task<List<Screening>> FetchScreenings(string imdbId);
+        public Task<bool> IsInDBByTitle(string title);
+        public Task<bool> IsInDBByImdbId(string imdbId);
         public Task CreateMovie(Movie movie);
-        public Task DeleteMovie(int id);
+        public Task DeleteMovieByTitle(string title);
         public Task UpdateMovie(Movie movie);
+        public Task UpdateMovieFromOmdbByTitle(string title);
     }
 }
