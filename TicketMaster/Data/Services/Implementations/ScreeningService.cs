@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Ticketmaster.Data.DTOs;
 using Ticketmaster.Data.Services.Interfaces;
 using Ticketmaster.Objects;
@@ -29,6 +30,18 @@ namespace Ticketmaster.Data.Services.Implementations
         //{
         //    return await _context.Screenings.Where(o => o.InLocation.Vendors.Contains(vendor)).ToListAsync();
         //}
+        public async Task<List<Screening>> FetchScreeningsByMovie(Movie movie)
+        {
+            return await _context.Screenings.Where(o => o.OfMovie == movie).ToListAsync();
+        }
+        public bool IsOngoing(Screening screening) 
+        {
+            if (DateTime.Now > screening.Time & DateTime.Now < screening.Time.AddSeconds(screening.OfMovie.LengthInSeconds)) 
+            {
+                return true;
+            }
+            return false;
+        }
         public async Task<Screening> FetchScreening(int id)
         {
             return new Screening()
