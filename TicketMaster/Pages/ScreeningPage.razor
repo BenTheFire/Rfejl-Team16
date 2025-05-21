@@ -11,26 +11,31 @@
 <body>
     @if (screening != null)
     {
-        <h3>Screening of @screening.OfMovie.Title on @screening.Time.ToString("yyyy-MM-dd HH:mm")</h3>
-        <p>Filled slots: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
+        <div class="forms">
+            <div class="formContainer">
+                <h3 class="text-accent">Screening of @screening.OfMovie.Title on @screening.Time.ToString("yyyy-MM-dd HH:mm")</h3>
+                <p>Filled slots: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
 
-        @if (User != null)
-        {
-            <h4>Logged in as: @User.UserName</h4>
-            if (customerData != null)
-            {
-                <p>Customer: @User.UserName</p>
-                <p>Email: @email</p>
-                <p>Phone: @phone</p>
-            }
-        }
-        else
-        {
-            <input type="text" placeholder="Email" @bind-value="@email" />
-            <input type="text" placeholder="Phone" @bind-value="@phone" />
-        }
-        <input type="text" placeholder="Seat" @bind-value="@seat"/>
-        <button onclick="@buyTicket">Buy Ticket for screening</button>
+                @if (User != null)
+                {
+                    <h4 class="text-accent">Logged in as: @User.UserName</h4>
+                    if (customerData != null)
+                    {
+                        <p>Customer: @User.UserName</p>
+                        <p>Email: @email</p>
+                        <p>Phone: @phone</p>
+                    }
+                }
+                else
+                {
+                    <input type="text" class="form-control mb-2" placeholder="Email" @bind-value="@email" />
+                    <input type="text" class="form-control mb-2" placeholder="Phone" @bind-value="@phone" />
+                }
+
+                <input type="text" class="form-control mb-2" placeholder="Seat" @bind-value="@seat" />
+                <button class="buttonAdd" type="button" @onclick="buyTicket">Buy Ticket for screening</button>
+            </div>
+        </div>
     }
     else
     {
@@ -42,6 +47,7 @@
         </div>
     }
 </body>
+
 
 
 @code {
@@ -104,3 +110,125 @@
             });
     }
 }
+<style>
+    /* Main container */
+    .forms {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    /* Box container */
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        /* Headings */
+        .formContainer h3, .formContainer h4 {
+            color: var(--accent-text-color);
+            margin-bottom: 1rem;
+        }
+
+    /* Input fields */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select.form-control {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        background-color: var(--input-bg, var(--card-bg));
+        color: var(--text-color);
+        border: 1px solid var(--color-gray-3);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+    }
+
+    input::placeholder,
+    select option {
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    /* Select dropdown styles */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='gray' viewBox='0 0 20 20'><polygon points='0,0 20,0 10,10'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 10px;
+        padding-right: 2rem;
+    }
+
+    /* Buttons */
+    button {
+        padding: 0.75rem 1rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 0.5rem;
+        width: 100%;
+        margin-top: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .buttonAdd {
+        background-color: var(--color-blue);
+        color: var(--color-white);
+    }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+        .buttonDelete:hover {
+            background-color: #dc2626;
+        }
+
+    .buttonEdit {
+        background-color: var(--color-green);
+        color: var(--color-white);
+    }
+
+        .buttonEdit:hover {
+            background-color: #16a34a;
+        }
+
+    /* Lists for update sections */
+    ul {
+        padding-left: 1.25rem;
+        margin-top: 1rem;
+    }
+
+        ul li {
+            margin-bottom: 0.75rem;
+        }
+
+            ul li a {
+                color: var(--color-purple);
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+                ul li a:hover {
+                    color: var(--color-yellow);
+                }
+
+    /* Accent text utility */
+    .text-accent {
+        color: var(--accent-text-color);
+    }
+
+</style>
