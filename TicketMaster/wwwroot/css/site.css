@@ -824,6 +824,9 @@ nav {
     padding: 1rem;
     text-align: center;
 }
+.row {
+    gap: 2rem;
+}
 
     .card:hover {
         transform: translateY(-6px);
