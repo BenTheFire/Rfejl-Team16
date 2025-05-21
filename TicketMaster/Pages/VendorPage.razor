@@ -1,0 +1,53 @@
+﻿@page "/VendorPage"
+@using System.Security.Claims
+@using Ticketmaster.Objects;
+@using Ticketmaster.Data.DTOs;
+@using Microsoft.AspNetCore.Identity;
+@inject Ticketmaster.Data.Services.Interfaces.IScreeningService SS
+@inject Ticketmaster.Data.Services.Interfaces.ITicketService TS
+@inject Ticketmaster.Data.Services.Interfaces.ICustomerService CS
+@inject Ticketmaster.Data.Services.Interfaces.ILocationService LS
+@inject Ticketmaster.Data.Services.Interfaces.IUserService US
+@inject AuthenticationStateProvider ASP
+
+<body>
+    @if (vendor != null && locations != null)
+    {
+        <h1>Welcome, @vendor.UserName</h1>
+        <p>Email: @vendor.Email</p>
+        <p>Phone: @vendor.PhoneNumber</p>
+        <br />
+        <h3>Locations</h3>
+        <ul>
+            @foreach (var location in locations)
+            {
+                <li>@location.Name, @location.Address</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <h2>Loading...</h2>
+        <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+    }
+</body>
+
+@code {
+    IdentityUser vendor = new();
+
+    List<Location> locations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await ASP.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var vendorId = authState.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (vendorId != null)
+            {
+                vendor = await US.GetUserByIdAsync(vendorId);
+                locations = await LS.GetLocationsByVendorIdAsync(vendorId);
+            }
+        }
+    }
+}
