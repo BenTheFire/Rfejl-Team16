@@ -6,7 +6,7 @@
 @inject IVendorService VS
 <body>
     <div class="forms">
-        <div class="formContainer my-2">
+        <div class="formContainer my-1">
             <div class="row g-4">
                 <div class="col-12 col-md-6">
                     <div class="formContainer">
@@ -14,7 +14,7 @@
                         <ul>
                             @foreach (var vendor in vendors)
                             {
-                                <li><a href="@vendor.Id">@vendor.Id</a></li>
+                                <li><a href="@Href(vendor.Id)">@vendor.Id</a></li>
                             }
                         </ul>
                     </div>
@@ -67,20 +67,7 @@
             vendors = null;
         }
     }
-    private async Task createVendor()
-    {
-        //await VS.CreateVendor(V);
-    }
-
-    private async Task updateVendor()
-    {
-        //await VS.UpdateVendor(V);
-    }
-
-    private async Task deleteVendor()
-    {
-        //await VS.DeleteVendor((int)V.Id);
-    }
+    private string Href(string id) => $"/admin/edit/vendor/{id}";
 }
 
 <style>

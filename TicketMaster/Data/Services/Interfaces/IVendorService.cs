@@ -11,8 +11,7 @@ namespace Ticketmaster.Data.Services.Interfaces
         public Task<IdentityUser> GetVendorByPhoneAsync(string phone);
         public Task<bool> IsInDBByEmailAsync(string email);
         public Task<bool> IsInDBByPhoneAsync(string phone);
-        public Task CreateVendorAsync(IdentityUser vendor);
-        public Task DeleteVendorById(string id);
         public Task UpdateVendor(IdentityUser vendor);
+        public Task UpdateVendorPassword(IdentityBuilder vendor, string password);
     }
 }
