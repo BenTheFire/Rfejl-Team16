@@ -146,6 +146,7 @@
 
     private async Task deleteMovie()
     {
+        List<Screening> scrns;
         if (!await MS.IsInDBByTitle(M.Title))
         {
             isNotInDBDelete = true;
