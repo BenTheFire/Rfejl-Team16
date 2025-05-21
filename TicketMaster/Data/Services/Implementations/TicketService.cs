@@ -121,5 +121,14 @@ namespace Ticketmaster.Data.Services.Implementations
         {
             return await _context.Tickets.Where(o => o.Id == id).FirstOrDefaultAsync();
         }
+
+        public async Task<List<Ticket>> GetTicketsByUserIdAsync(string userId)
+        {
+            return await _context.Tickets.Where(o => o.Customer.OfUser.Id == userId)
+                .Include(o => o.Customer)
+                .Include(o => o.OfScreening)
+                .Include(o => o.OfScreening.InLocation)
+                .Include(o =>o.OfScreening.OfMovie).ToListAsync();
+        }
     }
 }
