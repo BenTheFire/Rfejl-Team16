@@ -1,1 +1,120 @@
-﻿
+﻿.forms {
+    
+}
+
+/* Container for form blocks */
+.formContainer {
+    padding: 2rem;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: background-color var(--transition), color var(--transition);
+}
+
+    /* Form headings */
+    .formContainer h2,
+    .formContainer h3,
+    .formContainer h4 {
+        color: var(--accent-text-color);
+        margin-bottom: 1rem;
+    }
+
+/* Input styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+input[type="datetime-local"],
+select.form-control {
+    width: 100%;
+    padding: var(--input-padding);
+    border: 1px solid var(--color-gray-3);
+    border-radius: var(--border-radius);
+    background-color: var(--input-bg, var(--card-bg));
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: border-color var(--transition);
+}
+
+input::placeholder {
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--color-blue);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+/* Labels */
+label {
+    font-weight: 600;
+    color: var(--text-color);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Checkbox styling */
+.form-check-input {
+    margin-right: 0.5rem;
+}
+
+/* Buttons */
+.buttonAdd,
+.buttonPrimary,
+button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--color-blue);
+    color: var(--color-white);
+    cursor: pointer;
+    transition: background-color var(--transition);
+    margin-top: 1rem;
+}
+
+    .buttonAdd:hover,
+    .buttonPrimary:hover {
+        background-color: var(--color-blue-hover);
+    }
+
+/* Error messages */
+.text-danger {
+    color: var(--color-red);
+    font-size: 0.875rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Optional: for external login providers */
+button[name="provider"] {
+    margin: 0.5rem 0;
+    background-color: var(--color-purple);
+    color: var(--color-white);
+}
+
+    button[name="provider"]:hover {
+        background-color: #a275f8;
+    }
+
+/* Links */
+a {
+    color: var(--accent-text-color);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+    a:hover {
+        color: var(--color-blue);
+    }
