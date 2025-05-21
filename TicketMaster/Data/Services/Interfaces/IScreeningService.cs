@@ -12,8 +12,8 @@ namespace Ticketmaster.Data.Services.Interfaces
         //public Task<List<Screening>> FetchScreeningsByVendor(Vendor vendor);
         public bool IsOngoing(Screening screening);
         public Task<List<Screening>> FetchScreeningsByMovie(Movie movie);
-        public Task CreateScreening(ScreeningDTO screening);
-        public Task UpdateScreening(ScreeningDTO screening);
+        public Task CreateScreening(Screening screening);
+        public Task UpdateScreening(Screening screening);
         public Task DeleteScreening(int id);
     }
 }

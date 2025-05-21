@@ -106,5 +106,19 @@ namespace Ticketmaster.Data.Services.Implementations
                 Console.WriteLine($"Screening ({id}) not found");
             }
         }
+
+        public async Task<Screening> GetScreeningByIdAsync(int id)
+        {
+            var result = await _context.Screenings.Where(o => o.Id == id).FirstAsync();
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                Console.WriteLine($"Screening ({id}) not found");
+                return null;
+            }
+        }
     }
 }
