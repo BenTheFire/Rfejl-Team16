@@ -5,11 +5,13 @@ namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface ITicketService
     {
+        public Task<List<Ticket>> GetTicketsAsync();
+        public Task<Ticket> GetTicketByIdAsync(int id);
         public List<Ticket> FetchPurchases(string username);
         //public List<Ticket> FetchPendingTickets(string vendorUsername);
         public List<Ticket> FetchOwnedTickets(string username);
-        //public Task CreateTicket(TicketDTO ticket);
-        //public Task UpdateTicket(TicketDTO ticket);
-        public Task DeleteTicket(int id);
+        public Task CreateTicketAsync(Ticket ticket);
+        public Task UpdateTicketAsync(Ticket ticket);
+        public Task DeleteTicketAsync(int id);
     }
 }

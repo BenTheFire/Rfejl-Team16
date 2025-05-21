@@ -1,77 +1,102 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Ticketmaster.Data.DTOs;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Ticketmaster.Data.Services.Interfaces;
-using Ticketmaster.Objects;
+using Ticketmaster.Extra;
 
 namespace Ticketmaster.Data.Services.Implementations
 {
     public class VendorService : IVendorService
     {
-        private TicketmasterContext _context;
-        public VendorService(TicketmasterContext c)
+        //private TicketmasterContext _context;
+        public VendorService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _context = c;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
-        //public async Task CreateVendor(VendorDTO vendor)
-        //{
-        //    Vendor vendorToAdd = new Vendor()
-        //    {
-        //        Username = vendor.Username,
-        //        PasswordHash = vendor.PasswordHash,
-        //        Email = vendor.Email
-        //    };
-        //    int locationId = await _context.Locations.Where(o => o.Id == vendor.LocationId).Select(o => o.Id).FirstAsync();
-        //    if (locationId != null)
-        //    {
-        //        vendorToAdd.Locations.Add(await _context.Locations.Where(o => o.Id == vendor.LocationId).FirstAsync());
-        //        _context.Vendors.Add(vendorToAdd);
-        //        await _context.SaveChangesAsync();
-        //        Console.WriteLine($"Vendor added succesfully");
-        //    } 
-        //    else
-        //    {
-        //        Console.WriteLine($"Vendor with id {vendor.LocationId} not found");
-        //    }
-        //}
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public async Task CreateVendorAsync(IdentityUser vendor)
+        {
+            var user = await _userManager.CreateAsync(vendor);
+            if (user.Succeeded)
+            {
+                string roleName = "Vendor";
+                if (!await _roleManager.RoleExistsAsync(roleName))
+                {
+                    var role = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                    if (!role.Succeeded)
+                    {
+                        return;
+                    }
+                }
+                var result = await _userManager.AddToRoleAsync(vendor, roleName);
+                if (!result.Succeeded)
+                {
+                    await _userManager.DeleteAsync(vendor);
+                    return;
+                }
+            }
+        }
 
-        //public async Task DeleteVendor(int id)
-        //{
-        //    try
-        //    {
-        //        var toRemove = await _context.Vendors.Where(o => o.Id == id).FirstAsync();
-        //        if (toRemove != null)
-        //        {
-        //            _context.Vendors.Remove(toRemove);
-        //            await _context.SaveChangesAsync();
-        //            Console.WriteLine($"Vendor ({id}) deleted succesfully");
-        //        }
-        //    } catch (Exception e)
-        //    {
-        //        Console.WriteLine($"Vendor ({id}) not found");
-        //    }
-        //}
+        public Task DeleteVendorById(string id)
+        {
+            _userManager.DeleteAsync(_userManager.Users.FirstOrDefault(u => u.Id == id));
+            return Task.CompletedTask;
+        }
 
-        //public async Task UpdateVendor(VendorDTO vendor)
-        //{
-        //    try
-        //    {
-        //        var toUpdate = await _context.Vendors.Where(o => o.Id == vendor.Id).FirstAsync();
-        //        Location location = await _context.Locations.Where(o => o.Id == vendor.LocationId).FirstAsync();
-        //        if (toUpdate != null)
-        //        {
-        //            toUpdate.Email = vendor.Email;
-        //            toUpdate.Username = vendor.Username;
-        //            var all = await _context.Locations.ToListAsync();
-        //            toUpdate.Locations.RemoveRange(all);
-        //            await _context.SaveChangesAsync();
-        //            await toUpdate.Locations.AddAsync(location);
-        //            await _context.SaveChangesAsync();
-        //            Console.WriteLine($"Vendor ({vendor.Id}) updated succesfully");
-        //        }
-        //    } catch (Exception e)
-        //    {
-        //        Console.WriteLine($"Vendor ({vendor.Id}) not found");
-        //    }
-        //}
+        public async Task<IdentityUser> GetVendorByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<IdentityUser> GetVendorByIdAsync(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+        }
+
+        public async Task<IdentityUser> GetVendorByPhoneAsync(string phone)
+        {
+            return await _userManager.Users
+                .FirstOrDefaultAsync(u => u.PhoneNumber == phone);
+        }
+
+        public async Task<List<IdentityUser>> GetVendorsAsync()
+        {
+            return await _userManager.Users
+                .Where(u => _userManager.IsInRoleAsync(u, "Vendor").Result)
+                .ToListAsync();
+        }
+
+        public async Task<bool> IsInDBByEmailAsync(string email)
+        {
+            return await _userManager.Users
+                .AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> IsInDBByPhoneAsync(string phone)
+        {
+            return await _userManager.Users
+                .AnyAsync(u => u.PhoneNumber == phone);
+        }
+
+        public async Task UpdateVendor(IdentityUser vendor)
+        {
+            var current = await _userManager.FindByIdAsync(vendor.Id);
+            if (current != null)
+            {
+                current.Email = vendor.Email;
+                current.PhoneNumber = vendor.PhoneNumber;
+                current.UserName = vendor.UserName;
+                await _userManager.UpdateAsync(current);
+            }
+        }
+        public async Task UpdateVendorPassword(IdentityUser vendor)
+        {
+            var current = await _userManager.FindByIdAsync(vendor.Id);
+            if (current != null && !vendor.PasswordHash.IsNullOrEmpty())
+            {
+                await _userManager.ChangePasswordAsync(current, current.PasswordHash, vendor.PasswordHash);
+            }
+        }
     }
 }

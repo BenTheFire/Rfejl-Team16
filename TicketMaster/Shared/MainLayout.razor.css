@@ -1,4 +1,4 @@
-.page {
+﻿.page {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -9,12 +9,16 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    box-shadow: 0.5px 0 6px #8b5cf6;
+    background: var(--sidebar-bg);
+    transition: background 0.3s ease;
+    backdrop-filter: blur(8px);
+    color: #8b5cf6;
 }
 
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
+    background: linear-gradient(to right, #1e293b, #0d0d0d);
+    backdrop-filter: blur(8px);
     justify-content: flex-end;
     height: 3.5rem;
     display: flex;
@@ -32,6 +36,13 @@ main {
     }
 
 @media (max-width: 640.98px) {
+    .dark-theme {
+        --sidebar-bg: linear-gradient(to bottom, #0f172a, #0d0d0d);
+    }
+
+    .light-theme {
+        --sidebar-bg: linear-gradient(to bottom, #0f172a, #ffffff);
+    }
     .top-row:not(.auth) {
         display: none;
     }
@@ -68,3 +79,66 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+header {
+    background-color: var(--header-bg);
+    color: var(--text-color);
+}
+.theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .theme-toggle input {
+      display: none;
+    }
+
+    .slider {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      background-color: var(--color-gray-3);
+      border-radius: 24px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .slider::before {
+      content: "☀️";
+      position: absolute;
+      left: 4px;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-color: var(--color-white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle input:checked + .slider {
+      background-color: var(--color-blue);
+    }
+
+    .theme-toggle input:checked + .slider::before {
+      content: "🌙";
+      transform: translateX(26px);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background-color: var(--footer-bg);
+      border-top: 1px solid var(--color-gray-3);
+      color: var(--color-gray-3);
+      font-size: 0.9rem;
+    }
+    

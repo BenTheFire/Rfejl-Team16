@@ -31,7 +31,7 @@ namespace Ticketmaster.Data.Services.Implementations
         //    Console.WriteLine($"Added new location succesfully");
         //}
 
-        public async Task DeleteLocation(int id)
+        public async Task DeleteLocationAsync(int id)
         {
             var toRemove = await _context.Locations.Where(o => o.Id == id).FirstAsync();
             if (toRemove != null)
@@ -45,6 +45,34 @@ namespace Ticketmaster.Data.Services.Implementations
             }
         }
 
+        public async Task<Location> GetLocationByIdAsync(int id)
+        {
+            return await _context.Locations.Where(o => o.Id == id).FirstAsync();
+        }
+
+        public async Task<List<Location>> GetLocationsAsync()
+        {
+            return await _context.Locations.ToListAsync();
+        }
+
+        public async Task CreateLocationAsync(Location location)
+        {
+            await _context.Locations.AddAsync(location);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateLocationAsync(Location location)
+        {
+            _context.Locations.Update(location);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Location>> GetLocationsByVendorIdAsync(int vendorId)
+        {
+            throw new NotImplementedException();
+        }
+
+
         //public async Task UpdateLocation(LocationDTO location)
         //{
         //    var toUpdate = await _context.Locations.Where(o => o.Id == (int)location.Id).FirstAsync();
@@ -55,7 +83,7 @@ namespace Ticketmaster.Data.Services.Implementations
         //        toUpdate.Capacity = (int)location.Capacity;
         //        toUpdate.Name = location.Name;
         //        toUpdate.Capacity = (int)location.Capacity;
-                
+
         //        await _context.SaveChangesAsync();
         //        Console.WriteLine($"Location ({location.Id}) succesfully updated");
         //    }

@@ -1,0 +1,145 @@
+﻿@page "/admin/edit/customers"
+@using Microsoft.AspNetCore.Identity
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Objects
+@inject ICustomerService CS
+@inject IUserService US
+<body>
+    <div class="forms">
+        <div class="container my-2">
+            <div class="row g-4">
+                <div class="col-12 col-md-6">
+                    <div class="formContainer">
+                        <h4>Create person</h4>
+                        <form onsubmit="@createCustomer">
+                            <p>User (doesn't need to be set)</p>
+                            <p>
+                                <select @bind="@userId">
+                                    <option value="0">-- select user --</option>
+                                    @foreach (var user in users)
+                                    {
+                                        <option value="@user.Id">@user.UserName</option>
+                                    }
+                                </select>
+                            </p>
+                            <p>
+                                Email
+                            </p>
+                            <p>
+                                <input type="text" @bind-value="@C.Email"/>
+                            </p>
+                            <p>Phone</p>
+                            <p>
+                                <input type="text" @bind-value="@C.Phone"/>
+                            </p>
+                            <button type="submit" class="buttonAdd">Create Customer</button>
+                        </form>
+                        <p>@text</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="formContainer">
+                        <h4>Update customer</h4>
+                        <ul>
+                            @foreach (var person in customers)
+                            {
+                                <li><a href="@Href(person.Id)">@person.Id - @person.Email - @person.Phone</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+@code {
+    private CustomerData C = new();
+    private List<CustomerData> customers = new();
+    private List<IdentityUser> users = new();
+    private string text;
+    private int userId;
+    private string Href(int id) => $"/admin/edit/customer/{id}";
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await CS.GetCustomersAsync();
+        users = await US.GetUsersAsync();
+    }
+    private async Task createCustomer()
+    {
+        await CS.CreateCustomerAsync(C);
+        text = $"Customer ({C.Email}) created";
+        await OnInitializedAsync();
+    }
+}
+
+
+<style>
+    .forms {
+        align-content: normal;
+        justify-content: normal;
+        gap: 3rem;
+    }
+
+    .formContainer {
+        background: #23272f;
+        border-radius: 1rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        border: 1px solid #2c313c;
+        color: #f8f9fa;
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        margin: 0.5rem 0;
+        min-height: 100%;
+    }
+
+        .formContainer h4 {
+            margin-bottom: 1rem;
+            color: #aee1f9;
+        }
+
+
+    .formContainer {
+        display: flex;
+        flex-direction: column;
+        min-width: 220px;
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        margin: 0.5rem 0;
+        background: #23272f;
+        border-radius: 1rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        border: 1px solid #2c313c;
+        color: #f8f9fa;
+    }
+
+        .formContainer h4 {
+            margin-bottom: 1rem;
+            color: #aee1f9;
+        }
+
+        .formContainer input,
+        .formContainer button {
+            margin-bottom: 0.7rem;
+            border-radius: 0.4rem;
+            border: 1px solid #444;
+            padding: 0.5rem;
+            background: #181a20;
+            color: #f8f9fa;
+        }
+
+        .formContainer button {
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+    .buttonDelete {
+        background-color: #e74c3c;
+    }
+
+    .buttonAdd {
+        background-color: #27ae60;
+    }
+
+    .buttonEdit {
+        background-color: #2980b9;
+    }
+</style>

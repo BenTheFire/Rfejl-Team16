@@ -13,8 +13,13 @@ namespace Ticketmaster.Data.DTOs
                 Cast.Add(new(item));
             }
         }
-        public Movie Movie { get; init; }
-        public List<Casting> Cast { get; private set; }
+        public MovieWithCast(Movie movie, List<Casting> cast)
+        {
+            Movie = movie;
+            Cast = cast;
+        }
+        public Movie Movie { get; set; }
+        public List<Casting> Cast { get; set; }
     }
     public class Casting
     {
@@ -23,7 +28,7 @@ namespace Ticketmaster.Data.DTOs
             Person = castingInput.person;
             Role = castingInput.role;
         }
-        public Person Person { get; init; }
-        public string Role { get; init; }
+        public Person Person { get; set; }
+        public string Role { get; set; }
     }
 }

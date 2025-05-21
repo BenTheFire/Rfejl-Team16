@@ -1,11 +1,43 @@
 ﻿@page "/admin/edit/vendors"
+@using Microsoft.AspNetCore.Identity
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
 @using Ticketmaster.Data.DTOs
 @inject IVendorService VS
 <body>
-    <h3>Edit Vendors</h3>
     <div class="forms">
+        <div class="formContainer my-2">
+            <div class="row g-4">
+                <div class="col-12 col-md-6">
+                    <div class="formContainer">
+                        <h4>Create vendor</h4>
+                        <form onsubmit="@createVendor">
+                            <p>Username</p>
+                            <p>
+                                <input type="text" class="form-control mb-2" placeholder="Username of Vendor" @bind-value="V.UserName" />
+                            </p>
+                            <p>Password</p>
+                            <p>
+                                <input type="text" class="form-control mb-2" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
+                            </p>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="formContainer">
+                        <h4>Update vendor</h4>
+                        <ul>
+                            @foreach (var vendor in vendors)
+                            {
+                                <li><a href="@vendor.Id">@vendor.Id</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="forms">
         <div class="formContainer">
             <form onsubmit="@createVendor">
                 <input type="text" placeholder="Username of Vendor" @bind-value="V.Username" />
@@ -31,10 +63,25 @@
                 <button type="submit" class="buttonDelete">Delete Vendor</button>
             </form>
         </div>
-    </div>
+    </div>-->
 </body>
 @code {
-    private VendorDTO V = new();
+    private IdentityUser V = new();
+    private List<IdentityUser> vendors = new();
+    private int vendorId;
+    private int locationId;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            vendors = await VS.GetVendorsAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            vendors = null;
+        }
+    }
     private async Task createVendor()
     {
         //await VS.CreateVendor(V);

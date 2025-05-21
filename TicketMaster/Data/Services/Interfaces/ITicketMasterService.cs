@@ -6,5 +6,6 @@ namespace Ticketmaster.Data.Services.Interfaces
     {
         public Task<List<Movie>> FetchMoviesBetweenAsync(int first, int last);
         public Task UpdateImagesAndDateAsync();
+        public Task<List<Movie>> FetchMoviesByCount(int count);
     }
 }

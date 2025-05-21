@@ -217,6 +217,10 @@ namespace Ticketmaster.Migrations
 
             modelBuilder.Entity("Ticketmaster.Objects.Credit", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<int>("OfMovieId")
                         .HasColumnType("int");
 
@@ -226,6 +230,8 @@ namespace Ticketmaster.Migrations
 
                     b.Property<int>("WhoIsId")
                         .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("OfMovieId");
 
@@ -317,15 +323,13 @@ namespace Ticketmaster.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Nationality")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

@@ -23,6 +23,19 @@ namespace Ticketmaster.Data.Services.Implementations
                     .Where(movie => movie.Id < last && movie.Id >= first)
                     .ToListAsync();
         }
+        public async Task<List<Movie>> FetchMoviesByCount(int count)
+        {
+            if (count > 0)
+            {
+                var movies = await _context.Movies
+                    .OrderByDescending(o => o.Id)
+                    .Take(count)
+                    .ToListAsync();
+                count -= movies.Count;
+                return movies;
+            }
+            return new List<Movie>();
+        }
         public async Task UpdateImagesAndDateAsync()
         {
             var noDateMovies = await _context.Movies.Where(o => o.ReleaseDate == null || o.ReleaseDate == "").ToListAsync();

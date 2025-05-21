@@ -1,8 +1,11 @@
-﻿namespace Ticketmaster.Objects
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Ticketmaster.Objects
 {
-    [Microsoft.EntityFrameworkCore.Keyless]
     public class Credit
     {
+        [Key]
+        public int Id { get; set; }
         public Movie OfMovie { get; set; }
         public string Role { get; set; }
         public Person WhoIs { get; set; }

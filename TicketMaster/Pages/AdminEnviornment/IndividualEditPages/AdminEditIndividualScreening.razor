@@ -1,0 +1,60 @@
+﻿@page "/admin/edit/screening/{screeningId}"
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Objects
+@inject IScreeningService SS
+@inject IMovieService MS
+@inject ILocationService LS
+@inject NavigationManager NavigationManager
+
+<body>
+    @if (S != null)
+    {
+        <a href="/admin/edit/screenings">Go back</a>
+        <form onsubmit="@updateScreening">
+            <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+            <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+            <input type="number" placeholder="ID of Location" @bind-value="S.InLocation.Id" />
+            <input type="number" placeholder="ID of Movie" @bind-value="S.OfMovie.Id" />
+            <button type="submit">Update Screening</button>
+        </form>
+        <form onsubmit="@deleteScreening">
+            <button type="submit">Delete Screening</button>
+        </form>
+    }
+    else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
+    }
+</body>
+
+@code {
+    [Parameter] public string ScreeningId { get; set; }
+    private Screening S = new();
+    protected override async Task OnInitializedAsync()
+    {
+        var screening = await SS.GetScreeningByIdAsync(Convert.ToInt16(ScreeningId));
+        if (screening != null)
+        {
+            S = screening;
+        }
+    }
+    private async Task updateScreening()
+    {
+        S.Id = Convert.ToInt16(ScreeningId); // Ensure the ID is set for the update
+        S.InLocation = await LS.GetLocationByIdAsync(S.InLocation.Id);
+        S.OfMovie = await MS.GetMovieByIdAsync(S.OfMovie.Id);
+        await SS.UpdateScreening(S);
+        await OnInitializedAsync();
+    }
+    private async Task deleteScreening()
+    {
+        await SS.DeleteScreening(S.Id);
+        S = null;
+        NavigationManager.NavigateTo("/admin/edit/screenings");
+    }
+}
