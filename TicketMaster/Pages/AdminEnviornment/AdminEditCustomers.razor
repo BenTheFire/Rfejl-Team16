@@ -1,65 +1,77 @@
-﻿@page "/admin/edit/locations"
+﻿@page "/admin/edit/customers"
+@using Microsoft.AspNetCore.Identity
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
-@using Ticketmaster.Data.DTOs
-@inject ILocationService LS
+@inject ICustomerService CS
+@inject IUserService US
 <body>
     <div class="forms">
-         <div class="formContainer my-2">
+        <div class="container my-2">
             <div class="row g-4">
                 <div class="col-12 col-md-6">
                     <div class="formContainer">
-                        <h4>Create location</h4>
-                        <form onsubmit="@createLocation">
-                            <p>Name of location</p>
+                        <h4>Create person</h4>
+                        <form onsubmit="@createCustomer">
+                            <p>User (doesn't need to be set)</p>
                             <p>
-                                <input type="text" class="form-control mb-2" placeholder="Name of location" @bind-value="L.Name" />
+                                <select @bind="@userId">
+                                    <option value="0">-- select user --</option>
+                                    @foreach (var user in users)
+                                    {
+                                        <option value="@user.Id">@user.UserName</option>
+                                    }
+                                </select>
                             </p>
-                            <p>Address of location</p>
                             <p>
-                                <input type="text" class="form-control mb-2" placeholder="Address of location" @bind-value="L.Address" />
+                                Email
                             </p>
-                            <p>Max capacity</p>
                             <p>
-                                <input type="number" class="form-control mb-2" placeholder="Max capacity" @bind-value="L.Capacity" />
+                                <input type="text" @bind-value="@C.Email"/>
                             </p>
-                            <!--todo vendors?-->
-                            <br />
-                            <button type="submit" class="buttonAdd">Create Location</button>
+                            <p>Phone</p>
+                            <p>
+                                <input type="text" @bind-value="@C.Phone"/>
+                            </p>
+                            <button type="submit" class="buttonAdd">Create Customer</button>
                         </form>
+                        <p>@text</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="formContainer">
-                        <h4>Edit location</h4>
+                        <h4>Update customer</h4>
                         <ul>
-                            @foreach (var location in locations)
+                            @foreach (var person in customers)
                             {
-                                <li><a href="@location.Id">@location.Name</a></li>
+                                <li><a href="@Href(person.Id)">@person.Id - @person.Email - @person.Phone</a></li>
                             }
                         </ul>
                     </div>
                 </div>
             </div>
-         </div>      
+        </div>
     </div>
 </body>
-
 @code {
-    private Location L = new();
-    private List<Location> locations = new();
-    //private List<Vendor> vendors = new();
-    private string Href(int id) => $"/admin/edit/location/{id}";
+    private CustomerData C = new();
+    private List<CustomerData> customers = new();
+    private List<IdentityUser> users = new();
+    private string text;
+    private int userId;
+    private string Href(int id) => $"/admin/edit/customer/{id}";
     protected override async Task OnInitializedAsync()
     {
-        locations = await LS.GetLocationsAsync();
+        customers = await CS.GetCustomersAsync();
+        users = await US.GetUsersAsync();
     }
-    private async Task createLocation()
+    private async Task createCustomer()
     {
-        await LS.CreateLocationAsync(L);
+        await CS.CreateCustomerAsync(C);
+        text = $"Customer ({C.Email}) created";
         await OnInitializedAsync();
     }
 }
+
 
 <style>
     .forms {
