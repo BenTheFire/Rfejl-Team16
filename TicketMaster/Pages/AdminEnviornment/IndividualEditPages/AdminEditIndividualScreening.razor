@@ -5,59 +5,76 @@
 @inject IMovieService MS
 @inject ILocationService LS
 @inject NavigationManager NavigationManager
-
+@inject ThemeService ThemeService
 <body>
     @if (S != null && defaultLocation != null && defaultMovie != null)
     {
+        <div class="forms">
         <a href="/admin/edit/screenings">Go back</a>
-        <form onsubmit="@updateScreening">
-            <p>Date of screening</p>
-            <p>
-                <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
-            </p>
-            <p>Number of seats taken</p>
-            <p>
-                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
-            </p>
-            <p>Location</p>
-            <p>
-                <select @bind="@locationId">
+        <div class="formContainer">
+            <form onsubmit="@updateScreening">
+                <p>Date of screening</p>
+                <input type="datetime-local" placeholder="Date of screening" @bind-value="S.Time" class="form-control" />
+
+                <p>Number of seats taken</p>
+                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" class="form-control" />
+
+                <p>Location</p>
+                <select @bind="@locationId" class="form-control">
                     <option value="@defaultLocation.Id">@defaultLocation.Name</option>
                     @foreach (var location in locations)
                     {
                         <option value="@location.Id">@location.Name</option>
                     }
                 </select>
-            </p>
-            <p>Movie</p>
-            <p>
-                <select @bind="@movieId">
+
+                <p>Movie</p>
+                <select @bind="@movieId" class="form-control">
                     <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
                     @foreach (var movie in movies)
                     {
                         <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
                     }
                 </select>
-            </p>
-            <p>
-                <button type="submit">Update Screening</button>
-            </p>
-        </form>
-        <form onsubmit="@deleteScreening">
-            <button type="submit">Delete Screening</button>
-        </form>
+
+                <button type="submit" class="buttonAdd">Update Screening</button>
+            </form>
+
+            <form onsubmit="@deleteScreening">
+                <button type="submit" class="buttonDelete">Delete Screening</button>
+            </form>
+        </div>
+        </div>
     }
     else
     {
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
             <div>
                 <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                <img src="./Loading.gif" alt="..." style="width:128px;height:128px" />
             </div>
         </div>
     }
-</body>
 
+</body>
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}
 @code {
     [Parameter] public string ScreeningId { get; set; }
     private Screening S = new() { InLocation = null, OfMovie = null, Id = 0, SeatsTaken = 0, Time = DateTime.MinValue };
@@ -95,3 +112,112 @@
         NavigationManager.NavigateTo("/admin/edit/screenings");
     }
 }
+<style>
+    .forms {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Card section styling */
+
+
+        .formContainer h4 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: var(--accent-text-color); /* Purple for light, Yellow for dark */
+        }
+
+        .formContainer p {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+    /* Inputs and selects */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select.form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--color-gray-3); /* gray border */
+        background-color: var(--input-bg, var(--card-bg)); /* same tone for harmony */
+        color: var(--text-color);
+    }
+
+    input::placeholder,
+    select::placeholder {
+        color: var(--text-color);
+        opacity: 0.6;
+    }
+
+    select.form-control option {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
+
+    /* Buttons */
+    .buttonAdd {
+        width: 100%;
+        margin-top: 1rem;
+        background-color: var(--color-blue);
+        color: var(--color-white);
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    .buttonEdit {
+        background-color: var(--color-yellow);
+        color: var(--color-black);
+    }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+        .buttonDelete:hover {
+            background-color: #dc2626;
+        }
+
+    /* Lists for edit blocks */
+    ul {
+        padding-left: 1rem;
+        margin-top: 1rem;
+    }
+
+        ul li {
+            padding: 0.25rem 0;
+        }
+
+            ul li a {
+                color: var(--accent-text-color);
+                text-decoration: none;
+            }
+
+                ul li a:hover {
+                    color: var(--color-blue);
+                }
+
+</style>

@@ -142,73 +142,122 @@
 }
 <style>
     .forms {
-        align-content: normal;
-        justify-content: normal;
-        gap: 3rem;
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
     }
 
     .formContainer {
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        min-height: 100%;
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 
         .formContainer h4 {
+            color: var(--accent-text-color);
             margin-bottom: 1rem;
-            color: #aee1f9;
+            font-size: 1.5rem;
         }
 
+        .formContainer p {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
 
-    .formContainer {
-        display: flex;
-        flex-direction: column;
-        min-width: 220px;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select.form-control {
+        background-color: var(--input-bg, var(--card-bg));
+        color: var(--text-color);
+        border: 1px solid var(--color-gray-3);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        width: 100%;
+        font-size: 1rem;
+        transition: border-color 0.2s ease;
     }
 
-        .formContainer h4 {
-            margin-bottom: 1rem;
-            color: #aee1f9;
-        }
-
-        .formContainer input,
-        .formContainer button {
-            margin-bottom: 0.7rem;
-            border-radius: 0.4rem;
-            border: 1px solid #444;
-            padding: 0.5rem;
-            background: #181a20;
-            color: #f8f9fa;
-        }
-
-        .formContainer button {
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-    .buttonDelete {
-        background-color: #e74c3c;
+    input::placeholder {
+        color: var(--text-color);
+        opacity: 0.6;
     }
 
+    input:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--color-blue);
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25); /* var(--color-blue) transparency */
+    }
+
+    /* Dropdown styles */
+    select.form-control option {
+        background-color: var(--input-bg, var(--card-bg));
+        color: var(--text-color);
+    }
+
+    /* Button base */
+    button[type="submit"],
+    button[type="button"] {
+        width: 100%;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Button variants */
     .buttonAdd {
-        background-color: #27ae60;
+        background-color: var(--color-blue);
+        color: var(--color-white);
     }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
 
     .buttonEdit {
-        background-color: #2980b9;
+        background-color: var(--color-yellow);
+        color: var(--color-black);
     }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+        .buttonDelete:hover {
+            background-color: #dc2626;
+        }
+
+    ul {
+        padding-left: 1rem;
+        margin-top: 1rem;
+    }
+
+        ul li {
+            margin-bottom: 0.5rem;
+        }
+
+            ul li a {
+                color: var(--color-purple);
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.2s ease;
+            }
+
+                ul li a:hover {
+                    color: var(--color-yellow);
+                }
+
 </style>
 
 

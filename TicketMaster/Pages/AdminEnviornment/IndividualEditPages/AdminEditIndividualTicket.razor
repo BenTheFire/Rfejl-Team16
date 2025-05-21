@@ -11,74 +11,72 @@
 <body>
     @if (T != null && movies != null && customers != null && screenings != null && defaultScreening != null && defaultMovie != null && defaultCustomer != null)
     {
-        <a href="/admin/edit/people">Go back</a>
-        <form onsubmit="@updateTicket">
-            <p>Screening</p>
-            <p>
-                <select @bind="@screeningId">
-                    <option value="@defaultScreening.Id">@defaultScreening.OfMovie.Title (@defaultScreening.Time) in @defaultScreening.InLocation.Name</option>
-                    @foreach (var screening in screenings)
-                    {
-                        <option value="@screening.Id">@screening.Id</option>
-                    }
-                </select>
-            </p>
-            <p>Movie</p>
-            <p>
-                <select @bind="@movieId">
-                    <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
-                    @foreach (var movie in screenings.Select(s => s.OfMovie).Distinct())
-                    {
-                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
-                    }
-                </select>
-            </p>
-            <p>Customer</p>
-            <p>
-                <select @bind="@customerId">
-                    @if (defaultCustomer.OfUser != null)
-                    {
-                        <option value="@defaultCustomer.Id">@defaultCustomer.Email (@defaultCustomer.OfUser.UserName.IsNullOrEmpty() ? "" : @defaultCustomer.OfUser.UserName)</option>
-                    }
-                    else
-                    {
-                        <option value="@defaultCustomer.Id">@defaultCustomer.Email</option>
-                    })
-                    @foreach (var customer in customers)
-                    {
-                        @if (customer.OfUser != null)
+        <div class="forms">
+            <div class="formContainer">
+                <a href="/admin/edit/people" class="text-accent">Go back</a>
+                <form onsubmit="@updateTicket">
+                    <p>Screening</p>
+                    <select class="form-control" @bind="@screeningId">
+                        <option value="@defaultScreening.Id">@defaultScreening.OfMovie.Title (@defaultScreening.Time) in @defaultScreening.InLocation.Name</option>
+                        @foreach (var screening in screenings)
                         {
-                            <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                            <option value="@screening.Id">@screening.Id</option>
+                        }
+                    </select>
+
+                    <p>Movie</p>
+                    <select class="form-control" @bind="@movieId">
+                        <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
+                        @foreach (var movie in screenings.Select(s => s.OfMovie).Distinct())
+                        {
+                            <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                        }
+                    </select>
+
+                    <p>Customer</p>
+                    <select class="form-control" @bind="@customerId">
+                        @if (defaultCustomer.OfUser != null)
+                        {
+                            <option value="@defaultCustomer.Id">@defaultCustomer.Email (@defaultCustomer.OfUser.UserName.IsNullOrEmpty() ? "" : @defaultCustomer.OfUser.UserName)</option>
                         }
                         else
                         {
-                            <option value="@customer.Id">@customer.Email</option>
+                            <option value="@defaultCustomer.Id">@defaultCustomer.Email</option>
                         }
-                    }
-                </select>
-            </p>
-            <p>Price</p>
-            <p>
-                <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
-            </p>
-            <p>Seat</p>
-            <p>
-                <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
-            </p>
-            <p>Status</p>
-            <p>
-                <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
-            </p>
-            <p>Purchase Time</p>
-            <p>
-                <input type="date" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
-            </p>
-            <p><button type="submit">Update Ticket</button></p>
-            <p>@text</p>
-        </form>
-        <form onsubmit="@deleteTicket">
-            <button type="submit">Delete Ticket</button>
-        </form>
+                        @foreach (var customer in customers)
+                        {
+                            @if (customer.OfUser != null)
+                            {
+                                <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                            }
+                            else
+                            {
+                                <option value="@customer.Id">@customer.Email</option>
+                            }
+                        }
+                    </select>
+
+                    <p>Price</p>
+                    <input class="form-control" type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+
+                    <p>Seat</p>
+                    <input class="form-control" type="text" placeholder="Seat position" @bind-value="T.Seat" />
+
+                    <p>Status</p>
+                    <input class="form-control" type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+
+                    <p>Purchase Time</p>
+                    <input class="form-control" type="date" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+
+                    <button type="submit" class="buttonAdd">Update Ticket</button>
+                    <p>@text</p>
+                </form>
+
+                <form onsubmit="@deleteTicket">
+                    <button type="submit" class="buttonDelete">Delete Ticket</button>
+                </form>
+            </div>
+        </div>
     }
     else
     {
@@ -90,6 +88,7 @@
         </div>
     }
 </body>
+
 
 @code {
     [Parameter] public string TicketId { get; set; }
@@ -151,3 +150,100 @@
         NavigationManager.NavigateTo("/admin/edit/people");
     }
 }
+<style>
+    .forms {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .formContainer h4, .formContainer h3 {
+            color: var(--accent-text-color);
+            margin-bottom: 1rem;
+        }
+
+    /* Inputs and selects */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--color-gray-3);
+        background-color: var(--color-black);
+        color: var(--color-white);
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    input::placeholder,
+    select {
+        color: var(--color-white);
+    }
+
+        input:focus,
+        select:focus {
+            border-color: var(--color-blue);
+            outline: none;
+        }
+
+    /* Buttons */
+    button[type="submit"],
+    button[type="button"] {
+        width: 100%;
+        padding: 0.75rem 1.25rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Role-specific buttons */
+    .buttonAdd {
+        background-color: var(--color-blue);
+        color: var(--color-white);
+    }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+        .buttonDelete:hover {
+            background-color: #e03131;
+        }
+
+    .buttonEdit {
+        background-color: var(--color-yellow);
+        color: var(--color-black);
+    }
+
+        .buttonEdit:hover {
+            background-color: #fadc66;
+        }
+
+    /* Dropdown options background fix */
+    select option {
+        background-color: var(--color-black);
+        color: var(--color-white);
+    }
+
+</style>
