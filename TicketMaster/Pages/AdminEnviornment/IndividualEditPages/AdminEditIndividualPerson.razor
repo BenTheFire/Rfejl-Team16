@@ -2,6 +2,8 @@
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
 @inject IPeopleService PS
+@inject ICreditService CS
+@inject IMovieService MS
 @inject NavigationManager NavigationManager
 
 <body>
@@ -21,6 +23,36 @@
             <button type="submit">Delete Person</button>
         </form>
         //todo add a form to connect this person to a movie with a role
+        <form onsubmit="@addRole">
+            <p>Movie to add to</p>
+            <select @bind="@movieId">
+                <option value="0">-- Select a movie --</option>
+                @foreach (var movie in movies)
+                {
+                    <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                }
+            </select>
+            <p>Role</p>
+            <p>
+                <input type="text" placeholder="Role name" @bind-value="@roleName" />
+            </p>
+            <button type="submit">Create role</button>
+            <p>@text</p>
+        </form>
+        <div>
+            <h4>Delete role</h4>
+            <form>
+                @if (credits != null)
+                {
+                    foreach (var credit in credits)
+                    {
+                        <p>
+                            <button type="button" @onclick="() => deleteCredit(credit)">@credit.Role in @credit.OfMovie.Title</button>
+                        </p>
+                    }
+                }
+            </form>
+        </div>
     } else
     {
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
@@ -35,6 +67,11 @@
 @code {
     [Parameter] public string PersonId { get; set; }
     private Person P = new();    
+    private List<Movie> movies = new();
+    private List<Credit> credits = new();
+    private int movieId;
+    private string roleName;
+    private string text;
     protected override async Task OnInitializedAsync()
     {
         // Fetch the person data using the PersonId
@@ -43,6 +80,8 @@
         {
             P = person;
         }
+        movies = await MS.GetMoviesAsync();
+        credits = await CS.GetCreditsByPersonId(P.Id);
     }
     private async Task updatePerson()
     {
@@ -55,5 +94,30 @@
         await PS.DeletePerson(P.Id);
         P = null;
         NavigationManager.NavigateTo("/admin/edit/people");
+    }
+    private async Task addRole()
+    {
+        if (movieId == 0)
+        {
+            text = "Please select a movie.";
+            return;
+        }
+        var movie = await MS.GetMovieByIdAsync(movieId);
+        if (movie != null)
+        {
+            await CS.CreateCredit(new Credit()
+            {
+                OfMovie = movie,
+                WhoIs = P,
+                Role = roleName
+                });
+        }
+        text = $"Created role ({roleName}) for {P.Name} to Movie {movie.Title}";
+        await OnInitializedAsync();
+    }
+    private async Task deleteCredit(Credit credit)
+    {
+        await CS.DeleteCredit(credit.Id);
+        credits = await CS.GetCreditsByPersonId(P.Id);
     }
 }
