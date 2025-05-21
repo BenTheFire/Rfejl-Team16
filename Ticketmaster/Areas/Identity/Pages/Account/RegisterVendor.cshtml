@@ -1,0 +1,52 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model RegisterVendorModel
+@attribute [Authorize(Roles = "Admin")]
+@{
+    ViewData["Title"] = "Register Vendor";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <div class="col-md">
+        <form id="registerVendorForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Register a vendor</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="username123" />
+                <label asp-for="Input.Username">Username</label>
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <button id="registerVendorSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register Vendor</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const checkbox = document.getElementById("adminCheckbox");
+    const secretKeyField = document.getElementById("secretKeyField");
+
+    function toggleSecretKey() {
+        secretKeyField.style.display = checkbox.checked ? "block" : "none";
+    }
+
+    checkbox.addEventListener("change", toggleSecretKey);
+
+    window.addEventListener("DOMContentLoaded", toggleSecretKey);
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
