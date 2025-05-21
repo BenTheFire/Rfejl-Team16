@@ -1,0 +1,67 @@
+﻿@page "/admin/edit/customer/{customerId}"
+@using Microsoft.AspNetCore.Identity
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Data.DTOs
+@using Ticketmaster.Objects
+@inject ICustomerService CS
+@inject NavigationManager NavigationManager
+
+<body>
+    @if (V != null)
+    {
+        <div class="movie-container my-2">
+            <div class="row g-2">
+                <form onsubmit="@UpdateCustomer">
+                    <p>Email</p>
+                    <p>
+                        <input type="email" placeholder="Email" @bind-value="C.Email" />
+                    </p>
+                    <p>Phone Number</p>
+                    <p>
+                        <input type="text" placeholder="Phone Number" @bind-value="C.Phone" />
+                    </p>
+                    <button type="submit">Update Customer</button>
+                </form>
+                <form onsubmit="@DeleteCustomer">
+                    <button type="submit">Delete Customer</button>
+                </form>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
+    }
+
+</body>
+
+@code {
+    [Parameter] public string customerId { get; set; }
+
+    private CustomerData C;
+    private string text;
+
+    protected override async Task OnInitializedAsync()
+    {
+        C = await CS.GetCustomerByIdAsync(int.Parse(customerId));
+    }
+
+    private async Task UpdateCustomer()
+    {
+        await CS.UpdateCustomerAsync(C);
+        text = "Customer updated";
+    }
+    private async Task DeleteCustomer()
+    {
+        await CS.DeleteCustomerAsync(C.Id);
+        NavigationManager.NavigateTo("/admin/edit/customers");
+    }
+    //public string HrefScreeningLink(Screening screening) => $"/screening/{screening.Id}";
+}
+
