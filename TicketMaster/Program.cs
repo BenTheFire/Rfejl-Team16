@@ -28,6 +28,7 @@ public class Program
         builder.Services.AddScoped<IPeopleService, PeopleService>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<ICreditService, CreditService>();
+        builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddControllers();
         builder.Services.AddSingleton<ThemeService>();
 
