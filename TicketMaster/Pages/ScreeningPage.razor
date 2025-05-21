@@ -82,6 +82,16 @@
     }
     protected async Task buyTicket()
     {
+        if (customerData == null)
+        {
+            customerData = new CustomerData
+                {
+                    Email = email,
+                    Phone = phone
+                };
+            await CS.CreateCustomerAsync(customerData);
+        }
+        
         await TS.CreateTicketAsync(new Ticket
             {
                 OfScreening = screening,
