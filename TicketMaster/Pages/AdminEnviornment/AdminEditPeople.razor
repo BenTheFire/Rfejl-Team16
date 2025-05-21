@@ -24,6 +24,7 @@
                             </p>
                             <button type="submit" class="buttonAdd">Create Person</button>
                         </form>
+                        <p>@text</p>
                     </div>
                 </div>    
                 <div class="col-12 col-md-6">
@@ -44,6 +45,7 @@
 @code {
     private Person P = new();
     private List<Person> people = new();
+    private string text;
     private string Href(int id) => $"/admin/edit/person/{id}";
     protected override async Task OnInitializedAsync()
     {
@@ -52,6 +54,8 @@
     private async Task createPerson()
     {
         await PS.CreatePerson(P);
+        text = $"Person ({P.Name}) created";
+        await OnInitializedAsync();
     }
 }
 
