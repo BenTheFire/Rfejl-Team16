@@ -10,5 +10,6 @@ namespace Ticketmaster.Data.Services.Interfaces
         public Task UpdateLocationAsync(Location location);
         public Task<List<Location>> GetLocationsAsync();
         public Task<Location> GetLocationByIdAsync(int id);
+        public Task<List<Location>> GetLocationsByVendorIdAsync(int vendorId);
     }
 }
