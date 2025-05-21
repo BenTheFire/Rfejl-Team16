@@ -26,6 +26,11 @@
                                     <strong>@tckt.OfScreening.OfMovie.Title</strong> at @tckt.OfScreening.Time
                                     <br />
                                     <p>Cinema: @tckt.OfScreening.InLocation.Name, @tckt.OfScreening.InLocation.Address</p>
+                                    <br />
+                                    <p>Seat: @tckt.Seat</p>
+                                </div>
+                                <div>
+                                    <button @onclick="() => deleteTicket(tckt.Id)">Delete ticket</button>
                                 </div>
                             </li>    
                         }
@@ -68,6 +73,12 @@
         {
             userTickets = new List<Ticket>();
         }
+    }
+
+    private async Task deleteTicket(int ticketId)
+    {
+        await TS.DeleteTicketAsync(ticketId);
+        await OnInitializedAsync();
     }
 
 }
