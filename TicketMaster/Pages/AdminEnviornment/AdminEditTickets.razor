@@ -2,48 +2,60 @@
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
 @using Ticketmaster.Data.DTOs
+@using Ticketmaster.Extra
 @inject ITicketService TS
+@inject IScreeningService SS
+@inject ICustomerService CS
 <body>
     <h3>Edit Tickets</h3>
     <div class="forms">
         <div class="formContainer">
             <form onsubmit="@createTicket">
-                <input type="number" placeholder="ID of screening" @bind-value="T.OfScreeningId" />
-                <input type="number" placeholder="ID of customer" @bind-value="T.CustomerId" />
+                <select>
+                    @foreach (var screening in screenings)
+                    {
+                        <option value="@screening.Id">@screening.Id</option>
+                    }
+                </select>
+                <select>
+                    @foreach (var customer in customers)
+                    {
+                        <option value="@customer.Id">@customer.Email ({@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                    }
+                </select>
                 <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
                 <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
                 <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
-                <input type="number" placeholder="ID of vendor" @bind-value="T.ByVendorId" />
+                <!--vendor?-->
                 <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
                 <button type="submit" class="buttonAdd">Create Ticket</button>
             </form>
         </div>
         <div class="formContainer">
-            <form onsubmit="@updateTicket">
-                <input type="number" placeholder="ID of ticket to update" @bind-value="T.Id" />
-                <input type="number" placeholder="ID of screening" @bind-value="T.OfScreeningId" />
-                <input type="number" placeholder="ID of customer" @bind-value="T.CustomerId" />
-                <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
-                <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
-                <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
-                <input type="number" placeholder="ID of vendor" @bind-value="T.ByVendorId" />
-                <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
-                <button type="submit" class="buttonEdit">Update Ticket</button>
-            </form>
-        </div>
-        <div class="formContainer">
-            <form onsubmit="@deleteTicket">
-                <input type="number" placeholder="Ticket ID to delete" @bind-value="T.Id" />
-                <button type="submit" class="buttonDelete">Delete Ticket</button>
-            </form>
+            <ul>
+                @foreach (var ticket in tickets)
+                {
+                    <li><a href="@ticket.Id">@ticket.Id</a></li>
+                })
+            </ul>
         </div>
     </div>
 </body>
 @code {
-    private TicketDTO T = new();
+    private Ticket T = new();
+    private List<Ticket> tickets = new();
+    private List<Screening> screenings = new();
+    private List<CustomerData> customers = new();
+    private string Href(int id) => $"/admin/edit/ticket/{id}";
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await TS.GetTicketsAsync();
+        screenings = await SS.GetScreeningsAsync();
+        customers = await CS.GetCustomersAsync();
+    }
     private async Task createTicket()
     {
-        //await TS.CreateTicket(T);
+        await TS.CreateTicketAsync(T);
     }
 
     private async Task updateTicket()

@@ -3,51 +3,63 @@
 @using Ticketmaster.Objects
 @using Ticketmaster.Data.DTOs
 @inject IScreeningService SS
+@inject ILocationService LS
+@inject IMovieService MS
 <body>
-    <h3>Edit Screenings</h3>
     <div class="forms">
         <div class="formContainer">
+            <h4>Create Screening</h4>
             <form onsubmit="@createScreening">
-                <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
-                <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
+                <select @bind="@locationId">
+                    @foreach (var location in locations)
+                    {
+                        <option value="@location.Id">@location.Name</option>
+                    }
+                </select>
+                <select @bind="@movieId">
+                    @foreach (var movie in movies)
+                    {
+                        //todo: add a check to see if the movie is in the location
+                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                    }
+                </select>
                 <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
                 <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
                 <button type="submit" class="buttonAdd">Create Screening</button>
             </form>
         </div>
         <div class="formContainer">
-            <form onsubmit="@updateScreening">
-                <input type="number" placeholder="ID of Screening" @bind-value="S.Id" />
-                <input type="number" placeholder="ID of location" @bind-value="S.InLocationId" />
-                <input type="number" placeholder="ID of movie" @bind-value="S.OfMovieId" />
-                <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
-                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
-                <button type="submit" class="buttonEdit">Update Screening</button>
-            </form>
-        </div>
-        <div class="formContainer">
-            <form onsubmit="@deleteScreening">
-                <input type="number" placeholder="Screening ID to delete" @bind-value="S.Id" />
-                <button type="submit" class="buttonDelete">Delete Screening</button>
-            </form>
+            <h4>Update Screening</h4>
+            <ul>
+                @foreach (var screening in screenings)
+                {
+                    <li>
+                        <a href="@Href(screening.Id)">@screening.OfMovie.Title (@screening.OfMovie.ReleaseDate): @screening.Time, @screening.InLocation</a>
+                    </li>
+                }
+            </ul>
         </div>
     </div>
 </body>
 @code {
-    private ScreeningDTO S = new();
+    private Screening S = new();
+    private List<Screening> screenings = new();
+    private List<Location> locations = new();
+    private List<Movie> movies = new();
+    private int locationId;
+    private int movieId;
+    private string Href(int id) => $"/admin/edit/screening/{id}";
+    protected override async Task OnInitializedAsync()
+    {
+        screenings = await SS.GetScreeningsAsync();
+        locations = await LS.GetLocationsAsync();
+        movies = await MS.GetMoviesAsync();
+    }
     private async Task createScreening()
     {
+        S.InLocation = await LS.GetLocationByIdAsync(locationId);
+        S.OfMovie = await MS.GetMovieByIdAsync(movieId);
         await SS.CreateScreening(S);
-    }
-
-    private async Task updateScreening()
-    {
-        await SS.UpdateScreening(S);
-    }
-
-    private async Task deleteScreening()
-    {
-        await SS.DeleteScreening((int)S.Id);
     }
     
 }

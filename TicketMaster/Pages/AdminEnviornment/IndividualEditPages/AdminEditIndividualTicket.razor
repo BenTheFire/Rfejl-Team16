@@ -1,0 +1,82 @@
+﻿@page "/admin/edit/ticket/{ticketId}"
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Objects
+@using Ticketmaster.Extra
+@inject ITicketService TS
+@inject IScreeningService SS
+@inject ICustomerService CS
+@inject NavigationManager NavigationManager
+
+<body>
+    @if (T != null)
+    {
+        <a href="/admin/edit/people">Go back</a>
+        <form onsubmit="@updateTicket">
+            <p>Screening</p>
+            <select>
+                @foreach (var screening in screenings)
+                {
+                    <option value="@screening.Id">@screening.Id</option>
+                }
+            </select>
+            <p>Customer</p>
+            <select>
+                @foreach (var customer in customers)
+                {
+                    <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                }
+            </select>
+            <p>Price</p>
+            <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+            <p>Seat</p>
+            <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
+            <p>Status</p>
+            <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+            <p>Purchase Time</p>
+            <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+            <button type="submit">Update Ticket</button>
+        </form>
+        <form onsubmit="@deleteTicket">
+            <button type="submit">Delete Ticket</button>
+        </form>
+    }
+    else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
+    }
+</body>
+
+@code {
+    [Parameter] public string TicketId { get; set; }
+    private List<Screening> screenings = new();
+    private List<CustomerData> customers = new();
+    private Ticket T = new();
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch the person data using the PersonId
+        var ticket = await TS.GetTicketByIdAsync(Convert.ToInt16(TicketId));
+        if (ticket != null)
+        {
+            T = ticket;
+        }
+        screenings = await SS.GetScreeningsAsync();
+        customers = await CS.GetCustomersAsync();
+    }
+    private async Task updateTicket()
+    {
+        T.Id = Convert.ToInt16(TicketId); // Ensure the ID is set for the update
+        await TS.UpdateTicketAsync(T);
+        await OnInitializedAsync();
+    }
+    private async Task deleteTicket()
+    {
+        await TS.DeleteTicketAsync(T.Id);
+        T = null;
+        NavigationManager.NavigateTo("/admin/edit/people");
+    }
+}

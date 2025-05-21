@@ -1,5 +1,6 @@
 ﻿@page "/admin/edit/locations"
 @using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Objects
 @using Ticketmaster.Data.DTOs
 @inject ILocationService LS
 <body>
@@ -10,51 +11,37 @@
                 <input type="text" placeholder="Name of location" @bind-value="L.Name"/>
                 <input type="text" placeholder="Address of location" @bind-value="L.Address" />
                 <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
-                <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+                <!--todo vendors?-->
                 <br />
                 <button type="submit" class="buttonAdd">Create Location</button>
             </form>
         </div>
         <br />
         <div class="formContainer">
-            <form onsubmit="@updateLocation">
-                <input type="number" placeholder="Location ID" @bind-value="L.Id" />
-                <input type="text" placeholder="Name of location" @bind-value="L.Name" />
-                <input type="text" placeholder="Address of location" @bind-value="L.Address" />
-                <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
-                <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
-                <br />
-                <button type="submit" class="buttonEdit">Update Location</button>
-            </form>
-        </div>
-        <br />
-        <div class="formContainer">
-            <form onsubmit="@deleteLocation">
-                <input type="number" placeholder="Location ID to delete" @bind-value ="L.Id" />
-                <br />
-                <button type="submit" class="buttonDelete">Delete Location</button>
-            </form>
+            <ul>
+                @foreach(var location in locations)
+                {
+                    <li><a href="@location.Id">@location.Name</a></li>
+                }
+            </ul>
         </div>
     </div>
 </body>
 
 @code {
-    private LocationDTO L = new();
+    private Location L = new();
+    private List<Location> locations = new();
+    //private List<Vendor> vendors = new();
+    private string Href(int id) => $"/admin/edit/location/{id}";
+    protected override async Task OnInitializedAsync()
+    {
+        locations = await LS.GetLocationsAsync();
+    }
     private async Task createLocation()
     {
-        //await LS.CreateLocation(L);
+        await LS.CreateLocationAsync(L);
+        await OnInitializedAsync();
     }
-
-    private async Task updateLocation()
-    {
-        //await LS.UpdateLocation(L);
-    }
-
-    private async Task deleteLocation()
-    {
-        //await LS.DeleteLocation((int)L.Id);
-    }
-
 }
 
 <style>

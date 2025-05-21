@@ -15,7 +15,7 @@ namespace Ticketmaster.Data.Services.Implementations
         }
         private readonly TicketmasterContext _context;
 
-        public async Task<MovieWithCast> FetchMovieDataAsync(string imdbId)
+        public async Task<MovieWithCast> FetchMovieDataByImdbIdAsync(string imdbId)
         {
             int imdbIdInt = Convert.ToInt32(imdbId);
 
@@ -31,7 +31,7 @@ namespace Ticketmaster.Data.Services.Implementations
                     credit.Role
                 }).ToListAsync();*/
             Movie movie = await _context.Movies.Where(o => o.ImdbId == imdbIdInt).FirstAsync();
-            List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.Id == imdbIdInt).ToListAsync();
+            List<Credit> credits = await _context.Credits.Where(o => o.OfMovie.ImdbId == imdbIdInt).Include(o => o.WhoIs).ToListAsync();
             List<Person> people = new List<Person>();
 
             var cast = new List<(Person, string)>();
@@ -49,7 +49,7 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<List<Screening>> FetchScreenings(string imdbId)
         {
-            var guh = await FetchMovieDataAsync(imdbId);
+            var guh = await FetchMovieDataByImdbIdAsync(imdbId);
 
             return await
                 (from scr in _context.Screenings
@@ -58,13 +58,76 @@ namespace Ticketmaster.Data.Services.Implementations
                 .Include(scr => scr.InLocation)
                 .ToListAsync();
         }
-
         public async Task CreateMovie(Movie movie)
         {
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
             Console.WriteLine($"Movie created succesfully");
         }
+        public async Task CreateMovie(MovieWithCast movie)
+        {
+            await _context.Movies.AddAsync(movie.Movie);
+
+            foreach (Casting castMember in movie.Cast)
+            {
+                var existingPerson = await _context.People.FirstOrDefaultAsync(p => p.Name == castMember.Person.Name);
+
+                if (existingPerson == null)
+                {
+                    await _context.People.AddAsync(castMember.Person);
+                    Console.WriteLine($"Person ({castMember.Person.Name}) marked for creation.");
+                }
+                else
+                {
+                    movie.Cast.Where(o => o.Person == castMember.Person && o.Role == castMember.Role).First().Person = existingPerson;
+                    Console.WriteLine($"Person ({existingPerson.Name}) already exists, linking existing entity.");
+                }
+            }
+            foreach (var castMember in movie.Cast)
+            {
+                await _context.Credits.AddAsync(new Credit
+                {
+                    OfMovie = movie.Movie,     
+                    WhoIs = castMember.Person, 
+                    Role = castMember.Role
+                });
+                Console.WriteLine($"Credit ({castMember.Role}) for {castMember.Person.Name} marked for creation.");
+            }
+
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Movie, people (if new), and credits created/linked successfully.");
+        }
+        /*public async Task CreateMovie(MovieWithCast movie)
+        {
+            await _context.Movies.AddAsync(movie.Movie);
+            await _context.SaveChangesAsync();
+            List<Person> people = movie.Cast.Select(o => o.Person).ToList();
+            foreach (var person in people)
+            {
+                if (!await _context.People.AnyAsync(o => o.Name == person.Name))
+                {
+                    await _context.People.AddAsync(person);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Person ({person.Name}) created succesfully");
+                } else
+                {
+                    people.Where(o => o.Name == person.Name).First().Id = await _context.People.Where(o => o.Name == person.Name).Select(o => o.Id).FirstAsync();
+                }
+            }
+            foreach (var cast in movie.Cast)
+            {
+                await _context.Credits.AddAsync(new Credit
+                {
+                    OfMovie = movie.Movie,
+                    WhoIs = cast.Person,
+                    Role = cast.Role
+                });
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Credit ({cast.Role}) created succesfully");
+            }
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Movie created with cast succesfully");
+        }*/
 
         public async Task DeleteMovieByTitle(string title)
         {
@@ -86,25 +149,15 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task UpdateMovie(Movie movie)
         {
-            try
-            {
-                var toUpdate = await _context.Movies.Where(o => o.Id == movie.Id).FirstAsync();
-                if (toUpdate != null)
-                {
-                    toUpdate.Title = movie.Title;
-                    toUpdate.ImageSource = movie.ImageSource;
-                    toUpdate.ImdbId = movie.ImdbId;
-                    toUpdate.ReleaseDate = movie.ReleaseDate;
-                    toUpdate.Description = movie.Description;
-                    toUpdate.LengthInSeconds = movie.LengthInSeconds;
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine($"Movie ({movie.Id}) updated succesfully");
-                }
-            }
-            catch (Exception e)
+            if (!await _context.Movies.AnyAsync(o => o.Id == movie.Id))
             {
                 Console.WriteLine($"Movie ({movie.Id}) not found");
+                return;
             }
+
+            _context.Movies.Update(movie);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Movie ({movie.Id}) updated succesfully");
         }
 
         public async Task<bool> IsInDBByTitle(string title)
@@ -127,20 +180,45 @@ namespace Ticketmaster.Data.Services.Implementations
             }
             else
             {
-                await foreach (Movie item in OmdbSource.FetchMovieByTitle(title))
+                await foreach (MovieWithCast item in OmdbSource.FetchMovieByTitle(title))
                 {
-                    movieToUpdate.Title = item.Title;
-                    movieToUpdate.Description = item.Description;
-                    movieToUpdate.LengthInSeconds = item.LengthInSeconds;
-                    movieToUpdate.ImageSource = item.ImageSource;
-                    movieToUpdate.ReleaseDate = item.ReleaseDate;
-                    movieToUpdate.ImdbId = item.ImdbId;
+                    movieToUpdate.Title = item.Movie.Title;
+                    movieToUpdate.Description = item.Movie.Description;
+                    movieToUpdate.LengthInSeconds = item.Movie.LengthInSeconds;
+                    movieToUpdate.ImageSource = item.Movie.ImageSource;
+                    movieToUpdate.ReleaseDate = item.Movie.ReleaseDate;
+                    movieToUpdate.ImdbId = item.Movie.ImdbId;
                     _context.Movies.Update(movieToUpdate);
                     await _context.SaveChangesAsync();
                     Console.WriteLine($"Movie ({title}) updated succesfully");
                     return;
                 }
             }
+        }
+
+        public async Task<List<Movie>> GetMoviesAsync()
+        {
+            return await _context.Movies.ToListAsync();
+        }
+
+        public async Task<Movie> GetMovieByTitleAsync(string title)
+        {
+            return await _context.Movies.Where(o => o.Title == title).FirstAsync();
+        }
+
+        public async Task<Movie> GetMovieByIdAsync(int id)
+        {
+            return await _context.Movies.Where(o => o.Id == id).FirstAsync();
+        }
+
+        public async Task<Movie> GetMovieByImdbIdAsync(string imdbId)
+        {
+            return await _context.Movies.Where(o => o.ImdbId == Convert.ToInt32(imdbId)).FirstAsync();
+        }
+
+        public Task DeleteMovieByImdbId(string imdbId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

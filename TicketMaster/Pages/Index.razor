@@ -64,7 +64,7 @@
 
     public async Task FetchMovies()
     {
-        fetchedMovies = await TMS.FetchMoviesBetweenAsync(1, 20);
+        fetchedMovies = await TMS.FetchMoviesByCount(20);
         isLoaded = true;
     }
 

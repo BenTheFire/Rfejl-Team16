@@ -7,8 +7,8 @@ namespace Ticketmaster.Data.Services.Implementations
     public class PeopleService : IPeopleService
     {
         private TicketmasterContext _context;
-        public PeopleService(TicketmasterContext c) 
-        { 
+        public PeopleService(TicketmasterContext c)
+        {
             _context = c;
         }
         public async Task CreatePerson(Person person)
@@ -41,23 +41,35 @@ namespace Ticketmaster.Data.Services.Implementations
 
         }
 
+        public async Task<List<Person>> GetAllPeople()
+        {
+            return await _context.People.ToListAsync();
+        }
+
         public async Task UpdatePerson(Person person)
         {
-            try
-            {
-                var toUpdate = await _context.People.Where(o => o.Id == person.Id).FirstAsync();
-                if (toUpdate != null)
-                {
-                    toUpdate.Name = person.Name;
-                    toUpdate.BirthDate = person.BirthDate;
-                    toUpdate.Nationality = person.Nationality;
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine($"Person ({person.Id}) updated sucecsfully");
-                }
-            } catch (Exception e)
+            if (!await _context.People.AnyAsync(o => o.Id == person.Id))
             {
                 Console.WriteLine($"Person ({person.Id}) not found");
+                return;
             }
+            _context.People.Update(person);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Person ({person.Id}) updated succesfully");
+        }
+        public async Task<Person> GetPersonById(int id)
+        {
+            var person = await _context.People.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (person != null)
+            {
+                return person;
+            }
+            else
+            {
+                Console.WriteLine($"Person ({id}) not found");
+                return null;
+            }
+
         }
     }
 }

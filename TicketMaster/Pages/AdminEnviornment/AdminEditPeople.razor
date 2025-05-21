@@ -5,74 +5,115 @@
 <body>
     <h3>Edit People</h3>
     <div class="forms">
-        <div class="formContainer">
-        <form onsubmit="@createPerson">
-            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
-            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
-            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
+        <div class="container my-4">
+            <div class="row g-4">
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="formContainer">
+                        <h4>Create person</h4>
+                        <form onsubmit="@createPerson">
+                            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
+                            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
+                            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
 
-            <button type="submit" class="buttonAdd">Create Person</button>
-        </form>
-        </div>
-        <div class="formContainer">
-        <form onsubmit="@updatePerson">
-            <input type="number" placeholder="ID of person" @bind-value="P.Id"/>
-            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
-            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
-            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
-            <button type="submit" class="buttonEdit">Update Person</button>
-        </form>
-        </div>
-        <div class="formContainer">
-        <form onsubmit="@deletePerson">
-            <input type="number" placeholder="Person ID to delete" @bind-value="P.Id" />
-            <button type="submit" class="buttonDelete">Delete Person</button>
-        </form>
+                            <button type="submit" class="buttonAdd">Create Person</button>
+                        </form>
+                    </div>
+                    <div class="formContainer">
+                        <h4>Update person</h4>
+                        <ul>
+                            @foreach(var person in people)
+                            {
+                                <li><a href="@Href(person.Id)">@person.Name</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>                
+            </div>
         </div>
     </div>
 </body>
 @code {
     private Person P = new();
+    private List<Person> people = new();
+    private string Href(int id) => $"/admin/edit/person/{id}";
+    protected override async Task OnInitializedAsync()
+    {
+        people = await PS.GetAllPeople();
+    }
     private async Task createPerson()
     {
         await PS.CreatePerson(P);
-    }
-
-    private async Task updatePerson()
-    {
-        await PS.UpdatePerson(P);
-    }
-
-    private async Task deletePerson()
-    {
-        await PS.DeletePerson(P.Id);
     }
 }
 
 
 <style>
     .forms {
-        display: flex;
         align-content: normal;
         justify-content: normal;
+        gap: 3rem;
     }
 
     .formContainer {
-        display: flex;
-        align-content: normal;
-        justify-content: normal;
-        flex-direction: column;
+        background: #23272f;
+        border-radius: 1rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        border: 1px solid #2c313c;
+        color: #f8f9fa;
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        margin: 0.5rem 0;
+        min-height: 100%;
     }
 
+        .formContainer h4 {
+            margin-bottom: 1rem;
+            color: #aee1f9;
+        }
+
+
+    .formContainer {
+        display: flex;
+        flex-direction: column;
+        min-width: 220px;
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        margin: 0.5rem 0;
+        background: #23272f;
+        border-radius: 1rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        border: 1px solid #2c313c;
+        color: #f8f9fa;
+    }
+
+        .formContainer h4 {
+            margin-bottom: 1rem;
+            color: #aee1f9;
+        }
+
+        .formContainer input,
+        .formContainer button {
+            margin-bottom: 0.7rem;
+            border-radius: 0.4rem;
+            border: 1px solid #444;
+            padding: 0.5rem;
+            background: #181a20;
+            color: #f8f9fa;
+        }
+
+        .formContainer button {
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
     .buttonDelete {
-        background-color: red;
+        background-color: #e74c3c;
     }
 
     .buttonAdd {
-        background-color: palegreen;
+        background-color: #27ae60;
     }
 
     .buttonEdit {
-        background-color: cornflowerblue;
+        background-color: #2980b9;
     }
 </style>

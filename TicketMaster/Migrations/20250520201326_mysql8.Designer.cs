@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ticketmaster.Objects;
 
@@ -10,9 +11,11 @@ using Ticketmaster.Objects;
 namespace Ticketmaster.Migrations
 {
     [DbContext(typeof(TicketmasterContext))]
-    partial class TicketmasterContextModelSnapshot : ModelSnapshot
+    [Migration("20250520201326_mysql8")]
+    partial class mysql8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,21 +220,16 @@ namespace Ticketmaster.Migrations
 
             modelBuilder.Entity("Ticketmaster.Objects.Credit", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("OfMovieId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<int>("WhoIsId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("Role");
 
                     b.HasIndex("OfMovieId");
 
@@ -323,13 +321,15 @@ namespace Ticketmaster.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("BirthDate")
+                    b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Nationality")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

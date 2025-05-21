@@ -1,0 +1,70 @@
+﻿@page "/admin/edit/movie/{imdbId}"
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Data.DTOs
+@using Ticketmaster.Objects
+@inject IMovieService IMS
+
+<body>
+    @if (movieData != null)
+    {
+        <div class="movie-container my-2">
+            <div class="row g-2">
+                <div class="image" style="width: fit-content">
+                    <img src="@movieData.ImageSource" alt="@movieData.Title Poster" class="poster" />
+                </div>
+                <div class="updateForm" style="width: 70%">
+                    <form onsubmit="@UpdateMovie">
+                        <p>Image source link</p>
+                        <input type="text" class="form-control mb-2" placeholder="Image source link" @bind-value="movieData.ImageSource" title="Image source link" />
+                        <p>Title of movie</p>
+                        <input type="text" class="form-control mb-2" placeholder="Title of movie" @bind-value="movieData.Title" title="Title of movie" />
+                        <p>Description of movie</p>
+                        <textarea type="text" class="form-control mb-2" placeholder="Description of movie" @bind="movieData.Description" title="Description of movie" />
+                        <p>Length in seconds</p>
+                        <input type="number" class="form-control mb-2" placeholder="Length in seconds" @bind-value="movieData.LengthInSeconds" />
+                        <p>Release date (year)</p>
+                        <input type="text" class="form-control mb-2" placeholder="Release date" @bind-value="movieData.ReleaseDate" title="Release date (year)" />
+                        <p>IMDb ID</p>
+                        <input type="number" class="form-control mb-2" placeholder="IMDb ID" @bind-value="movieData.ImdbId" title="IMDb ID" />
+                        <button type="submit">Update movie</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
+    }
+
+</body>
+
+@code {
+    [Parameter] public string ImdbId { get; set; }
+
+    public Movie movieData;
+    public List<Casting> castData = new();
+    public List<Screening> screeningData = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await IMS.FetchMovieDataByImdbIdAsync(ImdbId);
+        movieData = result.Movie;
+        castData = result.Cast;
+        screeningData = await IMS.FetchScreenings(ImdbId);
+        // writerName = castData.Where(o => o.Role == "Writer").Select(o => o.Person.Name).FirstOrDefault();
+        // directorName = castData.Where(o => o.Role == "Director").Select(o => o.Person.Name).FirstOrDefault();
+    }
+
+    private async Task UpdateMovie()
+    {
+        await IMS.UpdateMovie(movieData);
+    }
+    //public string HrefScreeningLink(Screening screening) => $"/screening/{screening.Id}";
+}
+

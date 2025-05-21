@@ -24,7 +24,7 @@ namespace Ticketmaster.Data.Controllers
         {
             try
             {
-                MovieWithCast result = await movieService.FetchMovieDataAsync(imdbId);
+                MovieWithCast result = await movieService.FetchMovieDataByImdbIdAsync(imdbId);
 
                 if (result == null)
                 {

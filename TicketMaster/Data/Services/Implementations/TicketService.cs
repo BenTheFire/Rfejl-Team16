@@ -13,30 +13,17 @@ namespace Ticketmaster.Data.Services.Implementations
             _context = c;
         }
 
-        //public async Task CreateTicket(TicketDTO ticket)
-        //{
-        //    try
-        //    {
-        //        Ticket newTicket = new Ticket()
-        //        {
-        //            Price = ticket.Price,
-        //            Seat = ticket.Seat,
-        //            Status = (int)ticket.Status,
-        //            PurchaseTime = ticket.PurchaseTime
-        //        };
-        //        newTicket.OfScreening = await _context.Screenings.Where(o => o.Id == ticket.OfScreeningId).FirstAsync();
-        //        newTicket.Customer = await _context.CustomerData.Where(o => o.Id == ticket.CustomerId).FirstAsync();
-        //        newTicket.ByVendor = await _context.Vendors.Where(o => o.Id == ticket.ByVendorId).FirstAsync();
-        //        await _context.Tickets.AddAsync(newTicket);
-        //        await _context.SaveChangesAsync();
-        //        Console.WriteLine($"New ticket created succesfully");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-        //}
+        public async Task CreateTicketAsync(Ticket ticket)
+        {
+            await _context.Tickets.AddAsync(ticket);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Ticket added succesfully");
+        }
 
+        public async Task<List<Ticket>> GetTicketsAsync()
+        {
+            return await _context.Tickets.ToListAsync();
+        }
         public async Task DeleteTicket(int id)
         {
             try
@@ -115,6 +102,24 @@ namespace Ticketmaster.Data.Services.Implementations
                 orderby t.PurchaseTime descending
                 select t).ToList();
             return ret;
+        }
+
+        public async Task UpdateTicketAsync(Ticket ticket)
+        {
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Ticket ({ticket.Id}) updated succesfully");
+        }
+
+        public async Task DeleteTicketAsync(int id)
+        {
+            _context.Tickets.Remove(_context.Tickets.Find(id));
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Ticket ({id}) deleted succesfully");
+        }
+        public async Task<Ticket> GetTicketByIdAsync(int id)
+        {
+            return await _context.Tickets.Where(o => o.Id == id).FirstOrDefaultAsync();
         }
     }
 }
