@@ -4,66 +4,72 @@
 @inject IMovieService MS
 @using Ticketmaster.Data.Services.StaticServiceMethods
 @using Ticketmaster.Extra
+@layout MainLayout
+@inherits LayoutComponentBase
+@inject ThemeService ThemeService
 <body>
-    <div class="forms">
-        <div class="container my-4">
-            <div class="row g-4">
-                <div class="col-12 col-md-6 col-xl-3">
-                    <div class="formContainer">
-                        <h4>Create movie</h4>
-                        <form onsubmit="@createMovie">
-                            <input type="text" class="form-control mb-2" placeholder="Title of movie" @bind-value="M.Title" />
-                            <input type="text" class="form-control mb-2" placeholder="Description of movie" @bind-value="M.Description" />
-                            <input type="number" class="form-control mb-2" placeholder="Length in seconds" @bind-value="M.LengthInSeconds" />
-                            <input type="text" class="form-control mb-2" placeholder="Image source link" @bind-value="M.ImageSource" />
-                            <input type="text" class="form-control mb-2" placeholder="Release date" @bind-value="M.ReleaseDate" />
-                            <input type="number" class="form-control mb-2" placeholder="IMDb ID" @bind-value="M.ImdbId" />
-                            <button type="submit" class="btn btn-success w-100">Create Movie</button>
-                        </form>
+    <div class="@ThemeClass">
+        <div class="admin-forms">
+            <div class="admin-container my-4">
+                <div class="admin-section row g-4">
+                    <div class="admin-col">
+                        <div class="admin-form">
+                            <h4 style="color: var(--accent-text-color);">Create movie</h4>
+                            <form onsubmit="@createMovie">
+                                <input type="text" class="editor-input" placeholder="Title of movie" @bind-value="M.Title" />
+                                <input type="text" class="editor-input" placeholder="Description of movie" @bind-value="M.Description" />
+                                <input type="number" class="editor-input" placeholder="Length in seconds" @bind-value="M.LengthInSeconds" />
+                                <input type="text" class="editor-input" placeholder="Image source link" @bind-value="M.ImageSource" />
+                                <input type="text" class="editor-input" placeholder="Release date" @bind-value="M.ReleaseDate" />
+                                <input type="number" class="editor-input" placeholder="IMDb ID" @bind-value="M.ImdbId" />
+                                <button type="submit" class="editor-submit-btn success full-width">Create Movie</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-6 col-xl-3">
-                    <div class="formContainer">
-                        <h4>Fetch movie from OMBD by title</h4>
-                        <form onsubmit="@fetchMovie">
-                            <input type="text" class="form-control mb-2" placeholder="Title of movie" @bind-value="M.Title" />
-                            <input type="number" class="form-control mb-2" placeholder="Imdb ID of movie" @bind-value="M.ImdbId" />
-                            <button type="submit" class="btn btn-success mb-2 w-100">Fetch Movie</button>
-                            <div class="form-check">
-                                <InputCheckbox @bind-Value="force" class="form-check-input" id="forceCheck" />
-                                <label class="form-check-label" for="forceCheck">Force</label>
-                            </div>
-                        </form>
-                        <p>@textAdd</p>
+                    <div class="admin-col">
+                        <div class="admin-form">
+                            <h4 style="color: var(--accent-text-color);">Fetch movie from OMBD by title</h4>
+                            <form onsubmit="@fetchMovie">
+                                <input type="text" class="editor-input" placeholder="Title of movie" @bind-value="M.Title" />
+                                <input type="number" class="editor-input" placeholder="Imdb ID of movie" @bind-value="M.ImdbId" />
+                                <button type="submit" class="editor-submit-btn success full-width">Fetch Movie</button>
+                                <div class="editor-checkbox">
+                                    <InputCheckbox @bind-Value="force" class="checkbox" id="forceCheck" />
+                                    <label class="checkbox-label" for="forceCheck">Force</label>
+                                </div>
+                            </form>
+                            <p>@textAdd</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-6 col-xl-3">
-                    <div class="formContainer">
-                        <h4>Update movie</h4>
-                        <ul>
-                            @foreach (var movie in movies)
-                            {
-                                <li>
-                                    <a href="@HrefMovieLink(movie)">@movie.Title (@movie.ReleaseDate)</a>
-                                </li>
-                            }
-                        </ul>
+                    <div class="admin-col">
+                        <div class="admin-form">
+                            <h4 style="color: var(--accent-text-color);">Update movie</h4>
+                            <ul class="admin-link-list">
+                                @foreach (var movie in movies)
+                                {
+                                    <li>
+                                        <a href="@HrefMovieLink(movie)">@movie.Title (@movie.ReleaseDate)</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-6 col-xl-3">
-                    <div class="formContainer">
-                        <h4>Delete movie</h4>
-                        <form onsubmit="@deleteMovie">
-                            <input type="text" class="form-control mb-2" placeholder="Movie's Title to delete" @bind-value="M.Title" />
-                            <input type="number" class="form-control mb-2" placeholder="Movie's IMDb ID to delete" @bind-value="M.ImdbId" />
-                            <button type="submit" class="btn btn-danger w-100">Delete Movie</button>
-                        </form>
-                        @textDelete
+                    <div class="admin-col">
+                        <div class="admin-form">
+                            <h4 style="color: var(--accent-text-color);">Delete movie</h4>
+                            <form onsubmit="@deleteMovie">
+                                <input type="text" class="editor-input" placeholder="Movie's Title to delete" @bind-value="M.Title" />
+                                <input type="number" class="editor-input" placeholder="Movie's IMDb ID to delete" @bind-value="M.ImdbId" />
+                                <button type="submit" class="editor-submit-btn danger full-width">Delete Movie</button>
+                            </form>
+                            @textDelete
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </body>
 @code {
     private bool isInDBAdd = false;
@@ -259,72 +265,21 @@
 
     }
 }
-<style>
-    .forms {
-        align-content: normal;
-        justify-content: normal;
-        gap: 3rem; 
-    }
-    .formContainer {
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        min-height: 100%;
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
     }
 
-        .formContainer h4 {
-            margin-bottom: 1rem;
-            color: #aee1f9;
-        }
-
-
-    .formContainer {
-        display: flex;
-        flex-direction: column;
-        min-width: 220px;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 
-        .formContainer h4 {
-            margin-bottom: 1rem;
-            color: #aee1f9;
-        }
-
-        .formContainer input,
-        .formContainer button {
-            margin-bottom: 0.7rem;
-            border-radius: 0.4rem;
-            border: 1px solid #444;
-            padding: 0.5rem;
-            background: #181a20;
-            color: #f8f9fa;
-        }
-
-        .formContainer button {
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-    .buttonDelete {
-        background-color: #e74c3c;
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
     }
-
-    .buttonAdd {
-        background-color: #27ae60;
-    }
-
-    .buttonEdit {
-        background-color: #2980b9;
-    }
-</style>
+}

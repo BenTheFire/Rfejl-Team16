@@ -2,33 +2,40 @@
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
 @inject IPeopleService PS
+@layout MainLayout
+@inherits LayoutComponentBase
+@inject ThemeService ThemeService
 <body>
-    <h3>Edit People</h3>
-    <div class="forms">
-        <div class="formContainer">
-        <form onsubmit="@createPerson">
-            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
-            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
-            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
+    <div class="@ThemeClass">
+    <h3 style="color: var(--accent-text-color);">Edit People</h3>
+    
+    <div class="admin-forms">
+        <div class="admin-form">
+            <form onsubmit="@createPerson">
+                <input type="text" placeholder="Name of person" @bind-value="P.Name" class="editor-input" />
+                <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" class="editor-input" />
+                <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" class="editor-input" />
+                <button type="submit" class="editor-submit-btn success full-width">Create Person</button>
+            </form>
+        </div>
 
-            <button type="submit" class="buttonAdd">Create Person</button>
-        </form>
+        <div class="admin-form">
+            <form onsubmit="@updatePerson">
+                <input type="number" placeholder="ID of person" @bind-value="P.Id" class="editor-input" />
+                <input type="text" placeholder="Name of person" @bind-value="P.Name" class="editor-input" />
+                <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" class="editor-input" />
+                <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" class="editor-input" />
+                <button type="submit" class="editor-submit-btn success full-width">Update Person</button>
+            </form>
         </div>
-        <div class="formContainer">
-        <form onsubmit="@updatePerson">
-            <input type="number" placeholder="ID of person" @bind-value="P.Id"/>
-            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
-            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
-            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
-            <button type="submit" class="buttonEdit">Update Person</button>
-        </form>
+
+        <div class="admin-form">
+            <form onsubmit="@deletePerson">
+                <input type="number" placeholder="Person ID to delete" @bind-value="P.Id" class="editor-input" />
+                <button type="submit" class="editor-submit-btn danger full-width">Delete Person</button>
+            </form>
         </div>
-        <div class="formContainer">
-        <form onsubmit="@deletePerson">
-            <input type="number" placeholder="Person ID to delete" @bind-value="P.Id" />
-            <button type="submit" class="buttonDelete">Delete Person</button>
-        </form>
-        </div>
+    </div>
     </div>
 </body>
 @code {
@@ -48,31 +55,22 @@
         await PS.DeletePerson(P.Id);
     }
 }
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
 
-
-<style>
-    .forms {
-        display: flex;
-        align-content: normal;
-        justify-content: normal;
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
     }
 
-    .formContainer {
-        display: flex;
-        align-content: normal;
-        justify-content: normal;
-        flex-direction: column;
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 
-    .buttonDelete {
-        background-color: red;
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
     }
+}
 
-    .buttonAdd {
-        background-color: palegreen;
-    }
-
-    .buttonEdit {
-        background-color: cornflowerblue;
-    }
-</style>

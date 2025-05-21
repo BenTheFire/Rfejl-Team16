@@ -2,41 +2,51 @@
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Data.DTOs
 @inject ILocationService LS
-<body>
-    <h3>Edit Locations</h3>
-    <div class="forms">
-        <div class="formContainer">
+@layout MainLayout
+@inherits LayoutComponentBase
+@inject ThemeService ThemeService
+<h3 style="color: var(--accent-text-color);">Edit Locations</h3>
+<div class="@ThemeClass">
+    <div class="admin-form-wrapper">
+
+        <div class="admin-form-section">
             <form onsubmit="@createLocation">
-                <input type="text" placeholder="Name of location" @bind-value="L.Name"/>
-                <input type="text" placeholder="Address of location" @bind-value="L.Address" />
-                <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
-                <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+                <input type="text" class="editor-input" placeholder="Name of location" @bind-value="L.Name" />
+                <input type="text" class="editor-input" placeholder="Address of location" @bind-value="L.Address" />
+                <input type="number" class="editor-input" placeholder="Max capacity" @bind-value="L.Capacity" />
+                <input type="text" class="editor-input" placeholder="Vendor ID" @bind-value="L.VendorId" />
                 <br />
-                <button type="submit" class="buttonAdd">Create Location</button>
+                <button type="submit" class="editor-submit-btn">Create Location</button>
             </form>
         </div>
+
         <br />
-        <div class="formContainer">
+
+        <div class="admin-form-section">
             <form onsubmit="@updateLocation">
-                <input type="number" placeholder="Location ID" @bind-value="L.Id" />
-                <input type="text" placeholder="Name of location" @bind-value="L.Name" />
-                <input type="text" placeholder="Address of location" @bind-value="L.Address" />
-                <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
-                <input type="text" placeholder="Vendor ID" @bind-value="L.VendorId" />
+                <input type="number" class="editor-input" placeholder="Location ID" @bind-value="L.Id" />
+                <input type="text" class="editor-input" placeholder="Name of location" @bind-value="L.Name" />
+                <input type="text" class="editor-input" placeholder="Address of location" @bind-value="L.Address" />
+                <input type="number" class="editor-input" placeholder="Max capacity" @bind-value="L.Capacity" />
+                <input type="text" class="editor-input" placeholder="Vendor ID" @bind-value="L.VendorId" />
                 <br />
-                <button type="submit" class="buttonEdit">Update Location</button>
+                <button type="submit" class="editor-submit-btn">Update Location</button>
             </form>
         </div>
+
         <br />
-        <div class="formContainer">
+
+        <div class="admin-form-section">
             <form onsubmit="@deleteLocation">
-                <input type="number" placeholder="Location ID to delete" @bind-value ="L.Id" />
+                <input type="number" class="editor-input" placeholder="Location ID to delete" @bind-value="L.Id" />
                 <br />
-                <button type="submit" class="buttonDelete">Delete Location</button>
+                <button type="submit" class="editor-submit-btn">Delete Location</button>
             </form>
         </div>
+
     </div>
-</body>
+</div>
+
 
 @code {
     private LocationDTO L = new();
@@ -56,7 +66,24 @@
     }
 
 }
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
 
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}
 <style>
 .forms{
     display: flex;

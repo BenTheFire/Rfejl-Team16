@@ -3,44 +3,55 @@
 @using Ticketmaster.Data.DTOs
 @using Ticketmaster.Objects
 @inject IMovieService IMS
-
+@layout MainLayout
+@inherits LayoutComponentBase
+@inject ThemeService ThemeService
 <body>
     @if (movieData != null)
-    {
-        <div class="movie-container my-2">
-            <div class="row g-2">
-                <div class="image" style="width: fit-content">
-                    <img src="@movieData.ImageSource" alt="@movieData.Title Poster" class="poster" />
+{
+    <div class="movie-editor-wrapper">
+        <div class="movie-editor-container my-4">
+            <div class="row g-4">
+                <div class="movie-editor-poster" style="width: fit-content">
+                    <img src="@movieData.ImageSource" alt="@movieData.Title Poster" class="poster-preview" />
                 </div>
-                <div class="updateForm" style="width: 70%">
+                <div class="movie-editor-form" style="width: 70%">
                     <form onsubmit="@UpdateMovie">
                         <p>Image source link</p>
-                        <input type="text" class="form-control mb-2" placeholder="Image source link" @bind-value="movieData.ImageSource" title="Image source link" />
+                        <input type="text" class="form-control mb-3" placeholder="Image source link" @bind-value="movieData.ImageSource" title="Image source link" />
+
                         <p>Title of movie</p>
-                        <input type="text" class="form-control mb-2" placeholder="Title of movie" @bind-value="movieData.Title" title="Title of movie" />
+                        <input type="text" class="form-control mb-3" placeholder="Title of movie" @bind-value="movieData.Title" title="Title of movie" />
+
                         <p>Description of movie</p>
-                        <textarea type="text" class="form-control mb-2" placeholder="Description of movie" @bind="movieData.Description" title="Description of movie" />
+                        <textarea type="text" class="form-control mb-3" placeholder="Description of movie" @bind="movieData.Description" title="Description of movie" />
+
                         <p>Length in seconds</p>
-                        <input type="number" class="form-control mb-2" placeholder="Length in seconds" @bind-value="movieData.LengthInSeconds" />
+                        <input type="number" class="form-control mb-3" placeholder="Length in seconds" @bind-value="movieData.LengthInSeconds" />
+
                         <p>Release date (year)</p>
-                        <input type="text" class="form-control mb-2" placeholder="Release date" @bind-value="movieData.ReleaseDate" title="Release date (year)" />
+                        <input type="text" class="form-control mb-3" placeholder="Release date" @bind-value="movieData.ReleaseDate" title="Release date (year)" />
+
                         <p>IMDb ID</p>
-                        <input type="number" class="form-control mb-2" placeholder="IMDb ID" @bind-value="movieData.ImdbId" title="IMDb ID" />
-                        <button type="submit">Update movie</button>
+                        <input type="number" class="form-control mb-3" placeholder="IMDb ID" @bind-value="movieData.ImdbId" title="IMDb ID" />
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Update movie</button>
                     </form>
                 </div>
             </div>
         </div>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
+    </div>
+}
+else
+{
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+        <div>
+            <h2>Loading...</h2>
+            <img src="./Loading.gif" alt="..." style="width:128px;height:128px" />
         </div>
-    }
+    </div>
+}
+
 
 </body>
 
@@ -69,4 +80,38 @@
     }
     //public string HrefScreeningLink(Screening screening) => $"/screening/{screening.Id}";
 }
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
 
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    
+</style>

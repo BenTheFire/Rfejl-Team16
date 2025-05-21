@@ -10,37 +10,46 @@
 <body>
     @if (!isLoaded)
     {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
             <div>
                 <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                <img src="./Loading.gif" alt="Loading" style="width:128px;height:128px" />
             </div>
         </div>
     }
-    else 
+    else
     {
-        <div class="container mt-4 bg-dark text-white p-4 rounded fade-in">
-            <div class="container">
-                <div class="row">
-                    @foreach (var movie in fetchedMovies)
-                    {
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-                            <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
-                                <div class="card">
-                                    <img src="@movie.ImageSource" alt="Movie Poster" class="card-img-top" />
-                                    <div class="card-body">
-                                        <h5 class="card-title">@movie.Title (@movie.ReleaseDate)</h5>
-                                        <h5 class="card-title">@GetMovieLength(movie.LengthInSeconds).ToShortTimeString()</h5>
-                                    </div>
+        <div class="content">
+            <div class="movie-container">
+                <div class="movie-header">
+                    <h2 style="color: var(--accent-text-color);">Now Showing</h2>
+                </div>
+                <div class="info-section">
+                    <div class="screenings">
+                        <div class="row">
+                            @foreach (var movie in fetchedMovies)
+                            {
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <NavLink href="@HrefMovieLink(movie)" class="text-decoration-none">
+                                        <div class="card">
+                                            <img src="@movie.ImageSource" alt="Movie Poster" class="poster" />
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="color: var(--color-blue);">
+                                                    @movie.Title (@movie.ReleaseDate)
+                                                </h5>
+                                                <h5 class="card-title">
+                                                    @GetMovieLength(movie.LengthInSeconds).ToShortTimeString()
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </NavLink>
                                 </div>
-                            </NavLink>
+                            }
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
         </div>
-
-
     }
 </body>
 @code
@@ -75,105 +84,209 @@
     public string HrefMovieLink(Movie movie) => $"/movies/{(movie.ImdbId):D7}";
 }
 <style>
-    /* General container styling */
-    .container {
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    :root {
+        --color-white: #f9f9f9;
+        --color-black: #0d0d0d;
+        --color-gray-1: #1a1a1a;
+        --color-gray-2: #2a2a2a;
+        --color-gray-3: #444;
+        --color-blue: #3b82f6;
+        --color-blue-hover: #2563eb;
+        --color-red: #ef4444;
+        --color-yellow: #facc15;
+        --color-purple: #8b5cf6;
+        --bg-color: var(--color-black);
+        --text-color: var(--color-white);
+        --header-bg: var(--color-gray-1);
+        --card-bg: var(--color-gray-2);
+        --footer-bg: var(--color-gray-1);
+        --sidebar-bg: linear-gradient(to right, #0f172a, #0d0d0d); /* blue → black*/
+        --sidebar-text-color: var(--color-yellow);
+        --accent-text-color: var(--color-yellow);
+    }
+
+    .dark-theme {
+        --color-white: #f9f9f9;
+        --color-black: #0d0d0d;
+        --color-gray-1: #1a1a1a;
+        --color-gray-2: #2a2a2a;
+        --color-gray-3: #444;
+        --color-blue: #3b82f6;
+        --color-blue-hover: #2563eb;
+        --color-red: #ef4444;
+        --color-yellow: #facc15;
+        --color-purple: #8b5cf6;
+        --bg-color: var(--color-black);
+        --text-color: var(--color-white);
+        --header-bg: var(--color-gray-1);
+        --card-bg: var(--color-gray-2);
+        --footer-bg: var(--color-gray-1);
+        --sidebar-bg: linear-gradient(to right, #0f172a, #0d0d0d); /* blue → black*/
+        --sidebar-text-color: var(--color-yellow);
+        --accent-text-color: var(--color-yellow);
+    }
+
+    .light-theme {
+        --bg-color: #ffffff;
+        --text-color: #1a1a1a;
+        --header-bg: #e2e8f0;
+        --card-bg: #f9fafb;
+        --footer-bg: #e2e8f0;
+        --sidebar-bg: linear-gradient(to right, #0f172a, #ffffff);
+        --sidebar-bg-mini: linear-gradient(to bottom, #0f172a, #ffffff); /* blue → white */
+        --sidebar-text-color: var(--color-purple);
+        --accent-text-color: var(--color-purple);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.75;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    header {
+        background: var(--header-bg);
+        padding: 2rem 1.5rem;
+        text-align: center;
+        border-bottom: 1px solid var(--color-gray-3);
+    }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-yellow);
+            color: var(--accent-color);
+        }
+
+    nav {
+        margin-top: 1rem;
+    }
+
+        nav a {
+            margin: 0 0.75rem;
+            color: var(--color-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            color: var(--accent-color);
+        }
+
+            nav a:hover {
+                color: var(--color-blue);
+            }
+
+    .content {
+        max-width: 960px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border-radius: 1.5rem;
+        padding: 1.5rem 1rem;
+        margin-bottom: 2rem;
+        
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+        width: 100%;
+        max-width: 240px;
+        height: 420px; /* 🟢 FIXED HEIGHT for all cards */
+        background-color: var(--card-bg);
+        border-left: 5px solid var(--color-red);
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1rem;
+        text-align: center;
+    }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+            border-left-color: var(--color-yellow);
+        }
+
+        .card h2,
+        .card h5 {
+            color: var(--color-blue);
+            margin-top: 1rem;
+            word-break: break-word;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 0.75rem;
+            max-height: 320px;
+            object-fit: cover;
+        }
+
+    .button {
+        display: inline-block;
+        background-color: var(--color-blue);
+        color: var(--color-white);
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 999px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .button:hover {
+            background-color: var(--color-blue-hover);
+            transform: scale(1.05);
+        }
+
+    .toggle-theme {
         margin-top: 2rem;
     }
 
-    /* Movie card customization */
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 1rem;
-        overflow: hidden;
-        background-color: #1c1c1c;
-        color: #ffffff;
-        border: none;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        background-color: var(--footer-bg);
+        border-top: 1px solid var(--color-gray-3);
+        color: var(--color-gray-3);
+        font-size: 0.9rem;
     }
 
-        /* Hover effect */
-        .card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+    .movie-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+        justify-content: center;
+    }
+
+    .card {
+        
+    }
+
+        .card img {
+            width: 100%;
+            height: 280px; /* 🟢 FIXED IMAGE HEIGHT */
+            object-fit: cover;
+            border-radius: 0.75rem;
         }
 
-    /* Poster image styling */
-    .card-img-top {
-        height: 24rem;
-        object-fit: cover;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* Card content */
-    .card-body {
-        padding: 1rem;
-    }
-
-    /* Movie title */
-    .card-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: #f8f9fa;
-    }
-
-    /* Responsive tweaks */
-
-
-    {
-        width: 100% !important;
-        height: auto !important;
-    }
-
-    .card-img-top {
-        height: auto;
-    }
-    /* General container styling */
-    .container {
-        margin-top: 2rem;
-    }
-
-    /* Movie card customization */
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 1rem;
-        margin: auto
-        background-color: #1c1c1c;
-        color: #ffffff;
-        border: none;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    }
-
-        /* Hover effect */
-        .card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+        .card h5 {
+            color: var(--color-blue);
+            font-size: 0.95rem;
+            margin: 0.5rem 0 0;
+            word-break: break-word;
         }
-
-    /* Poster image styling */
-    .card-img-top {
-        height: 70%;
-        object-fit: cover;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* Card content */
-    .card-body {
-        padding: 1rem;
-    }
-
-    /* Movie title */
-    .card-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: #f8f9fa;
-    }
-
-    /* Responsive tweaks */
-    {
-        width: 100% !important;
-        height: auto !important;
-    }
-
 </style>
