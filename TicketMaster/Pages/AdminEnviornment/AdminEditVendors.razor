@@ -10,21 +10,6 @@
             <div class="row g-4">
                 <div class="col-12 col-md-6">
                     <div class="formContainer">
-                        <h4>Create vendor</h4>
-                        <form onsubmit="@createVendor">
-                            <p>Username</p>
-                            <p>
-                                <input type="text" class="form-control mb-2" placeholder="Username of Vendor" @bind-value="V.UserName" />
-                            </p>
-                            <p>Password</p>
-                            <p>
-                                <input type="text" class="form-control mb-2" placeholder="Password of Vendor" @bind-value="V.PasswordHash" />
-                            </p>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
                         <h4>Update vendor</h4>
                         <ul>
                             @foreach (var vendor in vendors)
