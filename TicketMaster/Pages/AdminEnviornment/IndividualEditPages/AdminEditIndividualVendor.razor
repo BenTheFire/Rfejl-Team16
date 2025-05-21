@@ -1,0 +1,78 @@
+﻿@page "/admin/edit/vendor/{vendorId}"
+@using Microsoft.AspNetCore.Identity
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Data.DTOs
+@using Ticketmaster.Objects
+@inject IVendorService VS
+@inject ILocationService LS
+@inject NavigationManager NavigationManager
+
+<body>
+    @if (V != null)
+    {
+        <div class="movie-container my-2">
+            <div class="row g-2">
+                <form onsubmit="@UpdateVendor">
+                    <p>Username</p>
+                    <p>
+                        <input type="text" placeholder="Username" @bind-value="V.UserName" />
+                    </p>
+                    <p>Email</p>
+                    <p>
+                        <input type="email" placeholder="Email" @bind-value="V.Email" />
+                    </p>
+                    <p>Phone Number</p>
+                    <p>
+                        <input type="text" placeholder="Phone Number" @bind-value="V.PhoneNumber" />
+                    </p>
+                    <button type="submit">Update Vendor</button>
+                </form>
+                <p>
+                    <select @bind="@locationId">
+                        @foreach(var location in locations)
+                        {
+                            <option value="@location.Id">@location.Name</option>
+                        }
+                    </select>
+                </p>
+                <form onsubmit="@deleteVendor">
+                    <button type="submit">Delete Vendor</button>
+                </form>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
+    }
+
+</body>
+
+@code {
+    [Parameter] public string vendorId { get; set; }
+
+    private IdentityUser V;
+    private List<Location> locations = new();
+    private int locationId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        V = await VS.GetVendorByIdAsync(vendorId);
+        locations = await LS.GetLocationsByVendorIdAsync(Convert.ToInt16(vendorId));
+    }
+
+    private async Task UpdateVendor()
+    {
+    }
+    private async Task deleteVendor()
+    {
+    }
+    //public string HrefScreeningLink(Screening screening) => $"/screening/{screening.Id}";
+}
+
