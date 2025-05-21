@@ -39,7 +39,7 @@
         try
         {
             int id = int.Parse(ScreeningId);
-            screening = await SS.FetchScreening(id);
+            screening = await SS.GetScreeningByIdAsync(id);
             Console.WriteLine(id);
 
             Console.WriteLine(screening.OfMovie.Title);

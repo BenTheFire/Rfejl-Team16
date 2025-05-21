@@ -82,7 +82,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        movies = await MS.GetMovies();
+        movies = await MS.GetMoviesAsync();
     }
 
     private void ResetFetchMovieStatus()

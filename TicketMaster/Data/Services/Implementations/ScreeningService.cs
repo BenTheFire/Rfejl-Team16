@@ -17,7 +17,7 @@ namespace Ticketmaster.Data.Services.Implementations
             var tickets = await _context.Tickets.Where(o => o.OfScreening == screening).ToListAsync();
             return new ScreeningWithTicketsDTO() { Screening = screening, Tickets = tickets } ;
         }
-        public async Task<List<Screening>> FetchScreenings()
+        public async Task<List<Screening>> GetScreeningsAsync()
         {
             return await _context.Screenings.ToListAsync();
         }
@@ -29,7 +29,7 @@ namespace Ticketmaster.Data.Services.Implementations
         //{
         //    return await _context.Screenings.Where(o => o.InLocation.Vendors.Contains(vendor)).ToListAsync();
         //}
-        public async Task<Screening> FetchScreening(int id)
+        public async Task<Screening> GetScreeningByIdAsync(int id)
         {
             return new Screening()
             {
@@ -40,23 +40,26 @@ namespace Ticketmaster.Data.Services.Implementations
                 SeatsTaken = (await _context.Screenings.Where(o => o.Id == id).FirstAsync()).SeatsTaken
             };
         }
-        public async Task CreateScreening(ScreeningDTO screening)
+        public async Task CreateScreening(Screening screening)
         {
             Screening newScreening = new Screening()
             {
                 Time = screening.Time,
                 SeatsTaken = (int)screening.SeatsTaken
             };
-            newScreening.InLocation = await _context.Locations.Where(o => o.Id == screening.InLocationId).FirstAsync();
-            newScreening.OfMovie = await _context.Movies.Where(o => o.Id == screening.OfMovieId).FirstAsync();
+            newScreening.InLocation = await _context.Locations.Where(o => o.Id == screening.InLocation.Id).FirstAsync();
+            newScreening.OfMovie = await _context.Movies.Where(o => o.Id == screening.OfMovie.Id).FirstAsync();
             _context.Screenings.Add(newScreening);
             await _context.SaveChangesAsync();
             Console.WriteLine("Screening added succesfully");
         }
 
-        public async Task UpdateScreening(ScreeningDTO screening)
+        public async Task UpdateScreening(Screening screening)
         {
-            try
+            _context.Update(screening);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Screening ({screening.Id}) updated succesfully");
+            /*try
             {
                 Screening updatedScreening = await _context.Screenings.Where(o => o.Id == screening.Id).FirstAsync();
                 if (updatedScreening != null)
@@ -71,7 +74,7 @@ namespace Ticketmaster.Data.Services.Implementations
             } catch (Exception e)
             {
                 Console.WriteLine($"Screening ({screening.Id}) not found");
-            }
+            }*/
         }
 
         public async Task DeleteScreening(int id)

@@ -20,6 +20,7 @@
         <form onsubmit="@deletePerson">
             <button type="submit">Delete Person</button>
         </form>
+        //todo add a form to connect this person to a movie with a role
     } else
     {
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
@@ -52,8 +53,7 @@
     private async Task deletePerson()
     {
         await PS.DeletePerson(P.Id);
-        P = null; // Clear the person data after deletion
-        //redirect to the people list
+        P = null;
         NavigationManager.NavigateTo("/admin/edit/people");
     }
 }

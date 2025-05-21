@@ -196,22 +196,22 @@ namespace Ticketmaster.Data.Services.Implementations
             }
         }
 
-        public async Task<List<Movie>> GetMovies()
+        public async Task<List<Movie>> GetMoviesAsync()
         {
             return await _context.Movies.ToListAsync();
         }
 
-        public async Task<Movie> FetchMovieByTitleAsync(string title)
+        public async Task<Movie> GetMovieByTitleAsync(string title)
         {
             return await _context.Movies.Where(o => o.Title == title).FirstAsync();
         }
 
-        public async Task<Movie> FetchMovieByIdAsync(int id)
+        public async Task<Movie> GetMovieByIdAsync(int id)
         {
             return await _context.Movies.Where(o => o.Id == id).FirstAsync();
         }
 
-        public async Task<Movie> FetchMovieByImdbIdAsync(string imdbId)
+        public async Task<Movie> GetMovieByImdbIdAsync(string imdbId)
         {
             return await _context.Movies.Where(o => o.ImdbId == Convert.ToInt32(imdbId)).FirstAsync();
         }

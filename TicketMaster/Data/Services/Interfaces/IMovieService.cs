@@ -5,10 +5,10 @@ namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface IMovieService
     {
-        public Task<List<Movie>> GetMovies();
-        public Task<Movie> FetchMovieByTitleAsync(string title);
-        public Task<Movie> FetchMovieByIdAsync(int id);
-        public Task<Movie> FetchMovieByImdbIdAsync(string imdbId);
+        public Task<List<Movie>> GetMoviesAsync();
+        public Task<Movie> GetMovieByTitleAsync(string title);
+        public Task<Movie> GetMovieByIdAsync(int id);
+        public Task<Movie> GetMovieByImdbIdAsync(string imdbId);
         public Task<MovieWithCast> FetchMovieDataByImdbIdAsync(string imdbId);
         public Task<List<Screening>> FetchScreenings(string imdbId);
         public Task<bool> IsInDBByTitle(string title);

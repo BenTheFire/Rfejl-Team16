@@ -1,0 +1,61 @@
+﻿@page "/admin/edit/location/{locationId}"
+@using Ticketmaster.Data.Services.Interfaces
+@using Ticketmaster.Objects
+@inject ILocationService LS
+@inject NavigationManager NavigationManager
+
+<body>
+    @if (L != null)
+    {
+        <a href="/admin/edit/locations">Go back</a>
+        <form onsubmit="@updateLocation">
+            <p>Name</p>
+            <input type="text" placeholder="Name of location" @bind-value="L.Name" />
+            <p>Address</p>
+            <input type="text" placeholder="Address of location" @bind-value="L.Address" />
+            <p>Max capacity</p>
+            <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
+            <!--vendors?-->
+            <button type="submit">Update Location</button>
+        </form>
+        <form onsubmit="@deleteLocation">
+            <button type="submit">Delete Location</button>
+        </form>
+        
+    }
+    else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <div>
+                <h2>Loading...</h2>
+                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+            </div>
+        </div>
+    }
+</body>
+
+@code {
+    [Parameter] public string LocationId { get; set; }
+    private Location L = new();
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch the person data using the PersonId
+        var location = await LS.GetLocationByIdAsync(Convert.ToInt16(LocationId));
+        if (location != null)
+        {
+            L = location;
+        }
+    }
+    private async Task updateLocation()
+    {
+        L.Id = Convert.ToInt16(LocationId); // Ensure the ID is set for the update
+        await LS.UpdateLocationAsync(L);
+        await OnInitializedAsync();
+    }
+    private async Task deleteLocation()
+    {
+        await LS.DeleteLocationAsync(L.Id);
+        L = null;
+        NavigationManager.NavigateTo("/admin/edit/locations");
+    }
+}

@@ -5,8 +5,10 @@ namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface ILocationService
     {
-        //public Task CreateLocation(LocationDTO location);
-        public Task DeleteLocation(int id);
-        //public Task UpdateLocation(LocationDTO location);
+        public Task CreateLocationAsync(Location location);
+        public Task DeleteLocationAsync(int id);
+        public Task UpdateLocationAsync(Location location);
+        public Task<List<Location>> GetLocationsAsync();
+        public Task<Location> GetLocationByIdAsync(int id);
     }
 }
