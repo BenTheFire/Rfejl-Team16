@@ -11,7 +11,24 @@
 <body>
     @if (screening != null) {
         <h3>Screening of @screening.OfMovie.Title on @screening.Time.ToString("yyyy-MM-dd HH:mm")</h3>
-        <p>Filled slots: @screening.SeatsTaken</p>
+        <p>Filled slots: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
+
+        @if (User != null)
+        {
+            <h4>Logged in as: @User.UserName</h4>
+            if (customerData != null)
+            {
+                <p>Customer: @User.UserName</p>
+                <p>Email: @email</p>
+                <p>Phone: @phone</p>
+            }
+        }
+        else
+        {
+            <input type="text" placeholder="Email" @bind-value="@email" />
+            <input type="text" placeholder="Phone" @bind-value="@phone" />
+        }
+        <input type="text" placeholder="Seat" @bind-value="@seat"/>
         <button onclick="@buyTicket">Buy Ticket for screening</button>
     }
     else
@@ -38,6 +55,10 @@
 
     private Ticket T;
 
+    private string email;
+    private string phone;
+    private string seat;
+
     protected override async Task OnInitializedAsync()
     {
         screening = await SS.GetScreeningByIdAsync(Convert.ToInt16(ScreeningId));
@@ -51,6 +72,8 @@
             }
             User = await US.GetUserByIdAsync(userId);
             customerData = await CS.GetCustomerByUserIdAsync(userId);
+            email = customerData.Email;
+            phone = customerData.Phone;
         }
         else
         {
@@ -62,8 +85,9 @@
         await TS.CreateTicketAsync(new Ticket
             {
                 OfScreening = screening,
-                Price = 10,
-                Seat = "A1",
+                Customer = customerData,
+                Price = 1000,
+                Seat = seat,
                 Status = 0,
                 PurchaseTime = DateTime.Now
             });
