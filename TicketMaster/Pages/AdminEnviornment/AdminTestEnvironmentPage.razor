@@ -13,6 +13,7 @@
 -->
 
 <body>
+    <div class="forms">
     <div class="admin-page">
         <h3 class="admin-title" style="color: var(--accent-text-color);">🎬 Admin Test Environment</h3>
         <ul class="admin-links">
@@ -24,11 +25,27 @@
             <li class="admin-link-item"><a class="admin-link" href="/admin/edit/vendors">🏢 Edit Vendors</a></li>
         </ul>
     </div>
+    </div>
 </body>
 
 
 
 <style>
+    .forms {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
     .admin-page {
         max-width: 600px;
         margin: auto;
