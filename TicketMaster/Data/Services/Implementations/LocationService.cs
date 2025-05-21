@@ -33,7 +33,7 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task DeleteLocationAsync(int id)
         {
-            var toRemove = await _context.Locations.Where(o => o.Id == id).FirstAsync();
+            var toRemove = await _context.Locations.Where(o => o.Id == id).FirstOrDefaultAsync();
             if (toRemove != null)
             {
                 _context.Locations.Remove(toRemove);
@@ -47,7 +47,8 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<Location> GetLocationByIdAsync(int id)
         {
-            return await _context.Locations.Where(o => o.Id == id).FirstAsync();
+            return await _context.Locations.Where(o => o.Id == id).FirstOrDefaultAsync()
+                ?? throw new LocationDbException();
         }
 
         public async Task<List<Location>> GetLocationsAsync()

@@ -12,4 +12,6 @@ namespace Ticketmaster.Data.Services.Interfaces
         public Task<Location> GetLocationByIdAsync(int id);
         public Task<List<Location>> GetLocationsByVendorIdAsync(int vendorId);
     }
+
+    public class LocationDbException : Exception { }
 }
