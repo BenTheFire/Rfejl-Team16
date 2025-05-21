@@ -64,7 +64,7 @@
     protected override async Task OnInitializedAsync()
     {
         V = await VS.GetVendorByIdAsync(vendorId);
-        locations = await LS.GetLocationsByVendorIdAsync(Convert.ToInt16(vendorId));
+        //locations = await LS.GetLocationsByVendorIdAsync(vendorId);
     }
 
     private async Task UpdateVendor()

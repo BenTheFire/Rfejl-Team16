@@ -67,7 +67,7 @@ namespace Ticketmaster.Data.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Location>> GetLocationsByVendorIdAsync(int vendorId)
+        public async Task<List<Location>> GetLocationsByVendorIdAsync(string vendorId)
         {
             throw new NotImplementedException();
         }

@@ -25,7 +25,13 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<IdentityUser> GetVendorByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var vendor = await _userManager.FindByIdAsync(id);
+            if (vendor == null)
+            {
+                Console.WriteLine($"Vendor with ID {id} not found.");
+                return null;
+            }
+            return vendor;
         }
 
         public async Task<IdentityUser> GetVendorByPhoneAsync(string phone)

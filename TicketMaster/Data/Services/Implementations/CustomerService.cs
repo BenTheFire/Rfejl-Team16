@@ -12,9 +12,11 @@ namespace Ticketmaster.Data.Services.Implementations
             _context = c;
         }
 
-        public Task CreateCustomerAsync(CustomerData customer)
+        public async Task CreateCustomerAsync(CustomerData customer)
         {
-            throw new NotImplementedException();
+            await _context.CustomerData.AddAsync(customer);
+            await _context.SaveChangesAsync();
+            Console.WriteLine($"Added new customer succesfully");
         }
 
         public Task DeleteCustomerAsync(int id)
