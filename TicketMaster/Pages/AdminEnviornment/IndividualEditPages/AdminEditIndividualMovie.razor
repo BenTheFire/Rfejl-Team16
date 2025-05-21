@@ -2,7 +2,8 @@
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Data.DTOs
 @using Ticketmaster.Objects
-@inject IMovieService IMS
+@inject IMovieService MS
+@inject NavigationManager NavigationManager
 
 <body>
     @if (movieData != null)
@@ -27,6 +28,9 @@
                         <p>IMDb ID</p>
                         <input type="number" class="form-control mb-2" placeholder="IMDb ID" @bind-value="movieData.ImdbId" title="IMDb ID" />
                         <button type="submit">Update movie</button>
+                    </form>
+                    <form onsubmit="@deleteMovie">
+                        <button type="submit">Delete Movie</button>
                     </form>
                 </div>
             </div>
@@ -53,17 +57,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await IMS.FetchMovieDataByImdbIdAsync(ImdbId);
+        var result = await MS.FetchMovieDataByImdbIdAsync(ImdbId);
         movieData = result.Movie;
         castData = result.Cast;
-        screeningData = await IMS.FetchScreenings(ImdbId);
+        screeningData = await MS.FetchScreenings(ImdbId);
         // writerName = castData.Where(o => o.Role == "Writer").Select(o => o.Person.Name).FirstOrDefault();
         // directorName = castData.Where(o => o.Role == "Director").Select(o => o.Person.Name).FirstOrDefault();
     }
 
     private async Task UpdateMovie()
     {
-        await IMS.UpdateMovie(movieData);
+        await MS.UpdateMovie(movieData);
+    }
+    private async Task deleteMovie()
+    {
+        await MS.DeleteMovieByImdbId(ImdbId);
+        movieData = null;
+        NavigationManager.NavigateTo("/admin/edit/movies");
     }
     //public string HrefScreeningLink(Screening screening) => $"/screening/{screening.Id}";
 }

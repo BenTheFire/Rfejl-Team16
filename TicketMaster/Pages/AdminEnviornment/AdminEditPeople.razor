@@ -3,31 +3,40 @@
 @using Ticketmaster.Objects
 @inject IPeopleService PS
 <body>
-    <h3>Edit People</h3>
     <div class="forms">
-        <div class="container my-4">
+        <div class="container my-2">
             <div class="row g-4">
-                <div class="col-12 col-md-6 col-xl-3">
+                <div class="col-12 col-md-6">
                     <div class="formContainer">
                         <h4>Create person</h4>
                         <form onsubmit="@createPerson">
-                            <input type="text" placeholder="Name of person" @bind-value="P.Name" />
-                            <input type="datetime" placeholder="Birthday of person" @bind-value="P.BirthDate" />
-                            <input type="text" placeholder="Nationality of person" @bind-value="P.Nationality" />
-
+                            <p>Name</p>
+                            <p>
+                                <input type="text" class="form-control mb-2" placeholder="Name of person" @bind-value="P.Name" />
+                            </p>
+                            <p>Birthday</p>
+                            <p>
+                                <input type="date" class="form-control mb-2" placeholder="Birthday of person" @bind-value="P.BirthDate" />
+                            </p>
+                            <p>Nationality</p>
+                            <p>
+                                <input type="text" class="form-control mb-2" placeholder="Nationality of person" @bind-value="P.Nationality" />
+                            </p>
                             <button type="submit" class="buttonAdd">Create Person</button>
                         </form>
                     </div>
+                </div>    
+                <div class="col-12 col-md-6">
                     <div class="formContainer">
                         <h4>Update person</h4>
                         <ul>
-                            @foreach(var person in people)
+                            @foreach (var person in people)
                             {
                                 <li><a href="@Href(person.Id)">@person.Name</a></li>
                             }
                         </ul>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
