@@ -3,13 +3,14 @@
 @using Ticketmaster.Objects
 @using Ticketmaster.Data.DTOs
 @inject ILocationService LS
+@inject ThemeService ThemeService
 <body>
     <div class="forms">
-         <div class="formContainer my-2">
+        <div class="formContainer my-2">
             <div class="row g-4">
                 <div class="col-12 col-md-6">
                     <div class="formContainer">
-                        <h4>Create location</h4>
+                        <h4>Create Location</h4>
                         <form onsubmit="@createLocation">
                             <p>Name of location</p>
                             <p>
@@ -31,7 +32,7 @@
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="formContainer">
-                        <h4>Edit location</h4>
+                        <h4>Edit Location</h4>
                         <ul>
                             @foreach (var location in locations)
                             {
@@ -41,9 +42,10 @@
                     </div>
                 </div>
             </div>
-         </div>      
+        </div>
     </div>
 </body>
+
 
 @code {
     private Location L = new();
@@ -60,74 +62,102 @@
         await OnInitializedAsync();
     }
 }
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}
 
 <style>
     .forms {
-        align-content: normal;
-        justify-content: normal;
-        gap: 3rem;
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
     }
 
     .formContainer {
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        min-height: 100%;
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 
         .formContainer h4 {
             margin-bottom: 1rem;
-            color: #aee1f9;
+            font-size: 1.5rem;
+            color: var(--accent-text-color);
         }
 
-
-    .formContainer {
-        display: flex;
-        flex-direction: column;
-        min-width: 220px;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
+    /* ==== Inputs ==== */
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--color-gray-3);
+        border-radius: 0.5rem;
+        background-color: var(--input-bg, #fff);
+        color: var(--text-color);
+        font-size: 1rem;
     }
 
-        .formContainer h4 {
-            margin-bottom: 1rem;
-            color: #aee1f9;
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-blue);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
         }
 
-        .formContainer input,
-        .formContainer button {
-            margin-bottom: 0.7rem;
-            border-radius: 0.4rem;
-            border: 1px solid #444;
-            padding: 0.5rem;
-            background: #181a20;
-            color: #f8f9fa;
-        }
-
-        .formContainer button {
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-    .buttonDelete {
-        background-color: #e74c3c;
-    }
-
+    /* ==== Buttons ==== */
     .buttonAdd {
-        background-color: #27ae60;
+        width: 100%;
+        padding: 0.75rem 1.25rem;
+        background-color: var(--color-blue);
+        color: var(--color-white);
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
     }
 
-    .buttonEdit {
-        background-color: #2980b9;
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    /* ==== List for Edit Section ==== */
+    .formContainer ul {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 1rem;
     }
+
+    .formContainer li {
+        margin-bottom: 0.75rem;
+    }
+
+    .formContainer a {
+        text-decoration: none;
+        color: var(--color-purple);
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+        .formContainer a:hover {
+            color: var(--color-yellow);
+        }
 </style>
