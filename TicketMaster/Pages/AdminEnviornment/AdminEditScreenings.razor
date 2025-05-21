@@ -103,41 +103,84 @@
     }
 }
 <style>
+    .dark-theme {
+        --color-white: #f9f9f9;
+        --color-black: #0d0d0d;
+        --color-gray-1: #1a1a1a;
+        --color-gray-2: #2a2a2a;
+        --color-gray-3: #444;
+        --color-blue: #3b82f6;
+        --color-blue-hover: #2563eb;
+        --color-red: #ef4444;
+        --color-yellow: #facc15;
+        --color-purple: #8b5cf6;
+        --bg-color: var(--color-black);
+        --text-color: var(--color-white);
+        --header-bg: var(--color-gray-1);
+        --card-bg: var(--color-gray-2);
+        --footer-bg: var(--color-gray-1);
+        --sidebar-bg: linear-gradient(to right, #0f172a, #0d0d0d); /* blue → black*/
+        --sidebar-text-color: var(--color-yellow);
+        --accent-text-color: var(--color-yellow);
+        --bs-body-bg: #0d0d0d;
+        --bs-body-color: #f9f9f9;
+    }
+
+    .light-theme {
+        --bg-color: #ffffff;
+        --text-color: #1a1a1a;
+        --color-blue: #3b82f6;
+        --header-bg: #e2e8f0;
+        --card-bg: #f9fafb;
+        --footer-bg: #e2e8f0;
+        --sidebar-bg: linear-gradient(to right, #0f172a, #ffffff);
+        --sidebar-bg-mini: linear-gradient(to bottom, #0f172a, #ffffff); /* blue → white */
+        --sidebar-text-color: var(--color-purple);
+        --accent-text-color: var(--color-purple);
+        --bs-body-bg: #ffffff;
+        --bs-body-color: #111111;
+    }
     /* Scoped form container styling */
 .forms {
-        padding: 2rem;
-        min-height: 100vh;
-        background-color: var(--bg-color);
-        color: var(--text-color);
+    padding: 2rem;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
-/* Each block (create/update sections) */
+/* Form section container */
 .formContainer {
-        background-color: var(--card-bg);
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        margin-bottom: 2rem;
-        transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Form headings */
+/* Section headers */
 .formContainer h4 {
     color: var(--accent-color);
     margin-bottom: 1rem;
     font-size: 1.25rem;
 }
 
-/* Input fields and selects */
+/* Inputs and dropdowns */
 .form-control {
-    background-color: var(--input-bg, #fff);
+    background-color: var(--color-gray-1);
     color: var(--text-color);
-    border: 1px solid var(--border-color, #ccc);
+    border: 1px solid var(--color-gray-3);
     border-radius: 8px;
     padding: 0.6rem 1rem;
     width: 100%;
     font-size: 1rem;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+
+.form-control option {
+    background-color: var(--color-gray-1);
+    color: var(--text-color);
 }
 
 .form-control:focus {
@@ -145,7 +188,7 @@
     outline: none;
 }
 
-/* Submit button for create */
+/* Submit Button: Add */
 .buttonAdd {
     background-color: var(--color-blue);
     color: var(--color-white);
@@ -162,7 +205,7 @@
     background-color: var(--color-blue-hover);
 }
 
-/* List of screenings (update section) */
+/* Lists (update, delete sections) */
 ul {
     padding-left: 1rem;
 }

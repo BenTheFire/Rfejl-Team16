@@ -99,13 +99,18 @@
         /* Form input fields */
         .formContainer input[type="text"],
         .formContainer input[type="date"] {
-            background-color: var(--input-bg, #fff);
+            background-color: var(--color-gray-1);
             color: var(--text-color);
             border: 1px solid var(--color-gray-3);
             padding: 0.75rem;
             border-radius: 8px;
             width: 100%;
             font-size: 1rem;
+        }
+
+        .formContainer input::placeholder {
+            color: var(--text-color);
+            opacity: 0.6;
         }
 
     /* Submit button */
@@ -139,10 +144,13 @@
     .formContainer a {
         color: var(--color-purple);
         text-decoration: none;
+        transition: color 0.2s;
     }
 
         .formContainer a:hover {
+            color: var(--color-yellow);
             text-decoration: underline;
         }
+
 
 </style>

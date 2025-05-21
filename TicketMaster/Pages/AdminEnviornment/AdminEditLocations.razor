@@ -101,7 +101,7 @@
         .formContainer h4 {
             margin-bottom: 1rem;
             font-size: 1.5rem;
-            color: var(--accent-text-color);
+            color: var(--accent-color);
         }
 
     /* ==== Inputs ==== */
@@ -110,7 +110,7 @@
         padding: 0.75rem 1rem;
         border: 1px solid var(--color-gray-3);
         border-radius: 0.5rem;
-        background-color: var(--input-bg, #fff);
+        background-color: var(--color-gray-1);
         color: var(--text-color);
         font-size: 1rem;
     }
@@ -118,7 +118,12 @@
         .form-control:focus {
             outline: none;
             border-color: var(--color-blue);
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4); /* Approx color-blue glow */
+        }
+
+        .form-control::placeholder {
+            color: var(--text-color);
+            opacity: 0.6;
         }
 
     /* ==== Buttons ==== */
@@ -160,4 +165,25 @@
         .formContainer a:hover {
             color: var(--color-yellow);
         }
+
+    /* ==== Dropdown Fix ==== */
+    select.form-control {
+        background-color: var(--color-gray-1);
+        color: var(--text-color);
+        border: 1px solid var(--color-gray-3);
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,<svg fill='gray' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><polygon points='0,0 16,0 8,10'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 12px;
+        padding-right: 2rem;
+    }
+
+        select.form-control option {
+            background-color: var(--color-gray-1);
+            color: var(--text-color);
+        }
+
 </style>
