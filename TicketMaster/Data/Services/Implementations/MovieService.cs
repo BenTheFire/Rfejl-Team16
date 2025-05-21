@@ -87,8 +87,8 @@ namespace Ticketmaster.Data.Services.Implementations
             {
                 await _context.Credits.AddAsync(new Credit
                 {
-                    OfMovie = movie.Movie,     
-                    WhoIs = castMember.Person, 
+                    OfMovie = movie.Movie,
+                    WhoIs = castMember.Person,
                     Role = castMember.Role
                 });
                 Console.WriteLine($"Credit ({castMember.Role}) for {castMember.Person.Name} marked for creation.");
@@ -131,20 +131,31 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task DeleteMovieByTitle(string title)
         {
-            try
+            var toDelete = await _context.Movies.Where(o => o.Title == title).FirstOrDefaultAsync();
+            if (toDelete != null)
             {
-                var toDelete = await _context.Movies.Where(o => o.Title == title).FirstAsync();
-                if (toDelete != null)
-                {
-                    _context.Movies.Remove(toDelete);
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine($"Movie ({title}) deleted succesfully");
-                }
+                _context.Movies.Remove(toDelete);
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Movie ({title}) deleted succesfully");
             }
-            catch (Exception e)
+            else
             {
                 Console.WriteLine($"Movie ({title}) not found");
             }
+            //try
+            //{
+            //    var toDelete = await _context.Movies.Where(o => o.Title == title).FirstAsync();
+            //    if (toDelete != null)
+            //    {
+            //        _context.Movies.Remove(toDelete);
+            //        await _context.SaveChangesAsync();
+            //        Console.WriteLine($"Movie ({title}) deleted succesfully");
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine($"Movie ({title}) not found");
+            //}
         }
 
         public async Task UpdateMovie(Movie movie)
@@ -172,7 +183,7 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task UpdateMovieFromOmdbByTitle(string title)
         {
-            var movieToUpdate = await _context.Movies.Where(o => o.Title == title).FirstAsync();
+            var movieToUpdate = await _context.Movies.Where(o => o.Title == title).FirstOrDefaultAsync();
             if (movieToUpdate == null)
             {
                 Console.WriteLine($"Movie ({title}) not found");
@@ -203,17 +214,44 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<Movie> GetMovieByTitleAsync(string title)
         {
-            return await _context.Movies.Where(o => o.Title == title).FirstAsync();
+            var movie = await _context.Movies.Where(o => o.Title == title).FirstOrDefaultAsync();
+            if (movie == null)
+            {
+                Console.WriteLine($"Movie ({title}) not found");
+                return null;
+            }
+            else
+            {
+                return movie;
+            }
         }
 
         public async Task<Movie> GetMovieByIdAsync(int id)
         {
-            return await _context.Movies.Where(o => o.Id == id).FirstAsync();
+            var movie = await _context.Movies.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (movie == null)
+            {
+                Console.WriteLine($"Movie ({id}) not found");
+                return null;
+            }
+            else
+            {
+                return movie;
+            }
         }
 
         public async Task<Movie> GetMovieByImdbIdAsync(string imdbId)
         {
-            return await _context.Movies.Where(o => o.ImdbId == Convert.ToInt32(imdbId)).FirstAsync();
+            var movie = await _context.Movies.Where(o => o.ImdbId == Convert.ToInt32(imdbId)).FirstOrDefaultAsync();
+            if (movie == null)
+            {
+                Console.WriteLine($"Movie ({imdbId}) not found");
+                return null;
+            }
+            else
+            {
+                return movie;
+            }
         }
 
         public Task DeleteMovieByImdbId(string imdbId)
