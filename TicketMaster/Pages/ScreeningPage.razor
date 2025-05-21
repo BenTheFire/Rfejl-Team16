@@ -9,7 +9,7 @@
 @inject Ticketmaster.Data.Services.Interfaces.ICustomerService CS
 
 <body>
-    @if (screening != null && T != null)
+    @if (screening != null)
     {
         <h3>Screening of @screening.OfMovie.Title on @screening.Time.ToString("yyyy-MM-dd HH:mm")</h3>
         <p>Filled slots: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
