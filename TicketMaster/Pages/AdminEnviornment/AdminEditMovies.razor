@@ -208,9 +208,9 @@
                 }
             }
         }
-        
 
-        
+
+
     }
     private async Task createMovie()
     {
@@ -224,6 +224,9 @@
 
     private async Task deleteMovie()
     {
+        foreach (Screening s in await MS.FetchScreenings(M.ImdbId.ToString())){
+            if (DateTime.Now > s.Time & DateTime.Now < s.Time.AddSeconds(M.LengthInSeconds)) { textDelete = "Can't delete movie as screening is ongoing"; }
+        }
         if (string.IsNullOrEmpty(M.Title) && M.ImdbId == 0)
         {
             textDelete = "Please provide a title or IMDb ID to delete the movie.";
