@@ -2,30 +2,30 @@
 @layout MainLayout
 @inherits LayoutComponentBase
 @inject ThemeService ThemeService
-<!--
-    Needed functionalities, admin creates, updates, deletes:
-    - People
-    - Movies
-    - Locations
-    - Screenings
-    - Tickets
-    - Vendors
--->
 
 <body>
-    <div class="forms">
-    <div class="admin-page">
-        <h3 class="admin-title" style="color: var(--accent-text-color);">🎬 Admin Test Environment</h3>
-        <ul class="admin-links">
-            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/people">👤 Edit People</a></li>
-            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/movies">🎞️ Edit Movies</a></li>
-            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/locations">📍 Edit Locations</a></li>
-            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/screenings">📽️ Edit Screenings</a></li>
-            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/tickets">🎟️ Edit Tickets</a></li>
-            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/vendors">🏢 Edit Vendors</a></li>
-        </ul>
-    </div>
-    </div>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="forms">
+                    <div class="admin-page">
+                        <h3 class="admin-title" style="color: var(--accent-text-color);">🎬 Admin Test Environment</h3>
+                        <ul class="admin-links">
+                            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/people">👤 Edit People</a></li>
+                            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/movies">🎞️ Edit Movies</a></li>
+                            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/locations">📍 Edit Locations</a></li>
+                            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/screenings">📽️ Edit Screenings</a></li>
+                            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/tickets">🎟️ Edit Tickets</a></li>
+                            <li class="admin-link-item"><a class="admin-link" href="/admin/edit/vendors">🏢 Edit Vendors</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 
 

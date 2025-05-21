@@ -9,84 +9,93 @@
 @inject NavigationManager NavigationManager
 
 <body>
-    @if (T != null && movies != null && customers != null && screenings != null && defaultScreening != null && defaultMovie != null && defaultCustomer != null)
-    {
-        <div class="forms">
-            <div class="formContainer">
-                <a href="/admin/edit/people" class="text-accent">Go back</a>
-                <form onsubmit="@updateTicket">
-                    <p>Screening</p>
-                    <select class="form-control" @bind="@screeningId">
-                        <option value="@defaultScreening.Id">@defaultScreening.OfMovie.Title (@defaultScreening.Time) in @defaultScreening.InLocation.Name</option>
-                        @foreach (var screening in screenings)
-                        {
-                            <option value="@screening.Id">@screening.Id</option>
-                        }
-                    </select>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (T != null && movies != null && customers != null && screenings != null && defaultScreening != null && defaultMovie != null && defaultCustomer != null)
+                {
+                    <div class="forms">
+                        <div class="formContainer">
+                            <a href="/admin/edit/people" class="text-accent">Go back</a>
+                            <form onsubmit="@updateTicket">
+                                <p>Screening</p>
+                                <select class="form-control" @bind="@screeningId">
+                                    <option value="@defaultScreening.Id">@defaultScreening.OfMovie.Title (@defaultScreening.Time) in @defaultScreening.InLocation.Name</option>
+                                    @foreach (var screening in screenings)
+                                    {
+                                        <option value="@screening.Id">@screening.Id</option>
+                                    }
+                                </select>
 
-                    <p>Movie</p>
-                    <select class="form-control" @bind="@movieId">
-                        <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
-                        @foreach (var movie in screenings.Select(s => s.OfMovie).Distinct())
-                        {
-                            <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
-                        }
-                    </select>
+                                <p>Movie</p>
+                                <select class="form-control" @bind="@movieId">
+                                    <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
+                                    @foreach (var movie in screenings.Select(s => s.OfMovie).Distinct())
+                                    {
+                                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                                    }
+                                </select>
 
-                    <p>Customer</p>
-                    <select class="form-control" @bind="@customerId">
-                        @if (defaultCustomer.OfUser != null)
-                        {
-                            <option value="@defaultCustomer.Id">@defaultCustomer.Email (@defaultCustomer.OfUser.UserName.IsNullOrEmpty() ? "" : @defaultCustomer.OfUser.UserName)</option>
-                        }
-                        else
-                        {
-                            <option value="@defaultCustomer.Id">@defaultCustomer.Email</option>
-                        }
-                        @foreach (var customer in customers)
-                        {
-                            @if (customer.OfUser != null)
-                            {
-                                <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
-                            }
-                            else
-                            {
-                                <option value="@customer.Id">@customer.Email</option>
-                            }
-                        }
-                    </select>
+                                <p>Customer</p>
+                                <select class="form-control" @bind="@customerId">
+                                    @if (defaultCustomer.OfUser != null)
+                                    {
+                                        <option value="@defaultCustomer.Id">@defaultCustomer.Email (@defaultCustomer.OfUser.UserName.IsNullOrEmpty() ? "" : @defaultCustomer.OfUser.UserName)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@defaultCustomer.Id">@defaultCustomer.Email</option>
+                                    }
+                                    @foreach (var customer in customers)
+                                    {
+                                        @if (customer.OfUser != null)
+                                        {
+                                            <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@customer.Id">@customer.Email</option>
+                                        }
+                                    }
+                                </select>
 
-                    <p>Price</p>
-                    <input class="form-control" type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+                                <p>Price</p>
+                                <input class="form-control" type="number" placeholder="Price of ticket" @bind-value="T.Price" />
 
-                    <p>Seat</p>
-                    <input class="form-control" type="text" placeholder="Seat position" @bind-value="T.Seat" />
+                                <p>Seat</p>
+                                <input class="form-control" type="text" placeholder="Seat position" @bind-value="T.Seat" />
 
-                    <p>Status</p>
-                    <input class="form-control" type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+                                <p>Status</p>
+                                <input class="form-control" type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
 
-                    <p>Purchase Time</p>
-                    <input class="form-control" type="date" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+                                <p>Purchase Time</p>
+                                <input class="form-control" type="date" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
 
-                    <button type="submit" class="buttonAdd">Update Ticket</button>
-                    <p>@text</p>
-                </form>
+                                <button type="submit" class="buttonAdd">Update Ticket</button>
+                                <p>@text</p>
+                            </form>
 
-                <form onsubmit="@deleteTicket">
-                    <button type="submit" class="buttonDelete">Delete Ticket</button>
-                </form>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
+                            <form onsubmit="@deleteTicket">
+                                <button type="submit" class="buttonDelete">Delete Ticket</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 
 

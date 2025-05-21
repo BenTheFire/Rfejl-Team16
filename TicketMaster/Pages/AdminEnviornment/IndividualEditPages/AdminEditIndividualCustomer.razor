@@ -7,38 +7,46 @@
 @inject NavigationManager NavigationManager
 
 <body>
-    @if (C != null)
-    {
-        <div class="movie-container my-2">
-            <div class="row g-2">
-                <form onsubmit="@UpdateCustomer">
-                    <p>Email</p>
-                    <p>
-                        <input type="email" placeholder="Email" @bind-value="C.Email" />
-                    </p>
-                    <p>Phone Number</p>
-                    <p>
-                        <input type="text" placeholder="Phone Number" @bind-value="C.Phone" />
-                    </p>
-                    <button type="submit">Update Customer</button>
-                </form>
-                <form onsubmit="@DeleteCustomer">
-                    <button type="submit">Delete Customer</button>
-                </form>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (C != null)
+                {
+                    <div class="movie-container my-2">
+                        <div class="row g-2">
+                            <form onsubmit="@UpdateCustomer">
+                                <p>Email</p>
+                                <p>
+                                    <input type="email" placeholder="Email" @bind-value="C.Email" />
+                                </p>
+                                <p>Phone Number</p>
+                                <p>
+                                    <input type="text" placeholder="Phone Number" @bind-value="C.Phone" />
+                                </p>
+                                <button type="submit">Update Customer</button>
+                            </form>
+                            <form onsubmit="@DeleteCustomer">
+                                <button type="submit">Delete Customer</button>
+                            </form>
 
-            </div>
-        </div>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
-
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 
 @code {

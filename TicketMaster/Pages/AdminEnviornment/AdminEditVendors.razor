@@ -5,23 +5,33 @@
 @using Ticketmaster.Data.DTOs
 @inject IVendorService VS
 <body>
-    <div class="forms">
-        <div class="formContainer my-1">
-            <div class="row g-4">
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
-                        <h4>Update vendor</h4>
-                        <ul>
-                            @foreach (var vendor in vendors)
-                            {
-                                <li><a href="@Href(vendor.Id)">@vendor.UserName (@vendor.Email)</a></li>
-                            }
-                        </ul>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="forms">
+                    <div class="formContainer my-1">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="formContainer">
+                                    <h4>Update vendor</h4>
+                                    <ul>
+                                        @foreach (var vendor in vendors)
+                                        {
+                                            <li><a href="@Href(vendor.Id)">@vendor.UserName (@vendor.Email)</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+    
     <!--<div class="forms">
         <div class="formContainer">
             <form onsubmit="@createVendor">

@@ -7,68 +7,75 @@
 @using Ticketmaster.Extra
 @inject ThemeService ThemeService
 <body>
-    <div class="@ThemeClass">
-        <div class="admin-forms">
-            <div class="admin-container my-4">
-                <div class="admin-section row g-4">
-                    <div class="admin-col">
-                        <div class="admin-form">
-                            <h4 style="color: var(--accent-text-color);">Create movie</h4>
-                            <form onsubmit="@createMovie">
-                                <input type="text" class="editor-input" placeholder="Title of movie" @bind-value="M.Title" />
-                                <input type="text" class="editor-input" placeholder="Description of movie" @bind-value="M.Description" />
-                                <input type="number" class="editor-input" placeholder="Length in seconds" @bind-value="M.LengthInSeconds" />
-                                <input type="text" class="editor-input" placeholder="Image source link" @bind-value="M.ImageSource" />
-                                <input type="text" class="editor-input" placeholder="Release date" @bind-value="M.ReleaseDate" />
-                                <input type="number" class="editor-input" placeholder="IMDb ID" @bind-value="M.ImdbId" />
-                                <button type="submit" class="editor-submit-btn success full-width">Create Movie</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="admin-col">
-                        <div class="admin-form">
-                            <h4 style="color: var(--accent-text-color);">Fetch movie from OMBD by title</h4>
-                            <form onsubmit="@fetchMovie">
-                                <input type="text" class="editor-input" placeholder="Title of movie" @bind-value="M.Title" />
-                                <input type="number" class="editor-input" placeholder="Imdb ID of movie" @bind-value="M.ImdbId" />
-                                <button type="submit" class="editor-submit-btn success full-width">Fetch Movie</button>
-                                <div class="editor-checkbox">
-                                    <InputCheckbox @bind-Value="force" class="checkbox" id="forceCheck" />
-                                    <label class="checkbox-label" for="forceCheck">Force</label>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="@ThemeClass">
+                    <div class="admin-forms">
+                        <div class="admin-container my-4">
+                            <div class="admin-section row g-4">
+                                <div class="admin-col">
+                                    <div class="admin-form">
+                                        <h4 style="color: var(--accent-text-color);">Create movie</h4>
+                                        <form onsubmit="@createMovie">
+                                            <input type="text" class="editor-input" placeholder="Title of movie" @bind-value="M.Title" />
+                                            <input type="text" class="editor-input" placeholder="Description of movie" @bind-value="M.Description" />
+                                            <input type="number" class="editor-input" placeholder="Length in seconds" @bind-value="M.LengthInSeconds" />
+                                            <input type="text" class="editor-input" placeholder="Image source link" @bind-value="M.ImageSource" />
+                                            <input type="text" class="editor-input" placeholder="Release date" @bind-value="M.ReleaseDate" />
+                                            <input type="number" class="editor-input" placeholder="IMDb ID" @bind-value="M.ImdbId" />
+                                            <button type="submit" class="editor-submit-btn success full-width">Create Movie</button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </form>
-                            <p>@textAdd</p>
-                        </div>
-                    </div>
-                    <div class="admin-col">
-                        <div class="admin-form">
-                            <h4 style="color: var(--accent-text-color);">Update movie</h4>
-                            <ul class="admin-link-list">
-                                @foreach (var movie in movies)
-                                {
-                                    <li>
-                                        <a href="@HrefMovieLink(movie)">@movie.Title (@movie.ReleaseDate)</a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="admin-col">
-                        <div class="admin-form">
-                            <h4 style="color: var(--accent-text-color);">Delete movie</h4>
-                            <form onsubmit="@deleteMovie">
-                                <input type="text" class="editor-input" placeholder="Movie's Title to delete" @bind-value="M.Title" />
-                                <input type="number" class="editor-input" placeholder="Movie's IMDb ID to delete" @bind-value="M.ImdbId" />
-                                <button type="submit" class="editor-submit-btn danger full-width">Delete Movie</button>
-                            </form>
-                            @textDelete
+                                <div class="admin-col">
+                                    <div class="admin-form">
+                                        <h4 style="color: var(--accent-text-color);">Fetch movie from OMBD by title</h4>
+                                        <form onsubmit="@fetchMovie">
+                                            <input type="text" class="editor-input" placeholder="Title of movie" @bind-value="M.Title" />
+                                            <input type="number" class="editor-input" placeholder="Imdb ID of movie" @bind-value="M.ImdbId" />
+                                            <button type="submit" class="editor-submit-btn success full-width">Fetch Movie</button>
+                                            <div class="editor-checkbox">
+                                                <InputCheckbox @bind-Value="force" class="checkbox" id="forceCheck" />
+                                                <label class="checkbox-label" for="forceCheck">Force</label>
+                                            </div>
+                                        </form>
+                                        <p>@textAdd</p>
+                                    </div>
+                                </div>
+                                <div class="admin-col">
+                                    <div class="admin-form">
+                                        <h4 style="color: var(--accent-text-color);">Update movie</h4>
+                                        <ul class="admin-link-list">
+                                            @foreach (var movie in movies)
+                                            {
+                                                <li>
+                                                    <a href="@HrefMovieLink(movie)">@movie.Title (@movie.ReleaseDate)</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="admin-col">
+                                    <div class="admin-form">
+                                        <h4 style="color: var(--accent-text-color);">Delete movie</h4>
+                                        <form onsubmit="@deleteMovie">
+                                            <input type="text" class="editor-input" placeholder="Movie's Title to delete" @bind-value="M.Title" />
+                                            <input type="number" class="editor-input" placeholder="Movie's IMDb ID to delete" @bind-value="M.ImdbId" />
+                                            <button type="submit" class="editor-submit-btn danger full-width">Delete Movie</button>
+                                        </form>
+                                        @textDelete
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
 </body>
 @code {
     private bool isInDBAdd = false;

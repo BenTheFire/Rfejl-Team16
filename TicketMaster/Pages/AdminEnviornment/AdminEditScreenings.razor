@@ -7,63 +7,73 @@
 @inject IMovieService MS
 @inject ThemeService ThemeService
 <body>
-    <div class="forms">
-        <div class="formContainer my-2">
-            <div class="row g-4">
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
-                        <h4 style="color: var(--accent-text-color);">Create Screening</h4>
-                        <form onsubmit="@createScreening">
-                            <p>Location</p>
-                            <select @bind="@locationId" class="form-control mb-2">
-                                <option value="0">-- Choose a location --</option>
-                                @foreach (var location in locations)
-                                {
-                                    <option value="@location.Id">@location.Name</option>
-                                }
-                            </select>
+    <CascadingAuthenticationState>
+        <AuthorizeView>
+            <Authorized>
+                <div class="forms">
+                    <div class="formContainer my-2">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="formContainer">
+                                    <h4 style="color: var(--accent-text-color);">Create Screening</h4>
+                                    <form onsubmit="@createScreening">
+                                        <p>Location</p>
+                                        <select @bind="@locationId" class="form-control mb-2">
+                                            <option value="0">-- Choose a location --</option>
+                                            @foreach (var location in locations)
+                                            {
+                                                <option value="@location.Id">@location.Name</option>
+                                            }
+                                        </select>
 
-                            <p>Movie</p>
-                            <select @bind="@movieId" class="form-control mb-2">
-                                <option value="0">-- Choose a movie --</option>
-                                @foreach (var movie in movies)
-                                {
-                                    <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
-                                }
-                            </select>
+                                        <p>Movie</p>
+                                        <select @bind="@movieId" class="form-control mb-2">
+                                            <option value="0">-- Choose a movie --</option>
+                                            @foreach (var movie in movies)
+                                            {
+                                                <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                                            }
+                                        </select>
 
-                            <p>Date of screening</p>
-                            <input type="datetime-local" class="form-control mb-2" placeholder="Date of screening" @bind-value="S.Time" />
+                                        <p>Date of screening</p>
+                                        <input type="datetime-local" class="form-control mb-2" placeholder="Date of screening" @bind-value="S.Time" />
 
-                            <p>Number of seats</p>
-                            <input type="number" class="form-control mb-2" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+                                        <p>Number of seats</p>
+                                        <input type="number" class="form-control mb-2" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
 
-                            <button type="submit" class="buttonAdd">Create Screening</button>
-                            <p>@text</p>
-                        </form>
+                                        <button type="submit" class="buttonAdd">Create Screening</button>
+                                        <p>@text</p>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="formContainer">
+                                    <h4 style="color: var(--accent-text-color);">Update Screening</h4>
+                                    <ul>
+                                        @foreach (var screening in screenings)
+                                        {
+                                            <li>
+                                                <a href="@Href(screening.Id)">
+                                                    @screening.OfMovie.Title (@screening.OfMovie.ReleaseDate):
+                                                    @screening.Time,
+                                                    @screening.InLocation.Name (@screening.InLocation.Address)
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
-                        <h4 style="color: var(--accent-text-color);">Update Screening</h4>
-                        <ul>
-                            @foreach (var screening in screenings)
-                            {
-                                <li>
-                                    <a href="@Href(screening.Id)">
-                                        @screening.OfMovie.Title (@screening.OfMovie.ReleaseDate):
-                                        @screening.Time,
-                                        @screening.InLocation.Name (@screening.InLocation.Address)
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+    
 </body>
 @code {
     private Screening S = new();

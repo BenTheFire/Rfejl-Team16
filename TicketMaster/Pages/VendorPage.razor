@@ -11,25 +11,27 @@
 @inject AuthenticationStateProvider ASP
 
 <body>
-    @if (vendor != null && locations != null)
-    {
-        <h1>Welcome, @vendor.UserName</h1>
-        <p>Email: @vendor.Email</p>
-        <p>Phone: @vendor.PhoneNumber</p>
-        <br />
-        <h3>Locations</h3>
-        <ul>
-            @foreach (var location in locations)
-            {
-                <li>@location.Name, @location.Address</li>
-            }
-        </ul>
-    }
-    else
-    {
-        <h2>Loading...</h2>
-        <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-    }
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Vendor">
+            <Authorized>
+                <h1>Vendor Page</h1>
+                <p>Welcome, @vendor.UserName</p>
+                <p>Email: @vendor.Email</p>
+                <p>Phone: @vendor.PhoneNumber</p>
+                <br />
+                <h3>Locations</h3>
+                <ul>
+                    @foreach (var location in locations)
+                    {
+                        <li>@location.Name, @location.Address</li>
+                    }
+                </ul>
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 
 @code {
@@ -46,7 +48,7 @@
             if (vendorId != null)
             {
                 vendor = await US.GetUserByIdAsync(vendorId);
-                locations = await LS.GetLocationsByVendorIdAsync(vendorId);
+                //locations = await LS.GetLocationsByVendorIdAsync(vendorId);
             }
         }
     }

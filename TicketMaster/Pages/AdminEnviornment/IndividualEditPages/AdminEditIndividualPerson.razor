@@ -7,66 +7,75 @@
 @inject NavigationManager NavigationManager
 @inject ThemeService ThemeService
 <body>
-    @if (P != null)
-    {
-        <div class="formContainer">
-            <a href="/admin/edit/people" class="nav-link">Go back</a>
-
-            <form onsubmit="@updatePerson">
-                <p>Name</p>
-                <input type="text" placeholder="Name of Person" class="form-control mb-2" @bind-value="P.Name" />
-                <p>Birth date</p>
-                <input type="date" placeholder="Birthday of Person" class="form-control mb-2" @bind-value="P.BirthDate" />
-                <p>Nationality</p>
-                <input type="text" placeholder="Nationality of Person" class="form-control mb-2" @bind-value="P.Nationality" />
-                <button type="submit" class="buttonEdit">Update Person</button>
-            </form>
-
-            <form onsubmit="@deletePerson">
-                <button type="submit" class="buttonDelete">Delete Person</button>
-            </form>
-
-            <form onsubmit="@addRole">
-                <h4 class="text-success">🎬 Add a form to connect this person to a movie with a role</h4>
-                <p>Movie to add to</p>
-                <select @bind="@movieId" class="form-control mb-2">
-                    <option value="0">-- Select a movie --</option>
-                    @foreach (var movie in movies)
-                    {
-                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
-                    }
-                </select>
-                <p>Role</p>
-                <input type="text" placeholder="Role name" class="form-control mb-2" @bind-value="@roleName" />
-                <button type="submit" class="buttonAdd">Create role</button>
-                <p>@text</p>
-            </form>
-
-            <div>
-                <h4>🗑️ Delete role</h4>
-                @if (credits != null)
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (P != null)
                 {
-                    @foreach (var credit in credits)
-                    {
-                        <p>
-                            <button type="button" class="buttonDelete" @onclick="() => deleteCredit(credit)">
-                                @credit.Role in @credit.OfMovie.Title
-                            </button>
-                        </p>
-                    }
+                    <div class="formContainer">
+                        <a href="/admin/edit/people" class="nav-link">Go back</a>
+
+                        <form onsubmit="@updatePerson">
+                            <p>Name</p>
+                            <input type="text" placeholder="Name of Person" class="form-control mb-2" @bind-value="P.Name" />
+                            <p>Birth date</p>
+                            <input type="date" placeholder="Birthday of Person" class="form-control mb-2" @bind-value="P.BirthDate" />
+                            <p>Nationality</p>
+                            <input type="text" placeholder="Nationality of Person" class="form-control mb-2" @bind-value="P.Nationality" />
+                            <button type="submit" class="buttonEdit">Update Person</button>
+                        </form>
+
+                        <form onsubmit="@deletePerson">
+                            <button type="submit" class="buttonDelete">Delete Person</button>
+                        </form>
+
+                        <form onsubmit="@addRole">
+                            <h4 class="text-success">🎬 Add a form to connect this person to a movie with a role</h4>
+                            <p>Movie to add to</p>
+                            <select @bind="@movieId" class="form-control mb-2">
+                                <option value="0">-- Select a movie --</option>
+                                @foreach (var movie in movies)
+                                {
+                                    <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                                }
+                            </select>
+                            <p>Role</p>
+                            <input type="text" placeholder="Role name" class="form-control mb-2" @bind-value="@roleName" />
+                            <button type="submit" class="buttonAdd">Create role</button>
+                            <p>@text</p>
+                        </form>
+
+                        <div>
+                            <h4>🗑️ Delete role</h4>
+                            @if (credits != null)
+                            {
+                                @foreach (var credit in credits)
+                                {
+                                    <p>
+                                        <button type="button" class="buttonDelete" @onclick="() => deleteCredit(credit)">
+                                            @credit.Role in @credit.OfMovie.Title
+                                        </button>
+                                    </p>
+                                }
+                            }
+                        </div>
+                    </div>
                 }
-            </div>
-        </div>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-            <div>
-                <h2>Loading...</h2>
-                <img src="../Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src="../Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 @code {
     private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";

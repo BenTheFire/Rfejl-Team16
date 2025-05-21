@@ -5,52 +5,61 @@
 @inject ICustomerService CS
 @inject IUserService US
 <body>
-    <div class="forms">
-        <div class="container my-2">
-            <div class="row g-4">
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
-                        <h4>Create person</h4>
-                        <form onsubmit="@createCustomer">
-                            <p>User (doesn't need to be set)</p>
-                            <p>
-                                <select @bind="@userId">
-                                    <option value="0">-- select user --</option>
-                                    @foreach (var user in users)
-                                    {
-                                        <option value="@user.Id">@user.UserName</option>
-                                    }
-                                </select>
-                            </p>
-                            <p>
-                                Email
-                            </p>
-                            <p>
-                                <input type="text" @bind-value="@C.Email"/>
-                            </p>
-                            <p>Phone</p>
-                            <p>
-                                <input type="text" @bind-value="@C.Phone"/>
-                            </p>
-                            <button type="submit" class="buttonAdd">Create Customer</button>
-                        </form>
-                        <p>@text</p>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="forms">
+                    <div class="container my-2">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="formContainer">
+                                    <h4>Create person</h4>
+                                    <form onsubmit="@createCustomer">
+                                        <p>User (doesn't need to be set)</p>
+                                        <p>
+                                            <select @bind="@userId">
+                                                <option value="0">-- select user --</option>
+                                                @foreach (var user in users)
+                                                {
+                                                    <option value="@user.Id">@user.UserName</option>
+                                                }
+                                            </select>
+                                        </p>
+                                        <p>
+                                            Email
+                                        </p>
+                                        <p>
+                                            <input type="text" @bind-value="@C.Email" />
+                                        </p>
+                                        <p>Phone</p>
+                                        <p>
+                                            <input type="text" @bind-value="@C.Phone" />
+                                        </p>
+                                        <button type="submit" class="buttonAdd">Create Customer</button>
+                                    </form>
+                                    <p>@text</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="formContainer">
+                                    <h4>Update customer</h4>
+                                    <ul>
+                                        @foreach (var person in customers)
+                                        {
+                                            <li><a href="@Href(person.Id)">@person.Id - @person.Email - @person.Phone</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
-                        <h4>Update customer</h4>
-                        <ul>
-                            @foreach (var person in customers)
-                            {
-                                <li><a href="@Href(person.Id)">@person.Id - @person.Email - @person.Phone</a></li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 @code {
     private CustomerData C = new();

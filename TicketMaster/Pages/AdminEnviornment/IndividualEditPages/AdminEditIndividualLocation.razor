@@ -4,38 +4,51 @@
 @inject ILocationService LS
 @inject NavigationManager NavigationManager
 @inject ThemeService ThemeService
-@if (L != null)
-{   <div class="forms">
-    <div class="formContainer">
-        <a href="/admin/edit/locations" class="text-accent">Go back</a>
-        <form onsubmit="@updateLocation">
-            <p>Name</p>
-            <input type="text" class="form-control" placeholder="Name of location" @bind-value="L.Name" />
 
-            <p>Address</p>
-            <input type="text" class="form-control" placeholder="Address of location" @bind-value="L.Address" />
+<body>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (L != null)
+                {
+                       <div class="forms">
+                        <div class="formContainer">
+                            <a href="/admin/edit/locations" class="text-accent">Go back</a>
+                            <form onsubmit="@updateLocation">
+                                <p>Name</p>
+                                <input type="text" class="form-control" placeholder="Name of location" @bind-value="L.Name" />
 
-            <p>Max capacity</p>
-            <input type="number" class="form-control" placeholder="Max capacity" @bind-value="L.Capacity" />
+                                <p>Address</p>
+                                <input type="text" class="form-control" placeholder="Address of location" @bind-value="L.Address" />
 
-            <button type="submit" class="buttonAdd">Update Location</button>
-        </form>
+                                <p>Max capacity</p>
+                                <input type="number" class="form-control" placeholder="Max capacity" @bind-value="L.Capacity" />
 
-        <form onsubmit="@deleteLocation">
-            <button type="submit" class="buttonDelete">Delete Location</button>
-        </form>
-    </div>
-    </div>
-}
-else
-{
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-        <div>
-            <h2>Loading...</h2>
-            <img src="./Loading.gif" alt="..." style="width:128px;height:128px" />
-        </div>
-    </div>
-}
+                                <button type="submit" class="buttonAdd">Update Location</button>
+                            </form>
+
+                            <form onsubmit="@deleteLocation">
+                                <button type="submit" class="buttonDelete">Delete Location</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src="./Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+</body>
 
 @code {
     private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";

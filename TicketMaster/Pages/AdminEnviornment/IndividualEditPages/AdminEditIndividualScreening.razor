@@ -7,55 +7,63 @@
 @inject NavigationManager NavigationManager
 @inject ThemeService ThemeService
 <body>
-    @if (S != null && defaultLocation != null && defaultMovie != null)
-    {
-        <div class="forms">
-        <a href="/admin/edit/screenings">Go back</a>
-        <div class="formContainer">
-            <form onsubmit="@updateScreening">
-                <p>Date of screening</p>
-                <input type="datetime-local" placeholder="Date of screening" @bind-value="S.Time" class="form-control" />
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (S != null && defaultLocation != null && defaultMovie != null)
+                {
+                    <div class="forms">
+                        <a href="/admin/edit/screenings">Go back</a>
+                        <div class="formContainer">
+                            <form onsubmit="@updateScreening">
+                                <p>Date of screening</p>
+                                <input type="datetime-local" placeholder="Date of screening" @bind-value="S.Time" class="form-control" />
 
-                <p>Number of seats taken</p>
-                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" class="form-control" />
+                                <p>Number of seats taken</p>
+                                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" class="form-control" />
 
-                <p>Location</p>
-                <select @bind="@locationId" class="form-control">
-                    <option value="@defaultLocation.Id">@defaultLocation.Name</option>
-                    @foreach (var location in locations)
-                    {
-                        <option value="@location.Id">@location.Name</option>
-                    }
-                </select>
+                                <p>Location</p>
+                                <select @bind="@locationId" class="form-control">
+                                    <option value="@defaultLocation.Id">@defaultLocation.Name</option>
+                                    @foreach (var location in locations)
+                                    {
+                                        <option value="@location.Id">@location.Name</option>
+                                    }
+                                </select>
 
-                <p>Movie</p>
-                <select @bind="@movieId" class="form-control">
-                    <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
-                    @foreach (var movie in movies)
-                    {
-                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
-                    }
-                </select>
+                                <p>Movie</p>
+                                <select @bind="@movieId" class="form-control">
+                                    <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
+                                    @foreach (var movie in movies)
+                                    {
+                                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                                    }
+                                </select>
 
-                <button type="submit" class="buttonAdd">Update Screening</button>
-            </form>
+                                <button type="submit" class="buttonAdd">Update Screening</button>
+                            </form>
 
-            <form onsubmit="@deleteScreening">
-                <button type="submit" class="buttonDelete">Delete Screening</button>
-            </form>
-        </div>
-        </div>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src="./Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
-
+                            <form onsubmit="@deleteScreening">
+                                <button type="submit" class="buttonDelete">Delete Screening</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src="./Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 @code {
     private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";

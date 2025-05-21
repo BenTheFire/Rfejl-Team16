@@ -7,98 +7,109 @@
 @inject IScreeningService SS
 @inject ICustomerService CS
 <body>
-    @if (T != null && screenings != null && customers != null) {
-        <div class="forms">
-            <div class="formContainer my-2">
-                <div class="row g-4">
-                    <div class="col-12 col-md-6">
-                        <div class="formContainer">
-                            <h4>Create ticket</h4>
-                            <form onsubmit="@createTicket">
-                                <p>Screening</p>
-                                <p>
-                                    <select @bind="@screeningId" class="form-control mb-2">
-                                        <option value="0">-- Choose a screening --</option>
-                                        @foreach (var screening in screenings)
-                                        {
-                                            <option value="@screening.Id">@screening.Id --> @screening.OfMovie.Title (@screening.Time) in @screening.InLocation.Name</option>
-                                        }
-                                    </select>
-                                </p>
-                                <p>Customer</p>
-                                <p>
-                                    <select @bind="@customerId" class="form-control mb-2">
-                                        <option value="0">-- Choose a customer --</option>
-                                        @foreach (var customer in customers)
-                                        {
-                                            @if (customer.OfUser != null)
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (T != null && screenings != null && customers != null)
+                {
+                    <div class="forms">
+                        <div class="formContainer my-2">
+                            <div class="row g-4">
+                                <div class="col-12 col-md-6">
+                                    <div class="formContainer">
+                                        <h4>Create ticket</h4>
+                                        <form onsubmit="@createTicket">
+                                            <p>Screening</p>
+                                            <p>
+                                                <select @bind="@screeningId" class="form-control mb-2">
+                                                    <option value="0">-- Choose a screening --</option>
+                                                    @foreach (var screening in screenings)
+                                                    {
+                                                        <option value="@screening.Id">@screening.Id --> @screening.OfMovie.Title (@screening.Time) in @screening.InLocation.Name</option>
+                                                    }
+                                                </select>
+                                            </p>
+                                            <p>Customer</p>
+                                            <p>
+                                                <select @bind="@customerId" class="form-control mb-2">
+                                                    <option value="0">-- Choose a customer --</option>
+                                                    @foreach (var customer in customers)
+                                                    {
+                                                        @if (customer.OfUser != null)
+                                                        {
+                                                            <option value="@customer.Id">@customer.Email ({@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName})</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@customer.Id">@customer.Email</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </p>
+                                            <p>Price</p>
+                                            <p>
+                                                <input type="number" class="form-control mb-2" placeholder="Price of ticket" @bind-value="T.Price" />
+                                            </p>
+                                            <p>Seat position</p>
+                                            <p>
+                                                <input type="text" class="form-control mb-2" placeholder="Seat position" @bind-value="T.Seat" />
+                                            </p>
+                                            <p>Status (0, 1, 2)</p>
+                                            <p>
+                                                <input type="number" class="form-control mb-2" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+                                            </p>
+                                            <!--vendor?-->
+                                            <p>Purchase time of ticket</p>
+                                            <p>
+                                                <input type="date" class="form-control mb-2" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+                                            </p>
+                                            <p>
+                                                <button type="submit" class="buttonAdd">Create Ticket</button>
+                                            </p>
+                                            <p>@text</p>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="formContainer">
+                                        <h4>Update ticket</h4>
+                                        <ul>
+                                            @foreach (var ticket in tickets)
                                             {
-                                                <option value="@customer.Id">@customer.Email ({@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName})</option>
+                                                @if (ticket.Customer.OfUser != null)
+                                                {
+                                                    <li><a href="@Href(ticket.Id)">@ticket.Customer.OfUser.UserName (@ticket.Customer.Email) -- @ticket.OfScreening.OfMovie.Title (@ticket.OfScreening.Time, @ticket.OfScreening.InLocation.Name)</a></li>
+                                                }
+                                                else
+                                                {
+                                                    <li><a href="@Href(ticket.Id)">@ticket.Customer.Email -- @ticket.OfScreening.OfMovie.Title (@ticket.OfScreening.Time, @ticket.OfScreening.InLocation.Name)</a></li>
+                                                }
                                             }
-                                            else
-                                            {
-                                                <option value="@customer.Id">@customer.Email</option>
-                                            }
-                                        }
-                                    </select>
-                                </p>
-                                <p>Price</p>
-                                <p>
-                                    <input type="number" class="form-control mb-2" placeholder="Price of ticket" @bind-value="T.Price" />
-                                </p>
-                                <p>Seat position</p>
-                                <p>
-                                    <input type="text" class="form-control mb-2" placeholder="Seat position" @bind-value="T.Seat" />
-                                </p>
-                                <p>Status (0, 1, 2)</p>
-                                <p>
-                                    <input type="number" class="form-control mb-2" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
-                                </p>
-                                <!--vendor?-->
-                                <p>Purchase time of ticket</p>
-                                <p>
-                                    <input type="date" class="form-control mb-2" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
-                                </p>
-                                <p>
-                                    <button type="submit" class="buttonAdd">Create Ticket</button>
-                                </p>
-                                <p>@text</p>
-                            </form>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="formContainer">
-                            <h4>Update ticket</h4>
-                            <ul>
-                                @foreach (var ticket in tickets)
-                                {
-                                    @if(ticket.Customer.OfUser != null)
-                                    {
-                                        <li><a href="@Href(ticket.Id)">@ticket.Customer.OfUser.UserName (@ticket.Customer.Email) -- @ticket.OfScreening.OfMovie.Title (@ticket.OfScreening.Time, @ticket.OfScreening.InLocation.Name)</a></li>
-                                    }
-                                    else
-                                    {
-                                        <li><a href="@Href(ticket.Id)">@ticket.Customer.Email -- @ticket.OfScreening.OfMovie.Title (@ticket.OfScreening.Time, @ticket.OfScreening.InLocation.Name)</a></li>
-                                    }
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
 
-        </div>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
+                    </div>
+                }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+    
 </body>
 @code {
     private Ticket T = new();
