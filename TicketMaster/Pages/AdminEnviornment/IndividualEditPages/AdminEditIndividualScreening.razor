@@ -7,7 +7,7 @@
 @inject NavigationManager NavigationManager
 
 <body>
-    @if (S != null)
+    @if (S != null && defaultLocation != null && defaultMovie != null)
     {
         <a href="/admin/edit/screenings">Go back</a>
         <form onsubmit="@updateScreening">
@@ -22,7 +22,7 @@
             <p>Location</p>
             <p>
                 <select @bind="@locationId">
-                    <option value="0">-- Choose a location --</option>
+                    <option value="@defaultLocation.Id">@defaultLocation.Name</option>
                     @foreach (var location in locations)
                     {
                         <option value="@location.Id">@location.Name</option>
@@ -32,7 +32,7 @@
             <p>Movie</p>
             <p>
                 <select @bind="@movieId">
-                    <option value="0">-- Choose a movie --</option>
+                    <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
                     @foreach (var movie in movies)
                     {
                         <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
@@ -65,11 +65,18 @@
     private List<Movie> movies = new();
     private int locationId;
     private int movieId;
+    private string text;
+    private Movie defaultMovie = new();
+    private Location defaultLocation = new();
     protected override async Task OnInitializedAsync()
     {
         S = await SS.GetScreeningByIdAsync(Convert.ToInt16(ScreeningId));
+        defaultMovie = await MS.GetMovieByIdAsync(S.OfMovie.Id);
+        defaultLocation = await LS.GetLocationByIdAsync(S.InLocation.Id);
         locations = await LS.GetLocationsAsync();
         movies = await MS.GetMoviesAsync();
+        locations.Remove(defaultLocation);
+        movies.Remove(defaultMovie);
     }
     private async Task updateScreening()
     {
