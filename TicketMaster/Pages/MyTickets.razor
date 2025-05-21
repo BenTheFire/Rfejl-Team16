@@ -1,0 +1,61 @@
+﻿@page "/tickets"
+@using Ticketmaster.Objects;
+@using Ticketmaster.Data.DTOs;
+@using Microsoft.AspNetCore.Identity;
+@inject Ticketmaster.Data.Services.Interfaces.IScreeningService SS
+@inject Ticketmaster.Data.Services.Interfaces.ITicketService TS
+@inject Ticketmaster.Data.Services.Interfaces.ICustomerService CS
+@inject Ticketmaster.Data.Services.Interfaces.ILocationService LS
+@inject AuthenticationStateProvider ASP
+
+<body>
+    <CascadingAuthenticationState>
+        <AuthorizeView>
+            <Authorized>
+            <h1>My tickets</h1>
+
+            <ul>
+                @foreach (Ticket tckt in userTickets)
+                {
+                    <li>
+                        <div>
+                            <strong>@tckt.OfScreening.OfMovie.Title</strong> at @tckt.OfScreening.Time
+                            <br />
+                            <p>Cinema: @tckt.OfScreening.InLocation.Name, @tckt.OfScreening.InLocation.Address</p>
+                        </div>
+                    </li>    
+                }
+            </ul>
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 You are not logged in</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+</body>
+
+@code {
+    string? username;
+    List<Ticket> userTickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await ASP.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            username = user.Identity.Name;
+        }
+        else
+        {
+            username = null;
+        }
+
+        if (username != null)
+        {
+            userTickets = TS.FetchOwnedTickets(username);
+        }
+    }
+
+}
