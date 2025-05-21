@@ -5,65 +5,87 @@
 @inject ICreditService CS
 @inject IMovieService MS
 @inject NavigationManager NavigationManager
-
+@inject ThemeService ThemeService
 <body>
-    @if(P != null)
+    @if (P != null)
     {
-        <a href="/admin/edit/people">Go back</a>
-        <form onsubmit="@updatePerson">
-            <p>Name</p>
-            <input type="text" placeholder="Name of Person" @bind-value="P.Name" />
-            <p>Birth date</p>
-            <input type="date" placeholder="Birthday of Person" @bind-value="P.BirthDate" />
-            <p>Nationality</p>
-            <input type="text" placeholder="Nationality of Person" @bind-value="P.Nationality" />
-            <button type="submit" >Update Person</button>
-        </form>
-        <form onsubmit="@deletePerson">
-            <button type="submit">Delete Person</button>
-        </form>
-        //todo add a form to connect this person to a movie with a role
-        <form onsubmit="@addRole">
-            <p>Movie to add to</p>
-            <select @bind="@movieId">
-                <option value="0">-- Select a movie --</option>
-                @foreach (var movie in movies)
-                {
-                    <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
-                }
-            </select>
-            <p>Role</p>
-            <p>
-                <input type="text" placeholder="Role name" @bind-value="@roleName" />
-            </p>
-            <button type="submit">Create role</button>
-            <p>@text</p>
-        </form>
-        <div>
-            <h4>Delete role</h4>
-            <form>
+        <div class="formContainer">
+            <a href="/admin/edit/people" class="nav-link">Go back</a>
+
+            <form onsubmit="@updatePerson">
+                <p>Name</p>
+                <input type="text" placeholder="Name of Person" class="form-control mb-2" @bind-value="P.Name" />
+                <p>Birth date</p>
+                <input type="date" placeholder="Birthday of Person" class="form-control mb-2" @bind-value="P.BirthDate" />
+                <p>Nationality</p>
+                <input type="text" placeholder="Nationality of Person" class="form-control mb-2" @bind-value="P.Nationality" />
+                <button type="submit" class="buttonEdit">Update Person</button>
+            </form>
+
+            <form onsubmit="@deletePerson">
+                <button type="submit" class="buttonDelete">Delete Person</button>
+            </form>
+
+            <form onsubmit="@addRole">
+                <h4 class="text-success">🎬 Add a form to connect this person to a movie with a role</h4>
+                <p>Movie to add to</p>
+                <select @bind="@movieId" class="form-control mb-2">
+                    <option value="0">-- Select a movie --</option>
+                    @foreach (var movie in movies)
+                    {
+                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                    }
+                </select>
+                <p>Role</p>
+                <input type="text" placeholder="Role name" class="form-control mb-2" @bind-value="@roleName" />
+                <button type="submit" class="buttonAdd">Create role</button>
+                <p>@text</p>
+            </form>
+
+            <div>
+                <h4>🗑️ Delete role</h4>
                 @if (credits != null)
                 {
-                    foreach (var credit in credits)
+                    @foreach (var credit in credits)
                     {
                         <p>
-                            <button type="button" @onclick="() => deleteCredit(credit)">@credit.Role in @credit.OfMovie.Title</button>
+                            <button type="button" class="buttonDelete" @onclick="() => deleteCredit(credit)">
+                                @credit.Role in @credit.OfMovie.Title
+                            </button>
                         </p>
                     }
                 }
-            </form>
+            </div>
         </div>
-    } else
+    }
+    else
     {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
             <div>
                 <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                <img src="../Loading.gif" alt="..." style="width:128px;height:128px" />
             </div>
         </div>
     }
 </body>
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
 
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}
 @code {
     [Parameter] public string PersonId { get; set; }
     private Person P = new();    
@@ -121,3 +143,137 @@
         credits = await CS.GetCreditsByPersonId(P.Id);
     }
 }
+<style>
+    /* Scoped form styles to avoid affecting other components */
+    .forms {
+        padding: 2rem;
+        max-width: 800px;
+        margin: auto;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 2rem;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .formContainer h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .formContainer p {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select.form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--color-gray-3);
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        background-color: var(--color-gray-1);
+        color: var(--text-color);
+    }
+
+    input::placeholder {
+        color: var(--text-color);
+        opacity: 0.6;
+    }
+
+    /* Button styles */
+    button[type="submit"],
+    button[type="button"] {
+        width: 100%;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Role-based buttons */
+    .buttonAdd {
+        background-color: var(--color-blue);
+        color: var(--color-white);
+    }
+
+    .buttonEdit {
+        background-color: #16a34a;
+        color: var(--color-white);
+    }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+    .buttonAdd:hover {
+        background-color: var(--color-blue-hover);
+    }
+
+    .buttonEdit:hover {
+        background-color: #15803d;
+    }
+
+    .buttonDelete:hover {
+        background-color: #b91c1c;
+    }
+
+    /* Accent text */
+    .text-accent {
+        color: var(--accent-color);
+    }
+
+    /* Adjust dropdowns */
+    select.form-control {
+        background-color: var(--color-gray-1);
+        color: var(--text-color);
+        border: 1px solid var(--color-gray-3);
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray'><polygon points='0,0 16,0 8,10'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 12px;
+        padding-right: 2rem;
+    }
+
+        /* Dropdown options */
+        select.form-control option {
+            background-color: var(--color-gray-1);
+            color: var(--text-color);
+        }
+
+    /* Lists */
+    ul {
+        padding-left: 1rem;
+        background-color: var(--card-bg);
+    }
+
+        ul li a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+            ul li a:hover {
+                color: var(--color-blue);
+            }
+
+</style>
