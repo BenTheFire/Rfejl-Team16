@@ -24,9 +24,15 @@ namespace Ticketmaster.Data.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<CustomerData> GetCustomerByIdAsync(int id)
+        public async Task<CustomerData> GetCustomerByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var customer = await _context.CustomerData.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (customer == null)
+            {
+                Console.WriteLine($"Customer ({id}) not found");
+                return null;
+            }
+            return customer;
         }
 
         public async Task<List<CustomerData>> GetCustomersAsync()

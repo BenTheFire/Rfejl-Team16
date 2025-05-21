@@ -77,6 +77,8 @@
         movies = await MS.GetMoviesAsync();
         locations.Remove(defaultLocation);
         movies.Remove(defaultMovie);
+        locationId = defaultLocation.Id;
+        movieId = defaultMovie.Id;
     }
     private async Task updateScreening()
     {

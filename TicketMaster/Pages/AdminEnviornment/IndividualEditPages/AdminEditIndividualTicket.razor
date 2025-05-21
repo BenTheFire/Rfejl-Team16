@@ -4,37 +4,77 @@
 @using Ticketmaster.Extra
 @inject ITicketService TS
 @inject IScreeningService SS
+@inject IMovieService MS
 @inject ICustomerService CS
 @inject NavigationManager NavigationManager
 
 <body>
-    @if (T != null)
+    @if (T != null && movies != null && customers != null && screenings != null && defaultScreening != null && defaultMovie != null && defaultCustomer != null)
     {
         <a href="/admin/edit/people">Go back</a>
         <form onsubmit="@updateTicket">
             <p>Screening</p>
-            <select>
-                @foreach (var screening in screenings)
-                {
-                    <option value="@screening.Id">@screening.Id</option>
-                }
-            </select>
+            <p>
+                <select @bind="@screeningId">
+                    <option value="@defaultScreening.Id">@defaultScreening.OfMovie.Title (@defaultScreening.Time) in @defaultScreening.InLocation.Name</option>
+                    @foreach (var screening in screenings)
+                    {
+                        <option value="@screening.Id">@screening.Id</option>
+                    }
+                </select>
+            </p>
+            <p>Movie</p>
+            <p>
+                <select @bind="@movieId">
+                    <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
+                    @foreach (var movie in screenings.Select(s => s.OfMovie).Distinct())
+                    {
+                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                    }
+                </select>
+            </p>
             <p>Customer</p>
-            <select>
-                @foreach (var customer in customers)
-                {
-                    <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
-                }
-            </select>
+            <p>
+                <select @bind="@customerId">
+                    @if (defaultCustomer.OfUser != null)
+                    {
+                        <option value="@defaultCustomer.Id">@defaultCustomer.Email (@defaultCustomer.OfUser.UserName.IsNullOrEmpty() ? "" : @defaultCustomer.OfUser.UserName)</option>
+                    }
+                    else
+                    {
+                        <option value="@defaultCustomer.Id">@defaultCustomer.Email</option>
+                    })
+                    @foreach (var customer in customers)
+                    {
+                        @if (customer.OfUser != null)
+                        {
+                            <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                        }
+                        else
+                        {
+                            <option value="@customer.Id">@customer.Email</option>
+                        }
+                    }
+                </select>
+            </p>
             <p>Price</p>
-            <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+            <p>
+                <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+            </p>
             <p>Seat</p>
-            <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
+            <p>
+                <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
+            </p>
             <p>Status</p>
-            <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+            <p>
+                <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+            </p>
             <p>Purchase Time</p>
-            <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
-            <button type="submit">Update Ticket</button>
+            <p>
+                <input type="date" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+            </p>
+            <p><button type="submit">Update Ticket</button></p>
+            <p>@text</p>
         </form>
         <form onsubmit="@deleteTicket">
             <button type="submit">Delete Ticket</button>
@@ -55,23 +95,54 @@
     [Parameter] public string TicketId { get; set; }
     private List<Screening> screenings = new();
     private List<CustomerData> customers = new();
+    private List<Movie> movies = new();
+    private Screening defaultScreening;
+    private Movie defaultMovie;
+    private CustomerData defaultCustomer;
+    private int screeningId;
+    private int customerId;
+    private int movieId;
+    private string text;
     private Ticket T = new();
     protected override async Task OnInitializedAsync()
     {
-        // Fetch the person data using the PersonId
-        var ticket = await TS.GetTicketByIdAsync(Convert.ToInt16(TicketId));
-        if (ticket != null)
-        {
-            T = ticket;
-        }
+        T = await TS.GetTicketByIdAsync(Convert.ToInt16(TicketId));
         screenings = await SS.GetScreeningsAsync();
         customers = await CS.GetCustomersAsync();
+        movies = await MS.GetMoviesAsync();
+
+        defaultScreening = await SS.GetScreeningByIdAsync(T.OfScreening.Id);
+        defaultMovie = await MS.GetMovieByIdAsync(T.OfScreening.OfMovie.Id);
+        defaultCustomer = await CS.GetCustomerByIdAsync(T.Customer.Id);
+
+        screeningId = defaultScreening.Id;
+        customerId = T.Customer.Id;
+        movieId = defaultMovie.Id;
+        screenings.Remove(defaultScreening);
+        customers.Remove(defaultCustomer);
+        movies.Remove(defaultMovie);
     }
     private async Task updateTicket()
     {
+        if (T.Price <= 0)
+        {
+            text = "Pick a price greater than 0";
+            return;
+        }
+        if (T.Seat.IsNullOrEmpty())
+        {
+            text = "Pick a valid seat";
+            return;
+        }
+        if (T.Status < 0 || T.Status > 2)
+        {
+            text = "Pick a valid status (0,1,2)";
+            return;
+        }
         T.Id = Convert.ToInt16(TicketId); // Ensure the ID is set for the update
         await TS.UpdateTicketAsync(T);
         await OnInitializedAsync();
+        text = "Updated.";
     }
     private async Task deleteTicket()
     {

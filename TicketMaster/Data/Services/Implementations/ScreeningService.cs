@@ -20,7 +20,7 @@ namespace Ticketmaster.Data.Services.Implementations
         }
         public async Task<List<Screening>> GetScreeningsAsync()
         {
-            return await _context.Screenings.ToListAsync();
+            return await _context.Screenings.Include(o => o.InLocation).Include(o => o.OfMovie).ToListAsync();
         }
         public async Task<List<Screening>> FetchScreeningsByLocation(Location location)
         {
