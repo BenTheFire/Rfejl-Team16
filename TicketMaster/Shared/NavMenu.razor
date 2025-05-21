@@ -33,6 +33,12 @@
                 </div>
 
                 <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Profile" Match="NavLinkMatch.All">
+                        <span class="oi oi-person" aria-hidden="true"></span> Profile
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
                     <form action="Identity/Account/Logout" method="post">
                         <input type="hidden" name="returnUrl" value="/" />
                         <button type="submit" class="nav-link btn btn-link" style="color: maroon;">

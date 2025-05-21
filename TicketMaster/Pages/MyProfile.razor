@@ -1,0 +1,48 @@
+﻿@page "/Profile"
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject Ticketmaster.Data.Services.Interfaces.IUserService US
+@inject AuthenticationStateProvider ASP
+
+<body>
+    <h1>Edit Profile</h1>
+    <div class="formContainer">
+        <form onsubmit="@updateProfile">
+            <p>Username</p>
+            <input type="text" placeholder="Username" class="form-control mb-2" @bind-value="userName" />
+            <p>Email</p>
+            <input type="text" placeholder="Email" class="form-control mb-2" @bind-value="email" />
+            <p>Phone</p>
+            <input type="text" placeholder="Phone" class="form-control mb-2" @bind-value="phone" />
+            <button type="submit" class="buttonEdit">Update Profile</button>
+        </form>
+    </div>
+</body>
+
+@code {
+    private string userName;
+    private string email;
+    private string phone;
+    private IdentityUser user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await ASP.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            user = await US.GetUserByIdAsync(authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            if (user != null)
+            {
+                userName = user.UserName;
+                email = user.Email;
+                phone = user.PhoneNumber;
+            }
+        }
+        
+    }
+
+    private async Task updateProfile()
+    {
+        
+    }
+}
