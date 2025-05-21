@@ -11,11 +11,37 @@
     {
         <a href="/admin/edit/screenings">Go back</a>
         <form onsubmit="@updateScreening">
-            <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
-            <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
-            <input type="number" placeholder="ID of Location" @bind-value="S.InLocation.Id" />
-            <input type="number" placeholder="ID of Movie" @bind-value="S.OfMovie.Id" />
-            <button type="submit">Update Screening</button>
+            <p>Date of screening</p>
+            <p>
+                <input type="datetime" placeholder="Date of screening" @bind-value="S.Time" />
+            </p>
+            <p>Number of seats taken</p>
+            <p>
+                <input type="number" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+            </p>
+            <p>Location</p>
+            <p>
+                <select @bind="@locationId">
+                    <option value="0">-- Choose a location --</option>
+                    @foreach (var location in locations)
+                    {
+                        <option value="@location.Id">@location.Name</option>
+                    }
+                </select>
+            </p>
+            <p>Movie</p>
+            <p>
+                <select @bind="@movieId">
+                    <option value="0">-- Choose a movie --</option>
+                    @foreach (var movie in movies)
+                    {
+                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                    }
+                </select>
+            </p>
+            <p>
+                <button type="submit">Update Screening</button>
+            </p>
         </form>
         <form onsubmit="@deleteScreening">
             <button type="submit">Delete Screening</button>
@@ -34,20 +60,22 @@
 
 @code {
     [Parameter] public string ScreeningId { get; set; }
-    private Screening S = new();
+    private Screening S = new() { InLocation = null, OfMovie = null, Id = 0, SeatsTaken = 0, Time = DateTime.MinValue };
+    private List<Location> locations = new();
+    private List<Movie> movies = new();
+    private int locationId;
+    private int movieId;
     protected override async Task OnInitializedAsync()
     {
-        var screening = await SS.GetScreeningByIdAsync(Convert.ToInt16(ScreeningId));
-        if (screening != null)
-        {
-            S = screening;
-        }
+        S = await SS.GetScreeningByIdAsync(Convert.ToInt16(ScreeningId));
+        locations = await LS.GetLocationsAsync();
+        movies = await MS.GetMoviesAsync();
     }
     private async Task updateScreening()
     {
         S.Id = Convert.ToInt16(ScreeningId); // Ensure the ID is set for the update
-        S.InLocation = await LS.GetLocationByIdAsync(S.InLocation.Id);
-        S.OfMovie = await MS.GetMovieByIdAsync(S.OfMovie.Id);
+        S.InLocation = await LS.GetLocationByIdAsync(locationId);
+        S.OfMovie = await MS.GetMovieByIdAsync(movieId);
         await SS.UpdateScreening(S);
         await OnInitializedAsync();
     }

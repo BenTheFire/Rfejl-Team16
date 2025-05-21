@@ -109,7 +109,9 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<Screening> GetScreeningByIdAsync(int id)
         {
-            var result = await _context.Screenings.Where(o => o.Id == id).FirstAsync();
+            var result = await _context.Screenings.Where(o => o.Id == id)
+                .Include(o => o.InLocation)
+                .Include(o => o.OfMovie).FirstOrDefaultAsync();
             if (result != null)
             {
                 return result;

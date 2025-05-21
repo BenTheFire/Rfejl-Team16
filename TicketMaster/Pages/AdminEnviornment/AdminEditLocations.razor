@@ -36,7 +36,7 @@
                         <ul>
                             @foreach (var location in locations)
                             {
-                                <li><a href="@location.Id">@location.Name</a></li>
+                                <li><a href="@Href(location.Id)">@location.Name</a></li>
                             }
                         </ul>
                     </div>

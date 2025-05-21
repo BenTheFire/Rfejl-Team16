@@ -16,6 +16,7 @@
                         <form onsubmit="@createScreening">
                             <p>Location</p>
                             <select @bind="@locationId" class="form-control mb-2">
+                                <option value="0">-- Choose a location --</option>
                                 @foreach (var location in locations)
                                 {
                                     <option value="@location.Id">@location.Name</option>
@@ -24,6 +25,7 @@
 
                             <p>Movie</p>
                             <select @bind="@movieId" class="form-control mb-2">
+                                <option value="0">-- Choose a movie --</option>
                                 @foreach (var movie in movies)
                                 {
                                     <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
@@ -37,6 +39,7 @@
                             <input type="number" class="form-control mb-2" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
 
                             <button type="submit" class="buttonAdd">Create Screening</button>
+                            <p>@text</p>
                         </form>
                     </div>
                 </div>
@@ -51,7 +54,7 @@
                                     <a href="@Href(screening.Id)">
                                         @screening.OfMovie.Title (@screening.OfMovie.ReleaseDate):
                                         @screening.Time,
-                                        @screening.InLocation
+                                        @screening.InLocation.Name (@screening.InLocation.Address)
                                     </a>
                                 </li>
                             }
@@ -69,6 +72,7 @@
     private List<Movie> movies = new();
     private int locationId;
     private int movieId;
+    private string text;
     private string Href(int id) => $"/admin/edit/screening/{id}";
     protected override async Task OnInitializedAsync()
     {
@@ -78,9 +82,25 @@
     }
     private async Task createScreening()
     {
+        if (locationId == 0 && movieId == 0)
+        {
+            text = "Please select a location and a movie.";
+            return;
+        }
+        if (locationId == 0)
+        {
+            text = "Please select a location.";
+            return;
+        }
+        if (movieId == 0)
+        {
+            text = "Please select a movie.";
+            return;
+        }
         S.InLocation = await LS.GetLocationByIdAsync(locationId);
         S.OfMovie = await MS.GetMovieByIdAsync(movieId);
         await SS.CreateScreening(S);
+        await OnInitializedAsync();
     }
     
 }
