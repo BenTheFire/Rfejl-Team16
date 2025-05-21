@@ -1,4 +1,5 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
 :root {
     --bg-color: #0d0d0d;
     --text-color: #ffffff;
@@ -6,12 +7,44 @@
     --header-bg: #111827;
 }
 
+.dark-theme {
+    --color-white: #f9f9f9;
+    --color-black: #0d0d0d;
+    --color-gray-1: #1a1a1a;
+    --color-gray-2: #2a2a2a;
+    --color-gray-3: #444;
+    --color-blue: #3b82f6;
+    --color-blue-hover: #2563eb;
+    --color-red: #ef4444;
+    --color-yellow: #facc15;
+    --color-purple: #8b5cf6;
+    --bg-color: var(--color-black);
+    --text-color: var(--color-white);
+    --header-bg: var(--color-gray-1);
+    --card-bg: var(--color-gray-2);
+    --footer-bg: var(--color-gray-1);
+    --sidebar-bg: linear-gradient(to right, #0f172a, #0d0d0d); /* blue → black*/
+    --sidebar-text-color: var(--color-yellow);
+    --accent-text-color: var(--color-yellow);
+    --bs-body-bg: #0d0d0d;
+    --bs-body-color: #f9f9f9;
+}
+
 .light-theme {
     --bg-color: #ffffff;
     --text-color: #1a1a1a;
-    --card-bg: #f4f4f5;
+    --color-blue: #3b82f6;
     --header-bg: #e2e8f0;
+    --card-bg: #f9fafb;
+    --footer-bg: #e2e8f0;
+    --sidebar-bg: linear-gradient(to right, #0f172a, #ffffff);
+    --sidebar-bg-mini: linear-gradient(to bottom, #0f172a, #ffffff); /* blue → white */
+    --sidebar-text-color: var(--color-purple);
+    --accent-text-color: var(--color-purple);
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #111111;
 }
+
 .theme-toggle {
     display: flex;
     align-items: center;
@@ -32,7 +65,6 @@
 }
 
     .slider::before {
-        
         position: absolute;
         left: 4px;
         top: 2px;
@@ -51,7 +83,6 @@ input:checked + .slider {
 }
 
     input:checked + .slider::before {
-        
         transform: translateX(26px);
     }
 
@@ -74,7 +105,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -121,6 +152,7 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
 .theme-toggle {
     display: flex;
     align-items: center;
@@ -170,4 +202,701 @@ input:checked + .slider {
         transform: translateX(24px);
         background-color: #cbd5e1;
         color: #1e293b;
+    }
+
+
+/*adminEditSingleMovie*/
+.light-theme .movie-editor-container {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+}
+
+main, .content, .main-content {
+    flex: 1;
+    min-height: 100%;
+    padding-bottom: 2rem; /* prevent cut-off */
+}
+
+.movie-editor-wrapper {
+    padding: 2rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.movie-editor-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2rem;
+    gap: 2rem;
+    border-radius: 1rem;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.movie-editor-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.movie-editor-poster {
+    flex: 0 0 300px;
+    max-width: 100%;
+}
+
+.poster-preview {
+    width: 100%;
+    border-radius: 0.75rem;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.movie-editor-poster img.poster-preview {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
+}
+
+.movie-editor-form {
+    flex: 1;
+    max-width: 600px;
+    min-width: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+    .movie-editor-form button {
+        background-color: var(--color-blue);
+        color: white;
+        font-weight: bold;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
+        .movie-editor-form button:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+.light-theme .movie-editor-form button {
+    background-color: var(--color-blue);
+    color: var(--color-yellow);
+}
+
+@media (max-width: 768px) {
+    .movie-editor-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .movie-editor-form {
+        width: 100%;
+    }
+
+    .poster {
+        max-width: 90%;
+        height: auto;
+    }
+}
+
+.movie-editor-form p {
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.movie-editor-form textarea {
+    min-height: 120px;
+    resize: vertical;
+    width: 100%;
+}
+
+.movie-editor-form input,
+.movie-editor-form textarea {
+    width: 100%;
+    max-width: 500px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #1a1a1a;
+}
+
+body:not(.light-theme) .movie-editor-form input,
+body:not(.light-theme) .movie-editor-form textarea {
+    background-color: var(--color-gray-2);
+    color: var(--color-white);
+}
+
+.movie-editor-container {
+    align-items: flex-start;
+}
+
+.movie-editor-form input {
+    width: 100%;
+}
+/* Admin main page */
+.admin-page {
+    max-width: 600px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--card-bg);
+}
+
+.admin-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.admin-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-link-item {
+    margin-bottom: 12px;
+    background-color: var(--color-gray-2);
+    border-radius: 8px;
+}
+
+.admin-link {
+    display: block;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .admin-link:hover {
+        background-color: var(--color-blue-hover);
+        color: white;
+    }
+
+.light-theme .admin-link {
+    color: #1a1a1a;
+}
+
+    .light-theme .admin-link:hover {
+        background-color: #dbeafe;
+    }
+
+.light-theme .admin-link-item {
+    background-color: #f1f5f9;
+}
+
+/* AdminEditLocation */
+.admin-form-wrapper {
+    max-width: 800px;
+    margin: auto;
+    padding: 2rem;
+    border-radius: 16px;
+    background-color: var(--card-bg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.admin-form-section {
+    margin-bottom: 2rem;
+}
+
+.editor-input {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-gray-3);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: border 0.3s ease;
+}
+
+    .editor-input:focus {
+        outline: none;
+        border-color: var(--color-blue);
+    }
+
+.editor-submit-btn {
+    background-color: var(--color-blue);
+    color: var(--color-white);
+    padding: 12px 20px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .editor-submit-btn:hover {
+        background-color: var(--color-blue-hover);
+    }
+
+/* AdminEditMovies */
+/* Layout & Containers */
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.admin-forms {
+    padding: 1rem;
+}
+
+.admin-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.admin-col {
+    flex: 1 1 300px;
+}
+
+/* Card / Box Design */
+.admin-form {
+    background-color: var(--card-bg, #222);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.3s ease;
+    color: var(--color-purple)
+}
+
+.admin-forms {
+    background-color: var(--bg-color);
+}
+
+.light-theme .admin-form {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Inputs */
+.editor-input {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: var(--bg-color, #1e1e1e);
+    color: var(--color-purple);
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.light-theme .editor-input {
+    background-color: #fff;
+}
+
+/* Buttons */
+.editor-submit-btn {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: #fff;
+}
+
+    .editor-submit-btn.success {
+        background-color: #3b82f6;
+    }
+
+    .editor-submit-btn.danger {
+        background-color: #ef4444;
+    }
+
+    .editor-submit-btn:hover {
+        filter: brightness(1.1);
+    }
+
+.full-width {
+    width: 100%;
+}
+
+/* Checkbox */
+.editor-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox {
+    width: 18px;
+    height: 18px;
+}
+
+.checkbox-label {
+    font-size: 0.95rem;
+    color: var(--text-color, #fff);
+}
+
+.light-theme .checkbox-label {
+    color: #000;
+}
+
+/* Link List */
+.admin-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .admin-link-list li {
+        margin-bottom: 10px;
+    }
+
+    .admin-link-list a {
+        text-decoration: none;
+        color: var(--accent-text-color;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+        .admin-link-list a:hover {
+            color: var(--color-blue, #3b82f6);
+        }
+/* AdminLocation */
+
+.admin-forms {
+    padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    background-color: var(--color-purple);
+}
+
+/* Individual form block */
+.admin-form {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex: 1 1 300px;
+    max-width: 500px;
+}
+
+    /* Headings inside forms */
+    .admin-form h4 {
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        color: var(--color-blue);
+    }
+
+/* Standard input styling */
+.editor-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-gray-3);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+/* Buttons */
+.editor-submit-btn {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    /* Success (green) button modifier */
+    .editor-submit-btn.success {
+        background-color: #22c55e;
+        color: white;
+    }
+
+        .editor-submit-btn.success:hover {
+            background-color: #16a34a;
+        }
+
+    /* Danger (red) button modifier */
+    .editor-submit-btn.danger {
+        background-color: #ef4444;
+        color: white;
+    }
+
+        .editor-submit-btn.danger:hover {
+            background-color: #dc2626;
+        }
+
+/* Make button take full container width */
+.full-width {
+    width: 100%;
+}
+
+.main-wrapper, .forms, .admin-forms, .container {
+    background-color: var(--bg-color);
+}
+
+/* AdminEditScreening */
+
+/* Container for all forms */
+.forms {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Individual form card */
+.formContainer {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Form input spacing */
+.form-control {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+}
+
+/* Buttons */
+.buttonAdd, .buttonEdit, .buttonDelete {
+    padding: 0.75rem;
+    width: 100%;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    color: white;
+}
+
+.buttonAdd {
+    background-color: #3b82f6; /* blue */
+}
+
+    .buttonAdd:hover {
+        background-color: #2563eb;
+    }
+
+.buttonEdit {
+    background-color: #3b82f6; /* blue */
+}
+
+    .buttonEdit:hover {
+        background-color: #2563eb;
+    }
+
+.buttonDelete {
+    background-color: #ef4444; /* red */
+}
+
+    .buttonDelete:hover {
+        background-color: #dc2626;
+    }
+
+/* Responsive layout support */
+@media (max-width: 768px) {
+    .forms {
+        padding: 1rem;
+    }
+
+    .formContainer {
+        padding: 1rem;
+    }
+}
+/* Index.html */
+
+
+@@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.app-layout {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    background: var(--sidebar-bg, #0d1117);
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+}
+
+header {
+    background: var(--header-bg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--color-gray-3);
+}
+
+    header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--color-yellow);
+        color: var(--accent-color);
+    }
+
+nav {
+    margin-top: 1rem;
+}
+
+    nav a {
+        margin: 0 0.75rem;
+        color: var(--color-purple);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+        color: var(--accent-color);
+    }
+
+        nav a:hover {
+            color: var(--color-blue);
+        }
+
+.content {
+    flex-grow: 1;
+    overflow-y: auto;
+    height: 100vh;
+    background-color: var(--bg-color);
+}
+
+.content, .movie-container {
+    min-height: 100%;
+    padding-bottom: 3rem; /* in case there's a footer */
+    overflow-y: auto;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 1.5rem;
+    padding: 1.5rem 1rem;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    width: 100%;
+    max-width: 240px;
+    height: 420px; /* 🟢 FIXED HEIGHT for all cards */
+    background-color: var(--card-bg);
+    border-left: 5px solid var(--color-red);
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    text-align: center;
+}
+
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+        border-left-color: var(--color-yellow);
+    }
+
+    .card h2,
+    .card h5 {
+        color: var(--color-blue);
+        margin-top: 1rem;
+        word-break: break-word;
+    }
+
+    .card img {
+        width: 100%;
+        border-radius: 0.75rem;
+        max-height: 320px;
+        object-fit: cover;
+    }
+
+.button {
+    display: inline-block;
+    background-color: var(--color-blue);
+    color: var(--color-white);
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .button:hover {
+        background-color: var(--color-blue-hover);
+        transform: scale(1.05);
+    }
+
+.toggle-theme {
+    margin-top: 2rem;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: var(--footer-bg);
+    border-top: 1px solid var(--color-gray-3);
+    color: var(--color-gray-3);
+    font-size: 0.9rem;
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    justify-content: center;
+}
+
+.card {
+}
+
+    .card img {
+        width: 100%;
+        height: 280px; /* 🟢 FIXED IMAGE HEIGHT */
+        object-fit: cover;
+        border-radius: 0.75rem;
+    }
+
+    .card h5 {
+        color: var(--color-blue);
+        font-size: 0.95rem;
+        margin: 0.5rem 0 0;
+        word-break: break-word;
     }
