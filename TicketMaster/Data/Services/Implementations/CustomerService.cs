@@ -35,6 +35,17 @@ namespace Ticketmaster.Data.Services.Implementations
             return customer;
         }
 
+        public Task<CustomerData> GetCustomerByUserIdAsync(string id)
+        {
+            var customer = _context.CustomerData.Where(o => o.OfUser.Id == id).FirstOrDefaultAsync();
+            if (customer == null)
+            {
+                Console.WriteLine($"Customer ({id}) not found");
+                return null;
+            }
+            return customer;
+        }
+
         public async Task<List<CustomerData>> GetCustomersAsync()
         {
             return await _context.CustomerData.ToListAsync();
