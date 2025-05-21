@@ -5,7 +5,7 @@ namespace Ticketmaster.Data.Services.Interfaces
 {
     public interface IVendorService
     {
-        public Task<List<IdentityUser>> GetVendorsAsync();
+        public Task<IList<IdentityUser>> GetVendorsAsync();
         public Task<IdentityUser> GetVendorByIdAsync(string id);
         public Task<IdentityUser> GetVendorByEmailAsync(string email);
         public Task<IdentityUser> GetVendorByPhoneAsync(string phone);

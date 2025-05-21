@@ -6,12 +6,14 @@ using Ticketmaster.Objects;
 
 namespace Ticketmaster.Data.Services.Implementations
 {
+
     public class VendorService : IVendorService
     {
-        private TicketmasterContext _context;
-        public VendorService(TicketmasterContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public VendorService(UserManager<IdentityUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
 
@@ -31,9 +33,9 @@ namespace Ticketmaster.Data.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public async Task<List<IdentityUser>> GetVendorsAsync()
+        public async Task<IList<IdentityUser>> GetVendorsAsync()
         {
-            throw new NotImplementedException();
+            return await _userManager.GetUsersInRoleAsync("Vendor");
         }
 
         public async Task<bool> IsInDBByEmailAsync(string email)

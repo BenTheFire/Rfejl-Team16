@@ -14,7 +14,7 @@
                         <ul>
                             @foreach (var vendor in vendors)
                             {
-                                <li><a href="@Href(vendor.Id)">@vendor.Id</a></li>
+                                <li><a href="@Href(vendor.Id)">@vendor.UserName (@vendor.Email)</a></li>
                             }
                         </ul>
                     </div>
@@ -59,7 +59,7 @@
     {
         try
         {
-            vendors = await VS.GetVendorsAsync();
+            vendors = (await VS.GetVendorsAsync()).ToList();
         }
         catch (Exception e)
         {
