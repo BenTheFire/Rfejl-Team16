@@ -122,5 +122,12 @@ namespace Ticketmaster.Data.Services.Implementations
                 return null;
             }
         }
+
+        public async Task<List<Screening>> GetScreeningsByVendorIdAsync(string vendorId)
+        {
+            return await _context.Screenings.Include(o => o.InLocation)
+                .Include(o => o.OfMovie)
+                .Where(o => o.InLocation.ByVendor.Id == vendorId).ToListAsync();
+        }
     }
 }

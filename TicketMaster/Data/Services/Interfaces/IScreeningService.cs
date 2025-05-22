@@ -8,6 +8,7 @@ namespace Ticketmaster.Data.Services.Interfaces
         public Task<ScreeningWithTicketsDTO> FetchTicketsForScreening(Screening screening);
         public Task<List<Screening>> GetScreeningsAsync();
         public Task<Screening> GetScreeningByIdAsync(int id);
+        public Task<List<Screening>> GetScreeningsByVendorIdAsync(string vendorId);
         public Task<List<Screening>> FetchScreeningsByLocation(Location location);
         //public Task<List<Screening>> FetchScreeningsByVendor(Vendor vendor);
         public bool IsOngoing(Screening screening);

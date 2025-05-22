@@ -11,79 +11,113 @@
 @inject AuthenticationStateProvider ASP
 
 <body>
-    @if(vendor != null) {
+    @if(vendor != null && screenings != null) {
         <CascadingAuthenticationState>
             <AuthorizeView Roles="Vendor">
                 <Authorized>
-                    <p>Welcome: @vendor.UserName</p>
-                    <p>Email: @vendor.Email</p>
-                    <p>Location: @location.Name</p>
-                    <p>Address: @location.Address</p>
-                    <p>Tickets</p>
-                    <ul>
-                        @foreach(var swt in screeningsWithTickets)
-                        {
-                            <li>
-                                <h4>@swt.Screening.OfMovie.Title</h4>
-                                <p>Screening time: @swt.Screening.Time</p>
-                                <p>Tickets:</p>
-                                <ul>
-                                    @foreach (var ticket in swt.Tickets)
-                                    {
-                                        <li><div>
-                                                @if (ticket.Customer.OfUser != null)
-                                                {
-                                                    <p>Ticket ID: @ticket.Id</p>
-                                                    <p>Ticket status: @switch(ticket.Status)
-                                                        { case 0:
-                                                                <p>Unset</p>;
-                                                                break; 
-                                                          case 1:
-                                                                <p>Accepted</p>
-                                                                break;
-                                                            case 2:
-                                                                <p>Rejected</p>
-                                                                break;
-                                                            default: break; }
+                    <div>
+                        <p>Welcome: @vendor.UserName</p>
+                        <p>Email: @vendor.Email</p>
+                        <p>Location: @location.Name</p>
+                        <p>Address: @location.Address</p>
+                        <p>Tickets</p>
+                        <ul>
+                            @foreach(var swt in screeningsWithTickets)
+                            {
+                                <li>
+                                    <h4>@swt.Screening.OfMovie.Title</h4>
+                                    <p>Screening time: @swt.Screening.Time</p>
+                                    <p>Tickets:</p>
+                                    <ul>
+                                        @foreach (var ticket in swt.Tickets)
+                                        {
+                                            <li><div>
+                                                    @if (ticket.Customer.OfUser != null)
+                                                    {
+                                                        <p>Ticket ID: @ticket.Id</p>
+                                                        <p>Ticket status: @switch(ticket.Status)
+                                                            { case 0:
+                                                                    <p>Unset</p>;
+                                                                    break; 
+                                                                case 1:
+                                                                    <p>Accepted</p>
+                                                                    break;
+                                                                case 2:
+                                                                    <p>Rejected</p>
+                                                                    break;
+                                                                default: break; }
                                                         </p>
-                                                    <p>Customer name:
-                                                        @ticket.Customer.OfUser.UserName</p>
-                                                <p>Customer email: @ticket.Customer.Email</p>
-                                            }
-                                            else
-                                            {
-                                                <p>Ticket ID: @ticket.Id</p>
-                                                    <p>
-                                                        Ticket status: @switch (ticket.Status)
-                                                        {
-                                                            case 0:
-                                                            <p>Unset</p>
-                                                                ;
-                                                                break;
-                                                            case 1:
-                                                            <p>Accepted</p>
-                                                                break;
-                                                            case 2:
-                                                            <p>Rejected</p>
-                                                                break;
-                                                            default: break;
-                                                        }
-                                                    </p>
-                                                <p>Customer phone: @ticket.Customer.Phone</p>
-                                                <p>Customer email: @ticket.Customer.Email</p>
-                                            }
-                                            </div>
-                                            <div>
-                                                <button @onclick="() => setStatus(ticket, 0)">0</button>
-                                                <button @onclick="() => setStatus(ticket, 1)">1</button>
-                                                <button @onclick="() => setStatus(ticket, 2)">2</button>
-                                            </div>
-                                        </li>
+                                                        <p>Customer name:
+                                                            @ticket.Customer.OfUser.UserName</p>
+                                                        <p>Customer email: @ticket.Customer.Email</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Ticket ID: @ticket.Id</p>
+                                                        <p>
+                                                            Ticket status: @switch (ticket.Status)
+                                                            {
+                                                                case 0:
+                                                                    <p>Unset</p>
+                                                                    ;
+                                                                    break;
+                                                                case 1:
+                                                                    <p>Accepted</p>
+                                                                    break;
+                                                                case 2:
+                                                                    <p>Rejected</p>
+                                                                    break;
+                                                                default: break;
+                                                            }
+                                                        </p>
+                                                        <p>Customer phone: @ticket.Customer.Phone</p>
+                                                        <p>Customer email: @ticket.Customer.Email</p>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <button @onclick="() => setStatus(ticket, 0)">0</button>
+                                                    <button @onclick="() => setStatus(ticket, 1)">1</button>
+                                                    <button @onclick="() => setStatus(ticket, 2)">2</button>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Create ticket live</h4>
+                        <form onsubmit="@createTicket">
+                            <p>Screening</p>
+                            <p>
+                                <select @bind="@screeningId" class="form-control mb-2">
+                                    <option value="0">-- Choose a screening --</option>
+                                    @foreach (var screening in screenings)
+                                    {
+                                        <option value="@screening.Id">@screening.Id --> @screening.OfMovie.Title (@screening.Time) in @screening.InLocation.Name</option>
                                     }
-                                </ul>
-                            </li>
-                        }
-                    </ul>
+                                </select>
+                            </p>
+                            <p>Customer</p>
+                            <p>
+                                <input type="text" placeholder="Email" @bind-value="email"/>
+                                <input type="text" placeholder="Phone" @bind-value="phone" />
+                            </p>
+                            <p>Price</p>
+                            <p>
+                                <input type="number" class="form-control mb-2" placeholder="Price of ticket" @bind-value="price" />
+                            </p>
+                            <p>Seat position</p>
+                            <p>
+                                <input type="text" class="form-control mb-2" placeholder="Seat position" @bind-value="seatPosition" />
+                            </p>
+                            <p>
+                                <button type="submit" class="buttonAdd">Create Ticket</button>
+                            </p>
+                            <p>@text</p>
+                        </form>
+                    </div>
                 </Authorized>
                 <NotAuthorized>
                     <div style="margin:auto"><h1>403 Forbidden</h1></div>
@@ -105,6 +139,15 @@
     List<Ticket> tickets = new();
 
     Location location = new();
+    private int screeningId;
+
+    private string text;
+    private string email;
+    private string phone;
+    private string seatPosition;
+    private int price;
+
+    private List<Screening> screenings = new();
 
     private class ScreeningWithTickets
     {
@@ -144,12 +187,13 @@
                         });
                 }
             }
+            screenings = await SS.GetScreeningsByVendorIdAsync(vendor.Id);
         }
         else
         {
             tickets = null;
         }
-        
+
     }
     private async Task setStatus(Ticket ticket, int status)
     {
@@ -157,5 +201,52 @@
         await TS.UpdateTicketAsync(ticket);
         await OnInitializedAsync();
     }
+
+    private async Task createTicket()
+    {
+        if (email == null)
+        {
+            text = "Please select an email.";
+            return;
+        }
+        if (phone == null)
+        {
+            text = "Please select a phone.";
+            return;
+        }
+        if (price == 0)
+        {
+            text = "Please select a price.";
+            return;
+        }
+        if (screeningId == 0)
+        {
+            text = "Please select a screening.";
+            return;
+        }
+        var screening = await SS.GetScreeningByIdAsync(screeningId);
+        CustomerData newCustomer = new CustomerData
+            {
+                Email = email,
+                Phone = phone,
+                OfUser = null
+            };
+        await CS.CreateCustomerAsync(newCustomer);
+        if (screening != null)
+        {
+            var ticket = new Ticket
+                {
+                    OfScreening = screening,
+                    Customer = newCustomer,
+                    Price = price,
+                    Seat = seatPosition,
+                    Status = 1,
+                    PurchaseTime = DateTime.Now
+                };
+            await TS.CreateTicketAsync(ticket);
+            await OnInitializedAsync();
+        }
+    }
+
     private string Href(int id) => $"/VendorPage/ticket/{id}";
 }

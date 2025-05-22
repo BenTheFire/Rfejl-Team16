@@ -16,8 +16,9 @@ namespace Ticketmaster.Data.Services.Implementations
         public async Task CreateTicketAsync(Ticket ticket)
         {
             var updateScreening = await _context.Screenings.Where(o => o.Id == ticket.OfScreening.Id).FirstAsync();
-            if (++updateScreening.SeatsTaken <= updateScreening.InLocation.Capacity)
+            if (updateScreening.SeatsTaken + 1 <= updateScreening.InLocation.Capacity)
             {
+                updateScreening.SeatsTaken++;
                 await _context.Tickets.AddAsync(ticket);
                 await _context.SaveChangesAsync();
                 Console.WriteLine($"Ticket added succesfully");

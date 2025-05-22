@@ -14,6 +14,12 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task CreateCustomerAsync(CustomerData customer)
         {
+            var existingCustomer = await _context.CustomerData.Where(o => o.Id == customer.Id).FirstOrDefaultAsync();
+            if (existingCustomer != null)
+            {
+                Console.WriteLine($"Customer ({customer.Id}) already exists");
+                return;
+            }
             await _context.CustomerData.AddAsync(customer);
             await _context.SaveChangesAsync();
             Console.WriteLine($"Added new customer succesfully");
