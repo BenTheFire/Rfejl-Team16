@@ -124,7 +124,7 @@
             if (!force)
             {
                 if (isInDBAdd) return;
-                await foreach (var item in OmdbSource.FetchMovieByTitle(M.Title))
+                await foreach (var item in OmdbSource.FetchMovieByImdbId(M.ImdbId))
                 {
                     if (item == null)
                     {
@@ -137,6 +137,7 @@
                     successAdd = true;
                     doesntExistAdd = false;
                     textAdd = $"Movie {M.ImdbId} added succesfully";
+                    await OnInitializedAsync();
                     return;
                 }
             }
@@ -144,10 +145,11 @@
             {
                 if (isInDBAdd)
                 {
-                    await MS.UpdateMovieFromOmdbByTitle(M.Title);
+                    await MS.UpdateMovieFromOmdbByImdbId(M.Title);
                     successAdd = true;
                     doesntExistAdd = false;
                     textAdd = $"Movie {M.ImdbId} updated forcefully";
+                    await OnInitializedAsync();
                     return;
                 }
                 else
@@ -158,12 +160,14 @@
                         {
                             doesntExistAdd = true;
                             textAdd = $"Movie {M.ImdbId} doesn't exist in Omdb";
+                            await OnInitializedAsync();
                             return;
                         }
                         await MS.CreateMovie(item);
                         successAdd = true;
                         doesntExistAdd = false;
                         textAdd = $"Movie {M.ImdbId} created forcefully";
+                        await OnInitializedAsync();
                         return;
                     }
                 }
@@ -181,6 +185,7 @@
                     {
                         textAdd = $"Movie with title {M.Title} doesn't exist in Omdb";
                         doesntExistAdd = true;
+                        await OnInitializedAsync();
                         return;
                     }
                     await MS.CreateMovie(item);
@@ -188,6 +193,7 @@
                     successAdd = true;
                     doesntExistAdd = false;
                     textAdd = $"Movie {M.Title} added succesfully";
+                    await OnInitializedAsync();
                     return;
                 }
             }
@@ -199,6 +205,7 @@
                     successAdd = true;
                     doesntExistAdd = false;
                     textAdd = $"Movie {M.Title} updated forcefully";
+                    await OnInitializedAsync();
                     return;
                 }
                 else
@@ -209,12 +216,14 @@
                         {
                             doesntExistAdd = true;
                             textAdd = $"Movie {M.Title} doesn't exist in Omdb";
+                            await OnInitializedAsync();
                             return;
                         }
                         await MS.CreateMovie(item);
                         successAdd = true;
                         doesntExistAdd = false;
                         textAdd = $"Movie {M.Title} created forcefully";
+                        await OnInitializedAsync();
                         return;
                     }
                 }
@@ -227,11 +236,13 @@
     private async Task createMovie()
     {
         await MS.CreateMovie(M);
+        await OnInitializedAsync();
     }
 
     private async Task updateMovie()
     {
         await MS.UpdateMovie(M);
+        await OnInitializedAsync();
     }
 
     private async Task deleteMovie()

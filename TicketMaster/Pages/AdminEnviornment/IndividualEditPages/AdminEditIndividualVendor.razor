@@ -11,7 +11,7 @@
     <CascadingAuthenticationState>
         <AuthorizeView Roles="Admin">
             <Authorized>
-                @if (V != null)
+                @if (V != null && locations != null)
                 {
                     <div class="movie-container my-2">
                         <div class="row g-2">
@@ -30,7 +30,7 @@
                                 </p>
                                 <p>
                                     <select @bind="@locationId">
-                                        @if (@locationId == 0)
+                                        @if (@defaultLocation == null)
                                         {
                                             <option value="0">No location set</option>
                                         }
@@ -38,7 +38,6 @@
                                         {
                                             <option value="@defaultLocation.Id">@defaultLocation.Name</option>
                                         }
-                                        <option value="0">No location set</option>
                                         @foreach (var location in locations)
                                         {
                                             <option value="@location.Id">@location.Name</option>
@@ -80,6 +79,8 @@
     private int locationId;
     private Location defaultLocation;
 
+    private string text;
+
     protected override async Task OnInitializedAsync()
     {
         V = await VS.GetVendorByIdAsync(vendorId);
@@ -99,12 +100,20 @@
     private async Task UpdateVendor()
     {
         Location location = new Location();
+        location = await LS.GetLocationByVendorIdAsync(vendorId);
+        if (location != null)
+        {
+            location.ByVendor = null;
+        }
         if (locationId != 0)
         {
             location = await LS.GetLocationByIdAsync(locationId);
+            location.ByVendor = V;
+            await LS.UpdateLocationAsync(location);
         }
         else
-        {      
+        {
+            text = "location not set";
         }
     }
     private async Task deleteVendor()

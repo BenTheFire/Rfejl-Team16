@@ -72,6 +72,7 @@ namespace Ticketmaster.Data.Services.Implementations
         {
             _context.Locations.Update(location);
             await _context.SaveChangesAsync();
+            Console.WriteLine($"Location ({location.Id}) succesfully updated");
         }
 
         public async Task<Location> GetLocationByVendorIdAsync(string vendorId)
