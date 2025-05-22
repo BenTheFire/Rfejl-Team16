@@ -30,19 +30,54 @@
                                 <ul>
                                     @foreach (var ticket in swt.Tickets)
                                     {
-                                        <li>
-                                            @if (ticket.Customer.OfUser != null)
-                                            {
-                                                <p>Ticket ID: @ticket.Id</p>
-                                                <p>Customer name: @ticket.Customer.OfUser.UserName</p>
+                                        <li><div>
+                                                @if (ticket.Customer.OfUser != null)
+                                                {
+                                                    <p>Ticket ID: @ticket.Id</p>
+                                                    <p>Ticket status: @switch(ticket.Status)
+                                                        { case 0:
+                                                                <p>Unset</p>;
+                                                                break; 
+                                                          case 1:
+                                                                <p>Accepted</p>
+                                                                break;
+                                                            case 2:
+                                                                <p>Rejected</p>
+                                                                break;
+                                                            default: break; }
+                                                        </p>
+                                                    <p>Customer name:
+                                                        @ticket.Customer.OfUser.UserName</p>
                                                 <p>Customer email: @ticket.Customer.Email</p>
                                             }
                                             else
                                             {
                                                 <p>Ticket ID: @ticket.Id</p>
+                                                    <p>
+                                                        Ticket status: @switch (ticket.Status)
+                                                        {
+                                                            case 0:
+                                                            <p>Unset</p>
+                                                                ;
+                                                                break;
+                                                            case 1:
+                                                            <p>Accepted</p>
+                                                                break;
+                                                            case 2:
+                                                            <p>Rejected</p>
+                                                                break;
+                                                            default: break;
+                                                        }
+                                                    </p>
                                                 <p>Customer phone: @ticket.Customer.Phone</p>
                                                 <p>Customer email: @ticket.Customer.Email</p>
                                             }
+                                            </div>
+                                            <div>
+                                                <button @onclick="() => setStatus(ticket, 0)">0</button>
+                                                <button @onclick="() => setStatus(ticket, 1)">1</button>
+                                                <button @onclick="() => setStatus(ticket, 2)">2</button>
+                                            </div>
                                         </li>
                                     }
                                 </ul>
@@ -116,4 +151,11 @@
         }
         
     }
+    private async Task setStatus(Ticket ticket, int status)
+    {
+        ticket.Status = status;
+        await TS.UpdateTicketAsync(ticket);
+        await OnInitializedAsync();
+    }
+    private string Href(int id) => $"/VendorPage/ticket/{id}";
 }
