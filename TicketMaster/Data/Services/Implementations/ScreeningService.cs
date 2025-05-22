@@ -20,7 +20,7 @@ namespace Ticketmaster.Data.Services.Implementations
         }
         public async Task<List<Screening>> GetScreeningsAsync()
         {
-            return await _context.Screenings.ToListAsync();
+            return await _context.Screenings.Include(o => o.InLocation).Include(o => o.OfMovie).ToListAsync();
         }
         public async Task<List<Screening>> FetchScreeningsByLocation(Location location)
         {
@@ -109,7 +109,9 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<Screening> GetScreeningByIdAsync(int id)
         {
-            var result = await _context.Screenings.Where(o => o.Id == id).FirstAsync();
+            var result = await _context.Screenings.Where(o => o.Id == id)
+                .Include(o => o.InLocation)
+                .Include(o => o.OfMovie).FirstOrDefaultAsync();
             if (result != null)
             {
                 return result;
@@ -119,6 +121,13 @@ namespace Ticketmaster.Data.Services.Implementations
                 Console.WriteLine($"Screening ({id}) not found");
                 return null;
             }
+        }
+
+        public async Task<List<Screening>> GetScreeningsByVendorIdAsync(string vendorId)
+        {
+            return await _context.Screenings.Include(o => o.InLocation)
+                .Include(o => o.OfMovie)
+                .Where(o => o.InLocation.ByVendor.Id == vendorId).ToListAsync();
         }
     }
 }

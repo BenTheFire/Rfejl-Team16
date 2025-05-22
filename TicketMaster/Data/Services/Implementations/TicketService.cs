@@ -15,31 +15,25 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task CreateTicketAsync(Ticket ticket)
         {
-            await _context.Tickets.AddAsync(ticket);
-            await _context.SaveChangesAsync();
-            Console.WriteLine($"Ticket added succesfully");
+            var updateScreening = await _context.Screenings.Where(o => o.Id == ticket.OfScreening.Id).FirstAsync();
+            if (updateScreening.SeatsTaken + 1 <= updateScreening.InLocation.Capacity)
+            {
+                updateScreening.SeatsTaken++;
+                await _context.Tickets.AddAsync(ticket);
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Ticket added succesfully");
+            }
+            else
+            {
+                Console.WriteLine($"Ticket not added, screening is full");
+            }            
         }
 
         public async Task<List<Ticket>> GetTicketsAsync()
         {
             return await _context.Tickets.ToListAsync();
         }
-        public async Task DeleteTicket(int id)
-        {
-            try
-            {
-                var todelete = await _context.Tickets.Where(o => o.Id == id).FirstAsync();
-                if (todelete != null)
-                {
-                    _context.Tickets.Remove(todelete);
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine($"Ticket({id}) deleted succesfully");
-                }
-            } catch (Exception e) 
-            {
-                Console.WriteLine($"Ticket ({id}) not found");
-            }
-        }
+        
         //public async Task UpdateTicket(TicketDTO ticket)
         //{
         //    try
@@ -113,13 +107,46 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task DeleteTicketAsync(int id)
         {
-            _context.Tickets.Remove(_context.Tickets.Find(id));
-            await _context.SaveChangesAsync();
-            Console.WriteLine($"Ticket ({id}) deleted succesfully");
+            var todelete = await _context.Tickets.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (todelete != null)
+            {
+                var updateScreening = await _context.Screenings.Where(o => o.Id == todelete.OfScreening.Id).FirstOrDefaultAsync();
+                if (updateScreening != null)
+                {
+                    updateScreening.SeatsTaken--;
+                    _context.Tickets.Remove(todelete);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Ticket({id}) deleted succesfully");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Ticket ({id}) not found");
+            }
         }
         public async Task<Ticket> GetTicketByIdAsync(int id)
         {
             return await _context.Tickets.Where(o => o.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Ticket>> GetTicketsByUserIdAsync(string userId)
+        {
+            return await _context.Tickets.Where(o => o.Customer.OfUser.Id == userId)
+                .Include(o => o.Customer)
+                .Include(o => o.OfScreening)
+                .Include(o => o.OfScreening.InLocation)
+                .Include(o =>o.OfScreening.OfMovie).ToListAsync();
+        }
+
+        public async Task<List<Ticket>> GetTicketsByVendorIdAsync(string vendorId)
+        {
+            return await _context.Tickets.Where(o => o.OfScreening.InLocation.ByVendor.Id == vendorId)
+                .Include(o => o.Customer)
+                .Include(o => o.OfScreening)
+                .Include(o => o.OfScreening.InLocation)
+                .Include(o => o.OfScreening.OfMovie)
+                .Include(o => o.Customer.OfUser)
+                .ToListAsync();
         }
     }
 }

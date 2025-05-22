@@ -1,54 +1,116 @@
 ﻿@page "/admin/edit/location/{locationId}"
+@using Microsoft.AspNetCore.Identity
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
 @inject ILocationService LS
+@inject IVendorService VS
 @inject NavigationManager NavigationManager
+@inject ThemeService ThemeService
 
 <body>
-    @if (L != null)
-    {
-        <a href="/admin/edit/locations">Go back</a>
-        <form onsubmit="@updateLocation">
-            <p>Name</p>
-            <input type="text" placeholder="Name of location" @bind-value="L.Name" />
-            <p>Address</p>
-            <input type="text" placeholder="Address of location" @bind-value="L.Address" />
-            <p>Max capacity</p>
-            <input type="number" placeholder="Max capacity" @bind-value="L.Capacity" />
-            <!--vendors?-->
-            <button type="submit">Update Location</button>
-        </form>
-        <form onsubmit="@deleteLocation">
-            <button type="submit">Delete Location</button>
-        </form>
-        
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (L != null && vendors != null)
+                {
+                    <div class="forms">
+                        <div class="formContainer">
+                            <a href="/admin/edit/locations" class="text-accent">Go back</a>
+                            <form onsubmit="@updateLocation">
+                                <p>Name</p>
+                                <input type="text" class="form-control" placeholder="Name of location" @bind-value="L.Name" />
+
+                                <p>Address</p>
+                                <input type="text" class="form-control" placeholder="Address of location" @bind-value="L.Address" />
+
+                                <p>Max capacity</p>
+                                <input type="number" class="form-control" placeholder="Max capacity" @bind-value="L.Capacity" />
+
+                                <p>Vendor</p>
+                                <select class="form-control" @bind="vendorId">
+                                    @if(defaultVendor != null)
+                                    {
+                                        <option value="@defaultVendor.Id">@defaultVendor.UserName</option>
+                                        @foreach (var vendor in vendors)
+                                        {
+                                            <option value="@vendor.Id">@vendor.UserName</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="0">No vendor selected</option>
+                                        @foreach (var vendor in vendors)
+                                        {
+                                            <option value="@vendor.Id">@vendor.UserName</option>
+                                        }
+                                    }
+
+                                </select>
+
+                                <button type="submit" class="buttonAdd">Update Location</button>
+                            </form>
+
+                            <form onsubmit="@deleteLocation">
+                                <button type="submit" class="buttonDelete">Delete Location</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src="./Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 
 @code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}
+@code {
     [Parameter] public string LocationId { get; set; }
     private Location L = new();
+    private IList<IdentityUser> vendors;
+    private string vendorId;
+    private IdentityUser defaultVendor;
     protected override async Task OnInitializedAsync()
     {
-        // Fetch the person data using the PersonId
-        var location = await LS.GetLocationByIdAsync(Convert.ToInt16(LocationId));
-        if (location != null)
+        L = await LS.GetLocationByIdAsync(Convert.ToInt16(LocationId));
+        vendors = await VS.GetVendorsAsync();
+        defaultVendor = L.ByVendor;
+        if (defaultVendor != null)
         {
-            L = location;
+            vendors.Remove(defaultVendor);
         }
     }
     private async Task updateLocation()
     {
         L.Id = Convert.ToInt16(LocationId); // Ensure the ID is set for the update
+        L.ByVendor = vendors.FirstOrDefault(v => v.Id == vendorId);
         await LS.UpdateLocationAsync(L);
         await OnInitializedAsync();
     }
@@ -59,3 +121,123 @@
         NavigationManager.NavigateTo("/admin/edit/locations");
     }
 }
+<style>
+
+    .forms {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .formContainer h4 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: var(--accent-text-color); /* yellow in dark, purple in light */
+        }
+
+        /* ==== Input Fields ==== */
+        .formContainer input[type="text"],
+        .formContainer input[type="number"],
+        .formContainer input[type="date"],
+        .formContainer input[type="datetime-local"],
+        select.form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-gray-3);
+            background-color: var(--color-black);
+            color: var(--text-color);
+        }
+
+            .formContainer input::placeholder,
+            select.form-control::placeholder {
+                color: var(--text-color);
+                opacity: 0.7;
+            }
+
+            .formContainer input:focus,
+            select.form-control:focus {
+                border-color: var(--color-blue);
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4); /* color-blue with transparency */
+            }
+
+    /* ==== Buttons ==== */
+    .buttonAdd,
+    .buttonEdit,
+    .buttonDelete {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
+        color: var(--color-white);
+    }
+
+    .buttonAdd {
+        background-color: var(--color-blue);
+    }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    .buttonEdit {
+        background-color: var(--color-green, #16a34a);
+    }
+
+        .buttonEdit:hover {
+            background-color: #15803d;
+        }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+    }
+
+        .buttonDelete:hover {
+            background-color: #dc2626;
+        }
+
+    /* ==== Lists ==== */
+    .formContainer ul {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 1rem;
+    }
+
+    .formContainer li {
+        margin-bottom: 0.75rem;
+    }
+
+    .formContainer a {
+        text-decoration: none;
+        color: var(--color-purple);
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+        .formContainer a:hover {
+            color: var(--color-yellow);
+        }
+
+    /* Dropdown options background fix */
+    select.form-control option {
+        background-color: var(--color-black);
+        color: var(--text-color);
+    }
+
+</style>

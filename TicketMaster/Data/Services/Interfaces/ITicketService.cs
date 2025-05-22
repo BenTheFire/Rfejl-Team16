@@ -7,6 +7,8 @@ namespace Ticketmaster.Data.Services.Interfaces
     {
         public Task<List<Ticket>> GetTicketsAsync();
         public Task<Ticket> GetTicketByIdAsync(int id);
+        public Task<List<Ticket>> GetTicketsByUserIdAsync(string userId);
+        public Task<List<Ticket>> GetTicketsByVendorIdAsync(string vendorId);
         public List<Ticket> FetchPurchases(string username);
         //public List<Ticket> FetchPendingTickets(string vendorUsername);
         public List<Ticket> FetchOwnedTickets(string username);

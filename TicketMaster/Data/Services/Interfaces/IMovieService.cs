@@ -19,6 +19,7 @@ namespace Ticketmaster.Data.Services.Interfaces
         public Task DeleteMovieByImdbId(string imdbId);
         public Task UpdateMovie(Movie movie);
         public Task UpdateMovieFromOmdbByTitle(string title);
+        public Task UpdateMovieFromOmdbByImdbId(string imdbId);
     }
 
     public class MovieDbException : Exception { }

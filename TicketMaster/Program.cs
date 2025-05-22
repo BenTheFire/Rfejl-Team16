@@ -30,7 +30,7 @@ public class Program
         builder.Services.AddScoped<ICreditService, CreditService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddControllers();
-        builder.Services.AddSingleton<ThemeService>();
+        builder.Services.AddScoped<ThemeService>();
 
 
 

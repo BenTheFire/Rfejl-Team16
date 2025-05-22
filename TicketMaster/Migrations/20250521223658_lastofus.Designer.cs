@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ticketmaster.Objects;
 
@@ -10,9 +11,11 @@ using Ticketmaster.Objects;
 namespace Ticketmaster.Migrations
 {
     [DbContext(typeof(TicketmasterContext))]
-    partial class TicketmasterContextModelSnapshot : ModelSnapshot
+    [Migration("20250521223658_lastofus")]
+    partial class lastofus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,9 +272,6 @@ namespace Ticketmaster.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ByVendorId")
-                        .HasColumnType("varchar(255)");
-
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
@@ -280,8 +280,6 @@ namespace Ticketmaster.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ByVendorId");
 
                     b.ToTable("Locations");
                 });
@@ -475,15 +473,6 @@ namespace Ticketmaster.Migrations
                         .HasForeignKey("OfUserId");
 
                     b.Navigation("OfUser");
-                });
-
-            modelBuilder.Entity("Ticketmaster.Objects.Location", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "ByVendor")
-                        .WithMany()
-                        .HasForeignKey("ByVendorId");
-
-                    b.Navigation("ByVendor");
                 });
 
             modelBuilder.Entity("Ticketmaster.Objects.Screening", b =>

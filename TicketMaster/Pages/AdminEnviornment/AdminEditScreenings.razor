@@ -5,64 +5,75 @@
 @inject IScreeningService SS
 @inject ILocationService LS
 @inject IMovieService MS
+@inject ThemeService ThemeService
 <body>
-    <div class="forms">
-        <div class="formContainer my-2">
-            <div class="row g-4">
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
-                        <h4>Create Screening</h4>
-                        <form onsubmit="@createScreening">
-                            <p>Location</p>
-                            <p>
-                                <select @bind="@locationId" class="form-control mb-2">
-                                    @foreach (var location in locations)
-                                    {
-                                        <option value="@location.Id">@location.Name</option>
-                                    }
-                                </select>
-                            </p>
-                            <p>Movie</p>
-                            <p>
-                                <select @bind="@movieId" class="form-control mb-2">
-                                    @foreach (var movie in movies)
-                                    {
-                                        //todo: add a check to see if the movie is in the location
-                                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
-                                    }
-                                </select>
-                            </p>
-                            <p>Date of screening</p>
-                            <p>
-                                <input type="datetime" class="form-control mb-2" placeholder="Date of screening" @bind-value="S.Time" />
-                            </p>
+    <CascadingAuthenticationState>
+        <AuthorizeView>
+            <Authorized>
+                <div class="forms">
+                    <div class="formContainer my-2">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="formContainer">
+                                    <h4 style="color: var(--accent-text-color);">Create Screening</h4>
+                                    <form onsubmit="@createScreening">
+                                        <p>Location</p>
+                                        <select @bind="@locationId" class="form-control mb-2">
+                                            <option value="0">-- Choose a location --</option>
+                                            @foreach (var location in locations)
+                                            {
+                                                <option value="@location.Id">@location.Name</option>
+                                            }
+                                        </select>
 
-                            <p>Number of seats</p>
-                            <p>
-                                <input type="number" class="form-control mb-2" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
-                            </p>
-                            <p>
-                                <button type="submit" class="buttonAdd">Create Screening</button>
-                            </p>
-                        </form>
+                                        <p>Movie</p>
+                                        <select @bind="@movieId" class="form-control mb-2">
+                                            <option value="0">-- Choose a movie --</option>
+                                            @foreach (var movie in movies)
+                                            {
+                                                <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                                            }
+                                        </select>
+
+                                        <p>Date of screening</p>
+                                        <input type="datetime-local" class="form-control mb-2" placeholder="Date of screening" @bind-value="S.Time" />
+
+                                        <p>Number of seats</p>
+                                        <input type="number" class="form-control mb-2" placeholder="Number of seats taken" @bind-value="S.SeatsTaken" />
+
+                                        <button type="submit" class="buttonAdd">Create Screening</button>
+                                        <p>@text</p>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="formContainer">
+                                    <h4 style="color: var(--accent-text-color);">Update Screening</h4>
+                                    <ul>
+                                        @foreach (var screening in screenings)
+                                        {
+                                            <li>
+                                                <a href="@Href(screening.Id)">
+                                                    @screening.OfMovie.Title (@screening.OfMovie.ReleaseDate):
+                                                    @screening.Time,
+                                                    @screening.InLocation.Name (@screening.InLocation.Address)
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <div class="formContainer">
-                        <h4>Update Screening</h4>
-                        <ul>
-                            @foreach (var screening in screenings)
-                            {
-                                <li>
-                                    <a href="@Href(screening.Id)">@screening.OfMovie.Title (@screening.OfMovie.ReleaseDate): @screening.Time, @screening.InLocation</a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+    
 </body>
 @code {
     private Screening S = new();
@@ -71,6 +82,7 @@
     private List<Movie> movies = new();
     private int locationId;
     private int movieId;
+    private string text;
     private string Href(int id) => $"/admin/edit/screening/{id}";
     protected override async Task OnInitializedAsync()
     {
@@ -80,81 +92,169 @@
     }
     private async Task createScreening()
     {
+        if (locationId == 0 && movieId == 0)
+        {
+            text = "Please select a location and a movie.";
+            return;
+        }
+        if (locationId == 0)
+        {
+            text = "Please select a location.";
+            return;
+        }
+        if (movieId == 0)
+        {
+            text = "Please select a movie.";
+            return;
+        }
         S.InLocation = await LS.GetLocationByIdAsync(locationId);
         S.OfMovie = await MS.GetMovieByIdAsync(movieId);
         await SS.CreateScreening(S);
+        await OnInitializedAsync();
     }
     
 }
+@code {
+    private string ThemeClass => ThemeService.IsLightTheme ? "light-theme" : "dark-theme";
 
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += ThemeChanged;
+    }
+
+    private async Task ThemeChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= ThemeChanged;
+    }
+}
 <style>
-    .forms {
-        align-content: normal;
-        justify-content: normal;
-        gap: 3rem;
+    .dark-theme {
+        --color-white: #f9f9f9;
+        --color-black: #0d0d0d;
+        --color-gray-1: #1a1a1a;
+        --color-gray-2: #2a2a2a;
+        --color-gray-3: #444;
+        --color-blue: #3b82f6;
+        --color-blue-hover: #2563eb;
+        --color-red: #ef4444;
+        --color-yellow: #facc15;
+        --color-purple: #8b5cf6;
+        --bg-color: var(--color-black);
+        --text-color: var(--color-white);
+        --header-bg: var(--color-gray-1);
+        --card-bg: var(--color-gray-2);
+        --footer-bg: var(--color-gray-1);
+        --sidebar-bg: linear-gradient(to right, #0f172a, #0d0d0d); /* blue → black*/
+        --sidebar-text-color: var(--color-yellow);
+        --accent-text-color: var(--color-yellow);
+        --bs-body-bg: #0d0d0d;
+        --bs-body-color: #f9f9f9;
     }
 
-    .formContainer {
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        min-height: 100%;
+    .light-theme {
+        --bg-color: #ffffff;
+        --text-color: #1a1a1a;
+        --color-blue: #3b82f6;
+        --header-bg: #e2e8f0;
+        --card-bg: #f9fafb;
+        --footer-bg: #e2e8f0;
+        --sidebar-bg: linear-gradient(to right, #0f172a, #ffffff);
+        --sidebar-bg-mini: linear-gradient(to bottom, #0f172a, #ffffff); /* blue → white */
+        --sidebar-text-color: var(--color-purple);
+        --accent-text-color: var(--color-purple);
+        --bs-body-bg: #ffffff;
+        --bs-body-color: #111111;
     }
+    /* Scoped form container styling */
+.forms {
+    padding: 2rem;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
 
-        .formContainer h4 {
-            margin-bottom: 1rem;
-            color: #aee1f9;
-        }
+/* Form section container */
+.formContainer {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Section headers */
+.formContainer h4 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+/* Inputs and dropdowns */
+.form-control {
+    background-color: var(--color-gray-1);
+    color: var(--text-color);
+    border: 1px solid var(--color-gray-3);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    width: 100%;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, background-color 0.3s ease;
+}
 
 
-    .formContainer {
-        display: flex;
-        flex-direction: column;
-        min-width: 220px;
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-        margin: 0.5rem 0;
-        background: #23272f;
-        border-radius: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        border: 1px solid #2c313c;
-        color: #f8f9fa;
-    }
+.form-control option {
+    background-color: var(--color-gray-1);
+    color: var(--text-color);
+}
 
-        .formContainer h4 {
-            margin-bottom: 1rem;
-            color: #aee1f9;
-        }
+.form-control:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
 
-        .formContainer input,
-        .formContainer button {
-            margin-bottom: 0.7rem;
-            border-radius: 0.4rem;
-            border: 1px solid #444;
-            padding: 0.5rem;
-            background: #181a20;
-            color: #f8f9fa;
-        }
+/* Submit Button: Add */
+.buttonAdd {
+    background-color: var(--color-blue);
+    color: var(--color-white);
+    font-weight: bold;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    width: 100%;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+}
 
-        .formContainer button {
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+.buttonAdd:hover {
+    background-color: var(--color-blue-hover);
+}
 
-    .buttonDelete {
-        background-color: #e74c3c;
-    }
+/* Lists (update, delete sections) */
+ul {
+    padding-left: 1rem;
+}
 
-    .buttonAdd {
-        background-color: #27ae60;
-    }
+ul li {
+    margin-bottom: 0.75rem;
+    list-style: disc;
+}
 
-    .buttonEdit {
-        background-color: #2980b9;
-    }
+ul li a {
+    color: var(--color-blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+ul li a:hover {
+    color: var(--color-yellow);
+}
+
 </style>
 

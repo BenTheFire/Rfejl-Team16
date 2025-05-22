@@ -273,5 +273,31 @@ namespace Ticketmaster.Data.Services.Implementations
         {
             throw new NotImplementedException();
         }
+
+        public async Task UpdateMovieFromOmdbByImdbId(string imdbId)
+        {
+            var movieToUpdate = await _context.Movies.Where(o => o.ImdbId == Convert.ToInt16(imdbId)).FirstOrDefaultAsync();
+            if (movieToUpdate == null)
+            {
+                Console.WriteLine($"Movie ({imdbId}) not found");
+                return;
+            }
+            else
+            {
+                await foreach (MovieWithCast item in OmdbSource.FetchMovieByImdbId(Convert.ToInt16(imdbId)))
+                {
+                    movieToUpdate.Title = item.Movie.Title;
+                    movieToUpdate.Description = item.Movie.Description;
+                    movieToUpdate.LengthInSeconds = item.Movie.LengthInSeconds;
+                    movieToUpdate.ImageSource = item.Movie.ImageSource;
+                    movieToUpdate.ReleaseDate = item.Movie.ReleaseDate;
+                    movieToUpdate.ImdbId = item.Movie.ImdbId;
+                    _context.Movies.Update(movieToUpdate);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Movie ({imdbId}) updated succesfully");
+                    return;
+                }
+            }
+        }
     }
 }

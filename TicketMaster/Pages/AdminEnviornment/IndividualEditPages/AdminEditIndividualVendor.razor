@@ -8,50 +8,67 @@
 @inject NavigationManager NavigationManager
 
 <body>
-    @if (V != null)
-    {
-        <div class="movie-container my-2">
-            <div class="row g-2">
-                <form onsubmit="@UpdateVendor">
-                    <p>Username</p>
-                    <p>
-                        <input type="text" placeholder="Username" @bind-value="V.UserName" />
-                    </p>
-                    <p>Email</p>
-                    <p>
-                        <input type="email" placeholder="Email" @bind-value="V.Email" />
-                    </p>
-                    <p>Phone Number</p>
-                    <p>
-                        <input type="text" placeholder="Phone Number" @bind-value="V.PhoneNumber" />
-                    </p>
-                    <button type="submit">Update Vendor</button>
-                </form>
-                <p>
-                    <select @bind="@locationId">
-                        @foreach(var location in locations)
-                        {
-                            <option value="@location.Id">@location.Name</option>
-                        }
-                    </select>
-                </p>
-                <form onsubmit="@deleteVendor">
-                    <button type="submit">Delete Vendor</button>
-                </form>
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (V != null && locations != null)
+                {
+                    <div class="movie-container my-2">
+                        <div class="row g-2">
+                            <form onsubmit="@UpdateVendor">
+                                <p>Username</p>
+                                <p>
+                                    <input type="text" placeholder="Username" @bind-value="V.UserName" />
+                                </p>
+                                <p>Email</p>
+                                <p>
+                                    <input type="email" placeholder="Email" @bind-value="V.Email" />
+                                </p>
+                                <p>Phone Number</p>
+                                <p>
+                                    <input type="text" placeholder="Phone Number" @bind-value="V.PhoneNumber" />
+                                </p>
+                                <p>
+                                    <select @bind="@locationId">
+                                        @if (@defaultLocation == null)
+                                        {
+                                            <option value="0">No location set</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@defaultLocation.Id">@defaultLocation.Name</option>
+                                        }
+                                        @foreach (var location in locations)
+                                        {
+                                            <option value="@location.Id">@location.Name</option>
+                                        }
+                                    </select>
+                                </p>
+                                <button type="submit">Update Vendor</button>
+                            </form>
 
-            </div>
-        </div>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
+                            <form onsubmit="@deleteVendor">
+                                <button type="submit">Delete Vendor</button>
+                            </form>
 
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
 
 @code {
@@ -60,15 +77,44 @@
     private IdentityUser V;
     private List<Location> locations = new();
     private int locationId;
+    private Location defaultLocation;
+
+    private string text;
 
     protected override async Task OnInitializedAsync()
     {
         V = await VS.GetVendorByIdAsync(vendorId);
-        locations = await LS.GetLocationsByVendorIdAsync(Convert.ToInt16(vendorId));
+        locations = await LS.GetLocationsAsync();
+        defaultLocation = await LS.GetLocationByVendorIdAsync(vendorId);
+        if (defaultLocation != null)
+        {
+            locationId = defaultLocation.Id;
+            locations.Remove(defaultLocation);
+        }
+        else
+        {
+            locationId = 0;
+        }
     }
 
     private async Task UpdateVendor()
     {
+        Location location = new Location();
+        location = await LS.GetLocationByVendorIdAsync(vendorId);
+        if (location != null)
+        {
+            location.ByVendor = null;
+        }
+        if (locationId != 0)
+        {
+            location = await LS.GetLocationByIdAsync(locationId);
+            location.ByVendor = V;
+            await LS.UpdateLocationAsync(location);
+        }
+        else
+        {
+            text = "location not set";
+        }
     }
     private async Task deleteVendor()
     {

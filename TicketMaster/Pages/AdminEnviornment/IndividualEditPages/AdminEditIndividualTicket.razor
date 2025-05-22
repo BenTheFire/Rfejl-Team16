@@ -4,74 +4,153 @@
 @using Ticketmaster.Extra
 @inject ITicketService TS
 @inject IScreeningService SS
+@inject IMovieService MS
 @inject ICustomerService CS
 @inject NavigationManager NavigationManager
 
 <body>
-    @if (T != null)
-    {
-        <a href="/admin/edit/people">Go back</a>
-        <form onsubmit="@updateTicket">
-            <p>Screening</p>
-            <select>
-                @foreach (var screening in screenings)
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                @if (T != null && movies != null && customers != null && screenings != null && defaultScreening != null && defaultMovie != null && defaultCustomer != null)
                 {
-                    <option value="@screening.Id">@screening.Id</option>
+                    <div class="forms">
+                        <div class="formContainer">
+                            <a href="/admin/edit/people" class="text-accent">Go back</a>
+                            <form onsubmit="@updateTicket">
+                                <p>Screening</p>
+                                <select class="form-control" @bind="@screeningId">
+                                    <option value="@defaultScreening.Id">@defaultScreening.OfMovie.Title (@defaultScreening.Time) in @defaultScreening.InLocation.Name</option>
+                                    @foreach (var screening in screenings)
+                                    {
+                                        <option value="@screening.Id">@screening.Id</option>
+                                    }
+                                </select>
+
+                                <p>Movie</p>
+                                <select class="form-control" @bind="@movieId">
+                                    <option value="@defaultMovie.Id">@defaultMovie.Title (@defaultMovie.ReleaseDate)</option>
+                                    @foreach (var movie in screenings.Select(s => s.OfMovie).Distinct())
+                                    {
+                                        <option value="@movie.Id">@movie.Title (@movie.ReleaseDate)</option>
+                                    }
+                                </select>
+
+                                <p>Customer</p>
+                                <select class="form-control" @bind="@customerId">
+                                    @if (defaultCustomer.OfUser != null)
+                                    {
+                                        <option value="@defaultCustomer.Id">@defaultCustomer.Email (@defaultCustomer.OfUser.UserName.IsNullOrEmpty() ? "" : @defaultCustomer.OfUser.UserName)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@defaultCustomer.Id">@defaultCustomer.Email</option>
+                                    }
+                                    @foreach (var customer in customers)
+                                    {
+                                        @if (customer.OfUser != null)
+                                        {
+                                            <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@customer.Id">@customer.Email</option>
+                                        }
+                                    }
+                                </select>
+
+                                <p>Price</p>
+                                <input class="form-control" type="number" placeholder="Price of ticket" @bind-value="T.Price" />
+
+                                <p>Seat</p>
+                                <input class="form-control" type="text" placeholder="Seat position" @bind-value="T.Seat" />
+
+                                <p>Status</p>
+                                <input class="form-control" type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
+
+                                <p>Purchase Time</p>
+                                <input class="form-control" type="date" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
+
+                                <button type="submit" class="buttonAdd">Update Ticket</button>
+                                <p>@text</p>
+                            </form>
+
+                            <form onsubmit="@deleteTicket">
+                                <button type="submit" class="buttonDelete">Delete Ticket</button>
+                            </form>
+                        </div>
+                    </div>
                 }
-            </select>
-            <p>Customer</p>
-            <select>
-                @foreach (var customer in customers)
+                else
                 {
-                    <option value="@customer.Id">@customer.Email (@customer.OfUser.UserName.IsNullOrEmpty() ? "" : @customer.OfUser.UserName)</option>
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+                        <div>
+                            <h2>Loading...</h2>
+                            <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
+                        </div>
+                    </div>
                 }
-            </select>
-            <p>Price</p>
-            <input type="number" placeholder="Price of ticket" @bind-value="T.Price" />
-            <p>Seat</p>
-            <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
-            <p>Status</p>
-            <input type="number" placeholder="Status (0, 1, 2)" @bind-value="T.Status" />
-            <p>Purchase Time</p>
-            <input type="datetime" placeholder="Purchase time of ticket" @bind-value="T.PurchaseTime" />
-            <button type="submit">Update Ticket</button>
-        </form>
-        <form onsubmit="@deleteTicket">
-            <button type="submit">Delete Ticket</button>
-        </form>
-    }
-    else
-    {
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div>
-                <h2>Loading...</h2>
-                <img src=".\Loading.gif" alt="..." style="width:128px;height:128px" />
-            </div>
-        </div>
-    }
+            </Authorized>
+            <NotAuthorized>
+                <div style="margin:auto"><h1>403 Forbidden</h1></div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
 </body>
+
 
 @code {
     [Parameter] public string TicketId { get; set; }
     private List<Screening> screenings = new();
     private List<CustomerData> customers = new();
+    private List<Movie> movies = new();
+    private Screening defaultScreening;
+    private Movie defaultMovie;
+    private CustomerData defaultCustomer;
+    private int screeningId;
+    private int customerId;
+    private int movieId;
+    private string text;
     private Ticket T = new();
     protected override async Task OnInitializedAsync()
     {
-        // Fetch the person data using the PersonId
-        var ticket = await TS.GetTicketByIdAsync(Convert.ToInt16(TicketId));
-        if (ticket != null)
-        {
-            T = ticket;
-        }
+        T = await TS.GetTicketByIdAsync(Convert.ToInt16(TicketId));
         screenings = await SS.GetScreeningsAsync();
         customers = await CS.GetCustomersAsync();
+        movies = await MS.GetMoviesAsync();
+
+        defaultScreening = await SS.GetScreeningByIdAsync(T.OfScreening.Id);
+        defaultMovie = await MS.GetMovieByIdAsync(T.OfScreening.OfMovie.Id);
+        defaultCustomer = await CS.GetCustomerByIdAsync(T.Customer.Id);
+
+        screeningId = defaultScreening.Id;
+        customerId = T.Customer.Id;
+        movieId = defaultMovie.Id;
+        screenings.Remove(defaultScreening);
+        customers.Remove(defaultCustomer);
+        movies.Remove(defaultMovie);
     }
     private async Task updateTicket()
     {
+        if (T.Price <= 0)
+        {
+            text = "Pick a price greater than 0";
+            return;
+        }
+        if (T.Seat.IsNullOrEmpty())
+        {
+            text = "Pick a valid seat";
+            return;
+        }
+        if (T.Status < 0 || T.Status > 2)
+        {
+            text = "Pick a valid status (0,1,2)";
+            return;
+        }
         T.Id = Convert.ToInt16(TicketId); // Ensure the ID is set for the update
         await TS.UpdateTicketAsync(T);
         await OnInitializedAsync();
+        text = "Updated.";
     }
     private async Task deleteTicket()
     {
@@ -80,3 +159,100 @@
         NavigationManager.NavigateTo("/admin/edit/people");
     }
 }
+<style>
+    .forms {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .formContainer h4, .formContainer h3 {
+            color: var(--accent-text-color);
+            margin-bottom: 1rem;
+        }
+
+    /* Inputs and selects */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--color-gray-3);
+        background-color: var(--color-black);
+        color: var(--color-white);
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    input::placeholder,
+    select {
+        color: var(--color-white);
+    }
+
+        input:focus,
+        select:focus {
+            border-color: var(--color-blue);
+            outline: none;
+        }
+
+    /* Buttons */
+    button[type="submit"],
+    button[type="button"] {
+        width: 100%;
+        padding: 0.75rem 1.25rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Role-specific buttons */
+    .buttonAdd {
+        background-color: var(--color-blue);
+        color: var(--color-white);
+    }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+        .buttonDelete:hover {
+            background-color: #e03131;
+        }
+
+    .buttonEdit {
+        background-color: var(--color-yellow);
+        color: var(--color-black);
+    }
+
+        .buttonEdit:hover {
+            background-color: #fadc66;
+        }
+
+    /* Dropdown options background fix */
+    select option {
+        background-color: var(--color-black);
+        color: var(--color-white);
+    }
+
+</style>

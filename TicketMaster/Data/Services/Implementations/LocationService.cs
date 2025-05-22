@@ -47,8 +47,14 @@ namespace Ticketmaster.Data.Services.Implementations
 
         public async Task<Location> GetLocationByIdAsync(int id)
         {
-            return await _context.Locations.Where(o => o.Id == id).FirstOrDefaultAsync()
-                ?? throw new LocationDbException();
+            var location = await _context.Locations.Where(o => o.Id == id)
+                .Include(o => o.ByVendor).FirstOrDefaultAsync();
+            if (location == null)
+            {
+                Console.WriteLine($"Location ({id}) not found");
+                return null;
+            }
+            return location;
         }
 
         public async Task<List<Location>> GetLocationsAsync()
@@ -66,11 +72,21 @@ namespace Ticketmaster.Data.Services.Implementations
         {
             _context.Locations.Update(location);
             await _context.SaveChangesAsync();
+            Console.WriteLine($"Location ({location.Id}) succesfully updated");
         }
 
-        public async Task<List<Location>> GetLocationsByVendorIdAsync(int vendorId)
+        public async Task<Location> GetLocationByVendorIdAsync(string vendorId)
         {
-            throw new NotImplementedException();
+            var location = await _context.Locations
+                .Where(o => o.ByVendor.Id == vendorId)
+                .Include(o => o.ByVendor)
+                .FirstOrDefaultAsync();
+            if (location == null)
+            {
+                Console.WriteLine($"Location for vendor ({vendorId}) not found");
+                return null;
+            }
+            return location;
         }
 
 

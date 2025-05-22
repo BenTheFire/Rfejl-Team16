@@ -1,19 +1,41 @@
 ﻿@page "/screening/{screeningId}"
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 @using Ticketmaster.Objects;
 @using Ticketmaster.Data.DTOs;
 @inject Ticketmaster.Data.Services.Interfaces.IScreeningService SS
 @inject Ticketmaster.Data.Services.Interfaces.ITicketService TS
+@inject Ticketmaster.Data.Services.Interfaces.IUserService US
+@inject Ticketmaster.Data.Services.Interfaces.ICustomerService CS
 
 <body>
-    @if (screening != null) {
-        <h3>Screening of @screening.OfMovie.Title on @screening.Time.ToString("yyyy-MM-dd HH:mm")</h3>
-        <p>Filled slots: @screening.SeatsTaken</p>
-        <form onsubmit="@buyTicket">
-            <input type="number" placeholder="ID of customer" @bind-value="T.CustomerId" />
-            <input type="text" placeholder="Seat position" @bind-value="T.Seat" />
-            <button type="submit" class="buttonAdd">Buy Ticket</button>
-        </form>
-        <button onclick="@buyTicket">Buy Ticket for screening</button>
+    @if (screening != null)
+    {
+        <div class="forms">
+            <div class="formContainer">
+                <h3 class="text-accent">Screening of @screening.OfMovie.Title on @screening.Time.ToString("yyyy-MM-dd HH:mm")</h3>
+                <p>Filled slots: @screening.SeatsTaken / @screening.InLocation.Capacity</p>
+
+                @if (User != null)
+                {
+                    <h4 class="text-accent">Logged in as: @User.UserName</h4>
+                    if (customerData != null)
+                    {
+                        <p>Customer: @User.UserName</p>
+                        <p>Email: @email</p>
+                        <p>Phone: @phone</p>
+                    }
+                }
+                else
+                {
+                    <input type="text" class="form-control mb-2" placeholder="Email" @bind-value="@email" />
+                    <input type="text" class="form-control mb-2" placeholder="Phone" @bind-value="@phone" />
+                }
+
+                <input type="text" class="form-control mb-2" placeholder="Seat" @bind-value="@seat" />
+                <button class="buttonAdd" type="button" @onclick="buyTicket">Buy Ticket for screening</button>
+            </div>
+        </div>
     }
     else
     {
@@ -27,35 +49,186 @@
 </body>
 
 
+
 @code {
     [Parameter] public string ScreeningId { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthState { get; set; }
+
+    private IdentityUser User;
+
+    private CustomerData customerData;
 
     private Screening? screening;
 
-    private TicketDTO T;
+    private Ticket T;
+
+    private string email;
+    private string phone;
+    private string seat;
 
     protected override async Task OnInitializedAsync()
     {
-        try
+        screening = await SS.GetScreeningByIdAsync(Convert.ToInt16(ScreeningId));
+        var authenticationState = await AuthState;
+        if (authenticationState.User.Identity.IsAuthenticated)
         {
-            int id = int.Parse(ScreeningId);
-            screening = await SS.GetScreeningByIdAsync(id);
-            Console.WriteLine(id);
-
-            Console.WriteLine(screening.OfMovie.Title);
+            var userId = authenticationState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                throw new Exception("User ID not found in claims");
+            }
+            User = await US.GetUserByIdAsync(userId);
+            customerData = await CS.GetCustomerByUserIdAsync(userId);
+            email = customerData.Email;
+            phone = customerData.Phone;
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e.Message);
-            screening = null;
+            User = null;
         }
     }
     protected async Task buyTicket()
     {
-        T.Status = 2; //pending
-        T.Price = 10;
-        T.PurchaseTime = DateTime.UtcNow;
-        T.ByVendorId = 1;
-        //await TS.CreateTicket(T);
+        if (customerData == null)
+        {
+            customerData = new CustomerData
+                {
+                    Email = email,
+                    Phone = phone
+                };
+            await CS.CreateCustomerAsync(customerData);
+        }
+        
+        await TS.CreateTicketAsync(new Ticket
+            {
+                OfScreening = screening,
+                Customer = customerData,
+                Price = 1000,
+                Seat = seat,
+                Status = 0,
+                PurchaseTime = DateTime.Now
+            });
     }
 }
+<style>
+    /* Main container */
+    .forms {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    /* Box container */
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        /* Headings */
+        .formContainer h3, .formContainer h4 {
+            color: var(--accent-text-color);
+            margin-bottom: 1rem;
+        }
+
+    /* Input fields */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select.form-control {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        background-color: var(--input-bg, var(--card-bg));
+        color: var(--text-color);
+        border: 1px solid var(--color-gray-3);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+    }
+
+    input::placeholder,
+    select option {
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    /* Select dropdown styles */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='gray' viewBox='0 0 20 20'><polygon points='0,0 20,0 10,10'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 10px;
+        padding-right: 2rem;
+    }
+
+    /* Buttons */
+    button {
+        padding: 0.75rem 1rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 0.5rem;
+        width: 100%;
+        margin-top: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .buttonAdd {
+        background-color: var(--color-blue);
+        color: var(--color-white);
+    }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+        .buttonDelete:hover {
+            background-color: #dc2626;
+        }
+
+    .buttonEdit {
+        background-color: var(--color-green);
+        color: var(--color-white);
+    }
+
+        .buttonEdit:hover {
+            background-color: #16a34a;
+        }
+
+    /* Lists for update sections */
+    ul {
+        padding-left: 1.25rem;
+        margin-top: 1rem;
+    }
+
+        ul li {
+            margin-bottom: 0.75rem;
+        }
+
+            ul li a {
+                color: var(--color-purple);
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+                ul li a:hover {
+                    color: var(--color-yellow);
+                }
+
+    /* Accent text utility */
+    .text-accent {
+        color: var(--accent-text-color);
+    }
+
+</style>
