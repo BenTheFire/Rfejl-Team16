@@ -11,33 +11,73 @@
 @inject AuthenticationStateProvider ASP
 
 <body>
-    <CascadingAuthenticationState>
-        <AuthorizeView Roles="Vendor">
-            <Authorized>
-                <h1>Vendor Page</h1>
-                <p>Welcome, @vendor.UserName</p>
-                <p>Email: @vendor.Email</p>
-                <p>Phone: @vendor.PhoneNumber</p>
-                <br />
-                <h3>Locations</h3>
-                <ul>
-                    @foreach (var location in locations)
-                    {
-                        <li>@location.Name, @location.Address</li>
-                    }
-                </ul>
-            </Authorized>
-            <NotAuthorized>
-                <div style="margin:auto"><h1>403 Forbidden</h1></div>
-            </NotAuthorized>
-        </AuthorizeView>
-    </CascadingAuthenticationState>
+    @if(vendor != null) {
+        <CascadingAuthenticationState>
+            <AuthorizeView Roles="Vendor">
+                <Authorized>
+                    <p>Welcome: @vendor.UserName</p>
+                    <p>Email: @vendor.Email</p>
+                    <p>Location: @location.Name</p>
+                    <p>Address: @location.Address</p>
+                    <p>Tickets</p>
+                    <ul>
+                        @foreach(var swt in screeningsWithTickets)
+                        {
+                            <li>
+                                <h4>@swt.Screening.OfMovie.Title</h4>
+                                <p>Screening time: @swt.Screening.Time</p>
+                                <p>Tickets:</p>
+                                <ul>
+                                    @foreach (var ticket in swt.Tickets)
+                                    {
+                                        <li>
+                                            @if (ticket.Customer.OfUser != null)
+                                            {
+                                                <p>Ticket ID: @ticket.Id</p>
+                                                <p>Customer name: @ticket.Customer.OfUser.UserName</p>
+                                                <p>Customer email: @ticket.Customer.Email</p>
+                                            }
+                                            else
+                                            {
+                                                <p>Ticket ID: @ticket.Id</p>
+                                                <p>Customer phone: @ticket.Customer.Phone</p>
+                                                <p>Customer email: @ticket.Customer.Email</p>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </Authorized>
+                <NotAuthorized>
+                    <div style="margin:auto"><h1>403 Forbidden</h1></div>
+                </NotAuthorized>
+            </AuthorizeView>
+        </CascadingAuthenticationState>
+    }
+    else
+    {
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh">
+            <h1>Loading...</h1>
+        </div>
+    }
 </body>
 
 @code {
     IdentityUser vendor = new();
 
-    List<Location> locations = new();
+    List<Ticket> tickets = new();
+
+    Location location = new();
+
+    private class ScreeningWithTickets
+    {
+        public Screening Screening { get; set; }
+        public List<Ticket> Tickets { get; set; }
+    }
+
+    private List<ScreeningWithTickets> screeningsWithTickets = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,8 +88,32 @@
             if (vendorId != null)
             {
                 vendor = await US.GetUserByIdAsync(vendorId);
-                //locations = await LS.GetLocationsByVendorIdAsync(vendorId);
+                location = await LS.GetLocationByVendorIdAsync(vendorId);
             }
         }
+        if (location != null)
+        {
+            tickets = await TS.GetTicketsByVendorIdAsync(vendor.Id);
+            foreach (var ticket in tickets)
+            {
+                if (screeningsWithTickets.Select(o => o.Screening).Contains(ticket.OfScreening))
+                {
+                    screeningsWithTickets.Where(o => o.Screening == ticket.OfScreening).Single().Tickets.Add(ticket);
+                }   
+                else
+                {
+                    screeningsWithTickets.Add(new ScreeningWithTickets
+                        {
+                            Screening = ticket.OfScreening,
+                            Tickets = new List<Ticket> { ticket }
+                        });
+                }
+            }
+        }
+        else
+        {
+            tickets = null;
+        }
+        
     }
 }

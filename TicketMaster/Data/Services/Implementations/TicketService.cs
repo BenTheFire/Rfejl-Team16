@@ -136,5 +136,16 @@ namespace Ticketmaster.Data.Services.Implementations
                 .Include(o => o.OfScreening.InLocation)
                 .Include(o =>o.OfScreening.OfMovie).ToListAsync();
         }
+
+        public async Task<List<Ticket>> GetTicketsByVendorIdAsync(string vendorId)
+        {
+            return await _context.Tickets.Where(o => o.OfScreening.InLocation.ByVendor.Id == vendorId)
+                .Include(o => o.Customer)
+                .Include(o => o.OfScreening)
+                .Include(o => o.OfScreening.InLocation)
+                .Include(o => o.OfScreening.OfMovie)
+                .Include(o => o.Customer.OfUser)
+                .ToListAsync();
+        }
     }
 }

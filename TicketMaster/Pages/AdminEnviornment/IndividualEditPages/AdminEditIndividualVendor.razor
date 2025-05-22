@@ -28,16 +28,26 @@
                                 <p>
                                     <input type="text" placeholder="Phone Number" @bind-value="V.PhoneNumber" />
                                 </p>
+                                <p>
+                                    <select @bind="@locationId">
+                                        @if (@locationId == 0)
+                                        {
+                                            <option value="0">No location set</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@defaultLocation.Id">@defaultLocation.Name</option>
+                                        }
+                                        <option value="0">No location set</option>
+                                        @foreach (var location in locations)
+                                        {
+                                            <option value="@location.Id">@location.Name</option>
+                                        }
+                                    </select>
+                                </p>
                                 <button type="submit">Update Vendor</button>
                             </form>
-                            <p>
-                                <select @bind="@locationId">
-                                    @foreach (var location in locations)
-                                    {
-                                        <option value="@location.Id">@location.Name</option>
-                                    }
-                                </select>
-                            </p>
+
                             <form onsubmit="@deleteVendor">
                                 <button type="submit">Delete Vendor</button>
                             </form>
@@ -68,15 +78,34 @@
     private IdentityUser V;
     private List<Location> locations = new();
     private int locationId;
+    private Location defaultLocation;
 
     protected override async Task OnInitializedAsync()
     {
         V = await VS.GetVendorByIdAsync(vendorId);
-        //locations = await LS.GetLocationsByVendorIdAsync(vendorId);
+        locations = await LS.GetLocationsAsync();
+        defaultLocation = await LS.GetLocationByVendorIdAsync(vendorId);
+        if (defaultLocation != null)
+        {
+            locationId = defaultLocation.Id;
+            locations.Remove(defaultLocation);
+        }
+        else
+        {
+            locationId = 0;
+        }
     }
 
     private async Task UpdateVendor()
     {
+        Location location = new Location();
+        if (locationId != 0)
+        {
+            location = await LS.GetLocationByIdAsync(locationId);
+        }
+        else
+        {      
+        }
     }
     private async Task deleteVendor()
     {

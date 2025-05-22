@@ -1,7 +1,9 @@
 ﻿@page "/admin/edit/location/{locationId}"
+@using Microsoft.AspNetCore.Identity
 @using Ticketmaster.Data.Services.Interfaces
 @using Ticketmaster.Objects
 @inject ILocationService LS
+@inject IVendorService VS
 @inject NavigationManager NavigationManager
 @inject ThemeService ThemeService
 
@@ -9,9 +11,9 @@
     <CascadingAuthenticationState>
         <AuthorizeView Roles="Admin">
             <Authorized>
-                @if (L != null)
+                @if (L != null && vendors != null)
                 {
-                       <div class="forms">
+                    <div class="forms">
                         <div class="formContainer">
                             <a href="/admin/edit/locations" class="text-accent">Go back</a>
                             <form onsubmit="@updateLocation">
@@ -23,6 +25,27 @@
 
                                 <p>Max capacity</p>
                                 <input type="number" class="form-control" placeholder="Max capacity" @bind-value="L.Capacity" />
+
+                                <p>Vendor</p>
+                                <select class="form-control" @bind="vendorId">
+                                    @if(defaultVendor != null)
+                                    {
+                                        <option value="@defaultVendor.Id">@defaultVendor.UserName</option>
+                                        @foreach (var vendor in vendors)
+                                        {
+                                            <option value="@vendor.Id">@vendor.UserName</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="0">No vendor selected</option>
+                                        @foreach (var vendor in vendors)
+                                        {
+                                            <option value="@vendor.Id">@vendor.UserName</option>
+                                        }
+                                    }
+
+                                </select>
 
                                 <button type="submit" class="buttonAdd">Update Location</button>
                             </form>
@@ -71,18 +94,23 @@
 @code {
     [Parameter] public string LocationId { get; set; }
     private Location L = new();
+    private IList<IdentityUser> vendors;
+    private string vendorId;
+    private IdentityUser defaultVendor;
     protected override async Task OnInitializedAsync()
     {
-        // Fetch the person data using the PersonId
-        var location = await LS.GetLocationByIdAsync(Convert.ToInt16(LocationId));
-        if (location != null)
+        L = await LS.GetLocationByIdAsync(Convert.ToInt16(LocationId));
+        vendors = await VS.GetVendorsAsync();
+        defaultVendor = L.ByVendor;
+        if (defaultVendor != null)
         {
-            L = location;
+            vendors.Remove(defaultVendor);
         }
     }
     private async Task updateLocation()
     {
         L.Id = Convert.ToInt16(LocationId); // Ensure the ID is set for the update
+        L.ByVendor = vendors.FirstOrDefault(v => v.Id == vendorId);
         await LS.UpdateLocationAsync(L);
         await OnInitializedAsync();
     }
