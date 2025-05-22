@@ -11,112 +11,101 @@
 @inject AuthenticationStateProvider ASP
 
 <body>
-    @if(vendor != null && screenings != null) {
+    @if (vendor != null && screenings != null)
+    {
         <CascadingAuthenticationState>
             <AuthorizeView Roles="Vendor">
                 <Authorized>
-                    <div>
-                        <p>Welcome: @vendor.UserName</p>
-                        <p>Email: @vendor.Email</p>
-                        <p>Location: @location.Name</p>
-                        <p>Address: @location.Address</p>
-                        <p>Tickets</p>
-                        <ul>
-                            @foreach(var swt in screeningsWithTickets)
-                            {
-                                <li>
-                                    <h4>@swt.Screening.OfMovie.Title</h4>
-                                    <p>Screening time: @swt.Screening.Time</p>
-                                    <p>Tickets:</p>
-                                    <ul>
-                                        @foreach (var ticket in swt.Tickets)
-                                        {
-                                            <li><div>
-                                                    @if (ticket.Customer.OfUser != null)
-                                                    {
-                                                        <p>Ticket ID: @ticket.Id</p>
-                                                        <p>Ticket status: @switch(ticket.Status)
-                                                            { case 0:
-                                                                    <p>Unset</p>;
-                                                                    break; 
-                                                                case 1:
-                                                                    <p>Accepted</p>
-                                                                    break;
-                                                                case 2:
-                                                                    <p>Rejected</p>
-                                                                    break;
-                                                                default: break; }
-                                                        </p>
-                                                        <p>Customer name:
-                                                            @ticket.Customer.OfUser.UserName</p>
-                                                        <p>Customer email: @ticket.Customer.Email</p>
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>Ticket ID: @ticket.Id</p>
-                                                        <p>
-                                                            Ticket status: @switch (ticket.Status)
+                    <div class="forms">
+                        <div class="formContainer">
+                            <h4 class="text-accent">Vendor Information</h4>
+                            <p><strong>Welcome:</strong> @vendor.UserName</p>
+                            <p><strong>Email:</strong> @vendor.Email</p>
+                            <p><strong>Location:</strong> @location.Name</p>
+                            <p><strong>Address:</strong> @location.Address</p>
+
+                            <h4 class="text-accent mt-4">Tickets</h4>
+                            <ul>
+                                @foreach (var swt in screeningsWithTickets)
+                                {
+                                    <li class="mb-3">
+                                        <div class="formContainer">
+                                            <h5 class="text-accent">@swt.Screening.OfMovie.Title</h5>
+                                            <p><strong>Screening time:</strong> @swt.Screening.Time</p>
+                                            <p><strong>Tickets:</strong></p>
+                                            <ul>
+                                                @foreach (var ticket in swt.Tickets)
+                                                {
+                                                    <li class="mb-2">
+                                                        <div class="formContainer">
+                                                            <p><strong>Ticket ID:</strong> @ticket.Id</p>
+                                                            <p>
+                                                                <strong>Status:</strong>
+                                                                @switch (ticket.Status)
+                                                                {
+                                                                    case 0:
+                                                                        <span>Unset</span>
+                                                                        ; break;
+                                                                    case 1:
+                                                                        <span>Accepted</span>
+                                                                        ; break;
+                                                                    case 2:
+                                                                        <span>Rejected</span>
+                                                                        ; break;
+                                                                }
+                                                            </p>
+                                                            @if (ticket.Customer.OfUser != null)
                                                             {
-                                                                case 0:
-                                                                    <p>Unset</p>
-                                                                    ;
-                                                                    break;
-                                                                case 1:
-                                                                    <p>Accepted</p>
-                                                                    break;
-                                                                case 2:
-                                                                    <p>Rejected</p>
-                                                                    break;
-                                                                default: break;
+                                                                <p><strong>Customer name:</strong> @ticket.Customer.OfUser.UserName</p>
+                                                                <p><strong>Customer email:</strong> @ticket.Customer.Email</p>
                                                             }
-                                                        </p>
-                                                        <p>Customer phone: @ticket.Customer.Phone</p>
-                                                        <p>Customer email: @ticket.Customer.Email</p>
-                                                    }
-                                                </div>
-                                                <div>
-                                                    <button @onclick="() => setStatus(ticket, 0)">0</button>
-                                                    <button @onclick="() => setStatus(ticket, 1)">1</button>
-                                                    <button @onclick="() => setStatus(ticket, 2)">2</button>
-                                                </div>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                    <div>
-                        <h4>Create ticket live</h4>
-                        <form onsubmit="@createTicket">
-                            <p>Screening</p>
-                            <p>
-                                <select @bind="@screeningId" class="form-control mb-2">
+                                                            else
+                                                            {
+                                                                <p><strong>Customer phone:</strong> @ticket.Customer.Phone</p>
+                                                                <p><strong>Customer email:</strong> @ticket.Customer.Email</p>
+                                                            }
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <button class="buttonAdd" @onclick="() => setStatus(ticket, 0)">0</button>
+                                                            <button class="buttonAdd" @onclick="() => setStatus(ticket, 1)">1</button>
+                                                            <button class="buttonAdd" @onclick="() => setStatus(ticket, 2)">2</button>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="formContainer mt-4">
+                            <h4 class="text-accent">Create Ticket (Live)</h4>
+                            <form onsubmit="@createTicket">
+                                <p><strong>Screening</strong></p>
+                                <select @bind="@screeningId" class="form-control mb-3">
                                     <option value="0">-- Choose a screening --</option>
                                     @foreach (var screening in screenings)
                                     {
                                         <option value="@screening.Id">@screening.Id --> @screening.OfMovie.Title (@screening.Time) in @screening.InLocation.Name</option>
                                     }
                                 </select>
-                            </p>
-                            <p>Customer</p>
-                            <p>
-                                <input type="text" placeholder="Email" @bind-value="email"/>
-                                <input type="text" placeholder="Phone" @bind-value="phone" />
-                            </p>
-                            <p>Price</p>
-                            <p>
-                                <input type="number" class="form-control mb-2" placeholder="Price of ticket" @bind-value="price" />
-                            </p>
-                            <p>Seat position</p>
-                            <p>
-                                <input type="text" class="form-control mb-2" placeholder="Seat position" @bind-value="seatPosition" />
-                            </p>
-                            <p>
+
+                                <p><strong>Customer</strong></p>
+                                <input type="text" class="form-control mb-2" placeholder="Email" @bind-value="email" />
+                                <input type="text" class="form-control mb-3" placeholder="Phone" @bind-value="phone" />
+
+                                <p><strong>Price</strong></p>
+                                <input type="number" class="form-control mb-3" placeholder="Price of ticket" @bind-value="price" />
+
+                                <p><strong>Seat position</strong></p>
+                                <input type="text" class="form-control mb-3" placeholder="Seat position" @bind-value="seatPosition" />
+
                                 <button type="submit" class="buttonAdd">Create Ticket</button>
-                            </p>
-                            <p>@text</p>
-                        </form>
+
+                                <p class="mt-2">@text</p>
+                            </form>
+                        </div>
                     </div>
                 </Authorized>
                 <NotAuthorized>
@@ -250,3 +239,104 @@
 
     private string Href(int id) => $"/VendorPage/ticket/{id}";
 }
+<style>
+    .forms {
+        padding: 2rem;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        min-height: 100vh;
+    }
+
+    .formContainer {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    h2, h3, h4 {
+        color: var(--accent-text-color);
+        margin-bottom: 1rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--color-gray-3);
+        padding: 0.75rem;
+        font-size: 1rem;
+        border-radius: 0.5rem;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    input::placeholder {
+        color: var(--text-color);
+        opacity: 0.6;
+    }
+
+    button {
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.5rem;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+
+    .buttonAdd {
+        background-color: var(--color-blue);
+        color: var(--color-white);
+    }
+
+        .buttonAdd:hover {
+            background-color: var(--color-blue-hover);
+        }
+
+    .buttonDelete {
+        background-color: var(--color-red);
+        color: var(--color-white);
+    }
+
+        .buttonDelete:hover {
+            background-color: #ff1a1a;
+        }
+
+    ul {
+        padding-left: 1.2rem;
+        margin-top: 1rem;
+        background-color: var(--card-bg);
+    }
+
+        ul li {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+    a {
+        color: var(--color-blue);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        a:hover {
+            color: var(--color-yellow);
+        }
+
+    label {
+        color: var(--text-color);
+        font-weight: 600;
+    }
+
+    hr {
+        border-color: var(--color-gray-3);
+    }
+
+</style>
