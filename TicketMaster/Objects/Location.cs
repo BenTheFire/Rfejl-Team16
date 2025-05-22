@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ticketmaster.Objects
 {
@@ -8,6 +9,6 @@ namespace Ticketmaster.Objects
         public string Name { get; set; }
         public string Address { get; set; }
         public int Capacity { get; set; }
-        //public DbSet<Vendor> ByVendor { get; set; }
+        public IdentityUser? ByVendor { get; set; }
     }
 }
